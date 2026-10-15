@@ -15,6 +15,13 @@
       "when": 1792069697190,
       "tag": "0001_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792070066123,
+      "tag": "0002_branches_and_library",
+      "breakpoints": true
     }
   ]
 }
