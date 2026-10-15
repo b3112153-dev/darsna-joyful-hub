@@ -38,24 +38,24 @@ function Profile() {
   }, [me?.profile]);
 
   async function save() {
-    if (!user || name.trim().length < 2) return toast.error("الاسم قصير");
+    if (!user || name.trim().length < 2) { toast.error("الاسم قصير"); return; }
     setBusy(true);
     const { error } = await supabase
       .from("profiles")
       .update({ display_name: name.trim().slice(0, 40), branch: branch || null })
       .eq("id", user.id);
     setBusy(false);
-    if (error) return toast.error("تعذر الحفظ");
+    if (error) { toast.error("تعذر الحفظ"); return; }
     toast.success("تم الحفظ");
     qc.invalidateQueries({ queryKey: ["me"] });
   }
 
   async function upload(file: File) {
     if (!user) return;
-    if (!file.type.startsWith("image/")) return toast.error("اختر صورة");
+    if (!file.type.startsWith("image/")) { toast.error("اختر صورة"); return; }
     const path = `${user.id}/${Date.now()}.${file.name.split(".").pop()}`;
     const { error } = await supabase.storage.from("avatars").upload(path, file);
-    if (error) return toast.error("تعذر رفع الصورة (الحد 3MB)");
+    if (error) { toast.error("تعذر رفع الصورة (الحد 3MB)"); return; }
     await supabase.from("profiles").update({ avatar_url: path }).eq("id", user.id);
     toast.success("تم تحديث الصورة");
     qc.invalidateQueries({ queryKey: ["me"] });

@@ -97,7 +97,7 @@ function RoomsAdmin() {
   async function add(e: React.FormEvent) {
     e.preventDefault();
     const { error } = await supabase.from("rooms").insert({ name: name.trim(), description: desc.trim() || null, branch: branch === "general" ? null : branch });
-    if (error) return toast.error("تعذر إنشاء الغرفة");
+    if (error) { toast.error("تعذر إنشاء الغرفة"); return; }
     setName(""); setDesc("");
     toast.success("تمت إضافة الغرفة");
     qc.invalidateQueries({ queryKey: ["rooms"] });
@@ -105,7 +105,7 @@ function RoomsAdmin() {
   async function del(id: string) {
     if (!confirm("حذف الغرفة وكل رسائلها؟")) return;
     const { error } = await supabase.from("rooms").delete().eq("id", id);
-    if (error) return toast.error("تعذر الحذف");
+    if (error) { toast.error("تعذر الحذف"); return; }
     qc.invalidateQueries({ queryKey: ["rooms"] });
   }
   return (
@@ -162,15 +162,15 @@ function UsersAdmin() {
     const { data: me } = await supabase.auth.getUser();
     const { error } = banned
       ? await supabase.from("user_bans").delete().eq("user_id", id)
-      : await supabase.from("user_bans").insert({ user_id: id, banned_by: me.user?.id });
-    if (error) return toast.error("غير مسموح");
+      : await supabase.from("user_bans").insert({ user_id: id, banned_by: me.user?.id ?? null });
+    if (error) { toast.error("غير مسموح"); return; }
     refresh();
   }
   async function toggleMod(id: string, isMod: boolean) {
     const { error } = isMod
       ? await supabase.from("user_roles").delete().eq("user_id", id).eq("role", "moderator")
       : await supabase.from("user_roles").insert({ user_id: id, role: "moderator" });
-    if (error) return toast.error("غير مسموح");
+    if (error) { toast.error("غير مسموح"); return; }
     refresh();
   }
 
@@ -223,7 +223,7 @@ function MessagesAdmin() {
   });
   async function del(id: string) {
     const { error } = await supabase.from("messages").delete().eq("id", id);
-    if (error) return toast.error("تعذر الحذف");
+    if (error) { toast.error("تعذر الحذف"); return; }
     qc.invalidateQueries({ queryKey: ["admin-messages"] });
   }
   return (

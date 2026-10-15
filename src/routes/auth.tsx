@@ -48,7 +48,7 @@ function AuthPage() {
 
   async function signUp(e: React.FormEvent) {
     e.preventDefault();
-    if (password.length < 8) return toast.error("كلمة السر لازم تكون 8 أحرف على الأقل");
+    if (password.length < 8) { toast.error("كلمة السر لازم تكون 8 أحرف على الأقل"); return; }
     setBusy(true);
     const { error } = await supabase.auth.signUp({
       email,
@@ -56,16 +56,16 @@ function AuthPage() {
       options: { emailRedirectTo: window.location.origin, data: { display_name: name } },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("تم إنشاء الحساب! افحص إيميلك لتأكيد الحساب.");
   }
 
   async function forgot() {
-    if (!email) return toast.error("اكتب إيميلك أولاً");
+    if (!email) { toast.error("اكتب إيميلك أولاً"); return; }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("أرسلنا لك رابط إعادة تعيين كلمة السر");
   }
 

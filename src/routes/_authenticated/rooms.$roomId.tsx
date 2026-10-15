@@ -82,7 +82,7 @@ function ChatRoom() {
 
   async function remove(id: string) {
     const { error } = await supabase.from("messages").delete().eq("id", id);
-    if (error) return toast.error("تعذر الحذف");
+    if (error) { toast.error("تعذر الحذف"); return; }
     qc.invalidateQueries({ queryKey: key });
   }
 
