@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      library_files: {
+        Row: {
+          branch: string | null
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          subject: string
+          title: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          branch?: string | null
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          subject: string
+          title: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          branch?: string | null
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          subject?: string
+          title?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -166,6 +202,8 @@ export type Database = {
         | "agricultural"
         | "home_economics"
         | "hospitality"
+        | "health_engineering"
+        | "business_languages"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -303,6 +341,8 @@ export const Constants = {
         "agricultural",
         "home_economics",
         "hospitality",
+        "health_engineering",
+        "business_languages",
       ],
     },
   },
