@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UserAvatar } from "@/components/UserAvatar";
+import { LibraryAdmin } from "@/components/LibraryAdmin";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async ({ context }) => {
@@ -38,11 +39,13 @@ function Admin() {
           <TabsTrigger value="rooms">الغرف</TabsTrigger>
           <TabsTrigger value="users">المستخدمين</TabsTrigger>
           <TabsTrigger value="messages">الرسائل</TabsTrigger>
+          <TabsTrigger value="library">المكتبة</TabsTrigger>
         </TabsList>
         <TabsContent value="stats"><Stats /></TabsContent>
         <TabsContent value="rooms"><RoomsAdmin /></TabsContent>
         <TabsContent value="users"><UsersAdmin /></TabsContent>
         <TabsContent value="messages"><MessagesAdmin /></TabsContent>
+        <TabsContent value="library"><LibraryAdmin /></TabsContent>
       </Tabs>
     </main>
   );
@@ -116,7 +119,7 @@ function RoomsAdmin() {
         <Select dir="rtl" value={branch} onValueChange={(v) => setBranch(v as Branch)}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="general">عام</SelectItem>
+            <SelectItem value="general">مشترك</SelectItem>
             {BRANCHES.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}
           </SelectContent>
         </Select>

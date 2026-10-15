@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
 });
 
 const features = [
-  { icon: MessagesSquare, title: "غرف حسب الفرع", text: "علمي، أدبي، صناعي، IT وغيرها — كل فرع إله غرفته." },
+  { icon: MessagesSquare, title: "غرف حسب الفرع", text: "غرفة للصحي والهندسي، غرفة للأعمال واللغات، وغرفة مشتركة للكل." },
   { icon: Users, title: "زملاء من كل الأردن", text: "اسأل، جاوب، وشارك ملخصاتك مع طلاب من كل المحافظات." },
   { icon: ShieldCheck, title: "بيئة آمنة", text: "مشرفين يراقبوا المحتوى ويحافظوا على جو محترم." },
   { icon: BookOpen, title: "تركيز على الدراسة", text: "مساحة هادئة ونظيفة بدون تشتيت." },

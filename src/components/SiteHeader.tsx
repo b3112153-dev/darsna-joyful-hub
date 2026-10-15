@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { GraduationCap, LogOut, MessagesSquare, Shield, User } from "lucide-react";
+import { GraduationCap, Library, LogOut, MessagesSquare, Shield, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,11 @@ export function SiteHeader() {
                   <MessagesSquare /> الغرف
                 </Link>
               </Button>
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link to="/library">
+                  <Library /> المكتبة
+                </Link>
+              </Button>
               {me?.isAdmin && (
                 <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
                   <Link to="/admin">
@@ -58,6 +63,9 @@ export function SiteHeader() {
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
                     <Link to="/rooms"><MessagesSquare /> الغرف</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/library"><Library /> المكتبة</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/profile"><User /> ملفي الشخصي</Link>
