@@ -16,9 +16,12 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated/progress'
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms.index'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
+import { Route as AuthenticatedTopicsIndexRouteImport } from './routes/_authenticated/topics.index'
+import { Route as AuthenticatedTopicsTopicIdRouteImport } from './routes/_authenticated/topics.$topicId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,6 +57,11 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProgressRoute = AuthenticatedProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSupportRoute = AuthenticatedSupportRouteImport.update({
   id: '/support',
   path: '/support',
@@ -70,6 +78,18 @@ const AuthenticatedRoomsRoomIdRoute =
     path: '/rooms/$roomId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTopicsIndexRoute =
+  AuthenticatedTopicsIndexRouteImport.update({
+    id: '/topics/',
+    path: '/topics/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTopicsTopicIdRoute =
+  AuthenticatedTopicsTopicIdRouteImport.update({
+    id: '/topics/$topicId',
+    path: '/topics/$topicId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -78,9 +98,12 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/topics/': typeof AuthenticatedTopicsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -89,9 +112,12 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
+  '/topics': typeof AuthenticatedTopicsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -102,9 +128,12 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/support': typeof AuthenticatedSupportRoute
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/_authenticated/topics/': typeof AuthenticatedTopicsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,9 +144,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/library'
     | '/profile'
+    | '/progress'
     | '/support'
     | '/rooms/$roomId'
+    | '/topics/$topicId'
     | '/rooms/'
+    | '/topics/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -126,9 +158,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/library'
     | '/profile'
+    | '/progress'
     | '/support'
     | '/rooms/$roomId'
+    | '/topics/$topicId'
     | '/rooms'
+    | '/topics'
   id:
     | '__root__'
     | '/'
@@ -138,9 +173,12 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/library'
     | '/_authenticated/profile'
+    | '/_authenticated/progress'
     | '/_authenticated/support'
     | '/_authenticated/rooms/$roomId'
+    | '/_authenticated/topics/$topicId'
     | '/_authenticated/rooms/'
+    | '/_authenticated/topics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,6 +239,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/progress': {
+      id: '/_authenticated/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof AuthenticatedProgressRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/support': {
       id: '/_authenticated/support'
       path: '/support'
@@ -222,6 +267,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRoomsRoomIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/topics/': {
+      id: '/_authenticated/topics/'
+      path: '/topics'
+      fullPath: '/topics/'
+      preLoaderRoute: typeof AuthenticatedTopicsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/topics/$topicId': {
+      id: '/_authenticated/topics/$topicId'
+      path: '/topics/$topicId'
+      fullPath: '/topics/$topicId'
+      preLoaderRoute: typeof AuthenticatedTopicsTopicIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -229,18 +288,24 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
   AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute
+  AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
   AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
+  AuthenticatedTopicsIndexRoute: typeof AuthenticatedTopicsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRoute,
+  AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,
   AuthenticatedRoomsIndexRoute: AuthenticatedRoomsIndexRoute,
+  AuthenticatedTopicsIndexRoute: AuthenticatedTopicsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
