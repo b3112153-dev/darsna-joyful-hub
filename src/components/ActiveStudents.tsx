@@ -1,0 +1,50 @@
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { UserAvatar } from "./UserAvatar";
+
+export function ActiveStudents({ roomId }: { roomId: string }) {
+  const qc = useQueryClient();
+  const { data = [] } = useQuery({
+    queryKey: ["active", roomId],
+    refetchInterval: 30000,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("focus_sessions")
+        .select("user_id,subject,status,ends_at,profiles(display_name,avatar_url)")
+        .eq("room_id", roomId)
+        .in("status", ["running", "paused"]);
+      const now = Date.now();
+      return (data ?? []).filter((s) => s.status === "paused" || (s.ends_at && new Date(s.ends_at).getTime() > now));
+    },
+  });
+  useEffect(() => {
+    const ch = supabase
+      .channel(`active-${roomId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "focus_sessions", filter: `room_id=eq.${roomId}` }, () =>
+        qc.invalidateQueries({ queryKey: ["active", roomId] }),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [roomId, qc]);
+
+  return (
+    <div className="space-y-2 rounded-2xl border bg-card p-4 shadow-card">
+      <p className="text-sm font-semibold">بدرسوا هلأ ({data.length})</p>
+      {data.length === 0 && <p className="text-xs text-muted-foreground">ما حدا بدرس حالياً بهاي الغرفة.</p>}
+      <div className="flex flex-wrap gap-3">
+        {data.map((s) => (
+          <div key={s.user_id} className="flex items-center gap-2 rounded-full bg-secondary py-1 pe-3 ps-1">
+            <span className="relative">
+              <UserAvatar path={s.profiles?.avatar_url} name={s.profiles?.display_name} className="size-7" />
+              <span className={`absolute -bottom-0.5 -end-0.5 size-2.5 rounded-full ring-2 ring-card ${s.status === "paused" ? "bg-silver" : "bg-primary"}`} />
+            </span>
+            <span className="text-xs"><b>{s.profiles?.display_name}</b> · {s.subject}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
