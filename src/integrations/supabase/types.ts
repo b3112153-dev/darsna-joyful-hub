@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      focus_sessions: {
+        Row: {
+          duration_seconds: number
+          ends_at: string | null
+          finished_at: string | null
+          id: string
+          remaining_seconds: number
+          room_id: string | null
+          started_at: string
+          status: string
+          studied_seconds: number
+          subject: string
+          user_id: string
+        }
+        Insert: {
+          duration_seconds: number
+          ends_at?: string | null
+          finished_at?: string | null
+          id?: string
+          remaining_seconds: number
+          room_id?: string | null
+          started_at?: string
+          status?: string
+          studied_seconds?: number
+          subject?: string
+          user_id: string
+        }
+        Update: {
+          duration_seconds?: number
+          ends_at?: string | null
+          finished_at?: string | null
+          id?: string
+          remaining_seconds?: number
+          room_id?: string | null
+          started_at?: string
+          status?: string
+          studied_seconds?: number
+          subject?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_sessions_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "focus_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       library_files: {
         Row: {
           branch: string | null
@@ -54,6 +111,7 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          from_admin: boolean
           id: string
           room_id: string
           user_id: string
@@ -61,6 +119,7 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          from_admin?: boolean
           id?: string
           room_id: string
           user_id: string
@@ -68,6 +127,7 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          from_admin?: boolean
           id?: string
           room_id?: string
           user_id?: string
@@ -112,6 +172,42 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      room_notes: {
+        Row: {
+          content: string
+          room_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          room_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          room_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_notes_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rooms: {
         Row: {
@@ -254,6 +350,121 @@ export type Database = {
           },
         ]
       }
+      topic_comments: {
+        Row: {
+          content: string
+          created_at: string
+          from_admin: boolean
+          id: string
+          parent_id: string | null
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          from_admin?: boolean
+          id?: string
+          parent_id?: string | null
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          from_admin?: boolean
+          id?: string
+          parent_id?: string | null
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "topic_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_comments_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topic_reads: {
+        Row: {
+          created_at: string
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_reads_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_reads_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topics: {
+        Row: {
+          allow_replies: boolean
+          body: string
+          created_at: string
+          created_by: string
+          id: string
+          subject: string | null
+          title: string
+        }
+        Insert: {
+          allow_replies?: boolean
+          body: string
+          created_at?: string
+          created_by: string
+          id?: string
+          subject?: string | null
+          title: string
+        }
+        Update: {
+          allow_replies?: boolean
+          body?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          subject?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       user_bans: {
         Row: {
           banned_by: string | null
@@ -306,6 +517,7 @@ export type Database = {
         Returns: boolean
       }
       is_banned: { Args: { _user_id: string }; Returns: boolean }
+      is_focusing: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
@@ -321,6 +533,9 @@ export type Database = {
         | "hospitality"
         | "health_engineering"
         | "business_languages"
+        | "languages"
+        | "business"
+        | "engineering"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -460,6 +675,9 @@ export const Constants = {
         "hospitality",
         "health_engineering",
         "business_languages",
+        "languages",
+        "business",
+        "engineering",
       ],
     },
   },
