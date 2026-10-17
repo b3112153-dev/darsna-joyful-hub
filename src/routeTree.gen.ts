@@ -8,325 +8,367 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated/progress'
-import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
-import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms.index'
-import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
-import { Route as AuthenticatedTopicsIndexRouteImport } from './routes/_authenticated/topics.index'
-import { Route as AuthenticatedTopicsTopicIdRouteImport } from './routes/_authenticated/topics.$topicId'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/route";
+import { Route as AuthRouteImport } from "./routes/auth";
+import { Route as ResetPasswordRouteImport } from "./routes/reset-password";
+import { Route as AuthenticatedAdminRouteImport } from "./routes/_authenticated/admin";
+import { Route as AuthenticatedLibraryRouteImport } from "./routes/_authenticated/library";
+import { Route as AuthenticatedMotivationRouteImport } from "./routes/_authenticated/motivation";
+import { Route as AuthenticatedProfileRouteImport } from "./routes/_authenticated/profile";
+import { Route as AuthenticatedProgressRouteImport } from "./routes/_authenticated/progress";
+import { Route as AuthenticatedStudyRouteImport } from "./routes/_authenticated/study";
+import { Route as AuthenticatedSupportRouteImport } from "./routes/_authenticated/support";
+import { Route as AuthenticatedRoomsIndexRouteImport } from "./routes/_authenticated/rooms.index";
+import { Route as AuthenticatedRoomsRoomIdRouteImport } from "./routes/_authenticated/rooms.$roomId";
+import { Route as AuthenticatedTopicsIndexRouteImport } from "./routes/_authenticated/topics.index";
+import { Route as AuthenticatedTopicsTopicIdRouteImport } from "./routes/_authenticated/topics.$topicId";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+  id: "/_authenticated",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+  id: "/auth",
+  path: "/auth",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+  id: "/reset-password",
+  path: "/reset-password",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+  id: "/admin",
+  path: "/admin",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
-  id: '/library',
-  path: '/library',
+  id: "/library",
+  path: "/library",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
+const AuthenticatedMotivationRoute = AuthenticatedMotivationRouteImport.update({
+  id: "/motivation",
+  path: "/motivation",
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any);
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+  id: "/profile",
+  path: "/profile",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedProgressRoute = AuthenticatedProgressRouteImport.update({
-  id: '/progress',
-  path: '/progress',
+  id: "/progress",
+  path: "/progress",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
+const AuthenticatedStudyRoute = AuthenticatedStudyRouteImport.update({
+  id: "/study",
+  path: "/study",
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any);
 const AuthenticatedSupportRoute = AuthenticatedSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
+  id: "/support",
+  path: "/support",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedRoomsIndexRoute = AuthenticatedRoomsIndexRouteImport.update({
-  id: '/rooms/',
-  path: '/rooms/',
+  id: "/rooms/",
+  path: "/rooms/",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedRoomsRoomIdRoute =
   AuthenticatedRoomsRoomIdRouteImport.update({
-    id: '/rooms/$roomId',
-    path: '/rooms/$roomId',
+    id: "/rooms/$roomId",
+    path: "/rooms/$roomId",
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
+  } as any);
 const AuthenticatedTopicsIndexRoute =
   AuthenticatedTopicsIndexRouteImport.update({
-    id: '/topics/',
-    path: '/topics/',
+    id: "/topics/",
+    path: "/topics/",
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
+  } as any);
 const AuthenticatedTopicsTopicIdRoute =
   AuthenticatedTopicsTopicIdRouteImport.update({
-    id: '/topics/$topicId',
-    path: '/topics/$topicId',
+    id: "/topics/$topicId",
+    path: "/topics/$topicId",
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
+  } as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/admin': typeof AuthenticatedAdminRoute
-  '/library': typeof AuthenticatedLibraryRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/progress': typeof AuthenticatedProgressRoute
-  '/support': typeof AuthenticatedSupportRoute
-  '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
-  '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
-  '/rooms/': typeof AuthenticatedRoomsIndexRoute
-  '/topics/': typeof AuthenticatedTopicsIndexRoute
+  "/": typeof IndexRoute;
+  "/auth": typeof AuthRoute;
+  "/reset-password": typeof ResetPasswordRoute;
+  "/admin": typeof AuthenticatedAdminRoute;
+  "/library": typeof AuthenticatedLibraryRoute;
+  "/motivation": typeof AuthenticatedMotivationRoute;
+  "/profile": typeof AuthenticatedProfileRoute;
+  "/progress": typeof AuthenticatedProgressRoute;
+  "/study": typeof AuthenticatedStudyRoute;
+  "/support": typeof AuthenticatedSupportRoute;
+  "/rooms/$roomId": typeof AuthenticatedRoomsRoomIdRoute;
+  "/topics/$topicId": typeof AuthenticatedTopicsTopicIdRoute;
+  "/rooms/": typeof AuthenticatedRoomsIndexRoute;
+  "/topics/": typeof AuthenticatedTopicsIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/admin': typeof AuthenticatedAdminRoute
-  '/library': typeof AuthenticatedLibraryRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/progress': typeof AuthenticatedProgressRoute
-  '/support': typeof AuthenticatedSupportRoute
-  '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
-  '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
-  '/rooms': typeof AuthenticatedRoomsIndexRoute
-  '/topics': typeof AuthenticatedTopicsIndexRoute
+  "/": typeof IndexRoute;
+  "/auth": typeof AuthRoute;
+  "/reset-password": typeof ResetPasswordRoute;
+  "/admin": typeof AuthenticatedAdminRoute;
+  "/library": typeof AuthenticatedLibraryRoute;
+  "/motivation": typeof AuthenticatedMotivationRoute;
+  "/profile": typeof AuthenticatedProfileRoute;
+  "/progress": typeof AuthenticatedProgressRoute;
+  "/study": typeof AuthenticatedStudyRoute;
+  "/support": typeof AuthenticatedSupportRoute;
+  "/rooms/$roomId": typeof AuthenticatedRoomsRoomIdRoute;
+  "/topics/$topicId": typeof AuthenticatedTopicsTopicIdRoute;
+  "/rooms": typeof AuthenticatedRoomsIndexRoute;
+  "/topics": typeof AuthenticatedTopicsIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/library': typeof AuthenticatedLibraryRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
-  '/_authenticated/progress': typeof AuthenticatedProgressRoute
-  '/_authenticated/support': typeof AuthenticatedSupportRoute
-  '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
-  '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
-  '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
-  '/_authenticated/topics/': typeof AuthenticatedTopicsIndexRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/_authenticated": typeof AuthenticatedRouteRouteWithChildren;
+  "/auth": typeof AuthRoute;
+  "/reset-password": typeof ResetPasswordRoute;
+  "/_authenticated/admin": typeof AuthenticatedAdminRoute;
+  "/_authenticated/library": typeof AuthenticatedLibraryRoute;
+  "/_authenticated/motivation": typeof AuthenticatedMotivationRoute;
+  "/_authenticated/profile": typeof AuthenticatedProfileRoute;
+  "/_authenticated/progress": typeof AuthenticatedProgressRoute;
+  "/_authenticated/study": typeof AuthenticatedStudyRoute;
+  "/_authenticated/support": typeof AuthenticatedSupportRoute;
+  "/_authenticated/rooms/$roomId": typeof AuthenticatedRoomsRoomIdRoute;
+  "/_authenticated/topics/$topicId": typeof AuthenticatedTopicsTopicIdRoute;
+  "/_authenticated/rooms/": typeof AuthenticatedRoomsIndexRoute;
+  "/_authenticated/topics/": typeof AuthenticatedTopicsIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/auth'
-    | '/reset-password'
-    | '/admin'
-    | '/library'
-    | '/profile'
-    | '/progress'
-    | '/support'
-    | '/rooms/$roomId'
-    | '/topics/$topicId'
-    | '/rooms/'
-    | '/topics/'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/auth"
+    | "/reset-password"
+    | "/admin"
+    | "/library"
+    | "/motivation"
+    | "/profile"
+    | "/progress"
+    | "/study"
+    | "/support"
+    | "/rooms/$roomId"
+    | "/topics/$topicId"
+    | "/rooms/"
+    | "/topics/";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/auth'
-    | '/reset-password'
-    | '/admin'
-    | '/library'
-    | '/profile'
-    | '/progress'
-    | '/support'
-    | '/rooms/$roomId'
-    | '/topics/$topicId'
-    | '/rooms'
-    | '/topics'
+    | "/"
+    | "/auth"
+    | "/reset-password"
+    | "/admin"
+    | "/library"
+    | "/motivation"
+    | "/profile"
+    | "/progress"
+    | "/study"
+    | "/support"
+    | "/rooms/$roomId"
+    | "/topics/$topicId"
+    | "/rooms"
+    | "/topics";
   id:
-    | '__root__'
-    | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/reset-password'
-    | '/_authenticated/admin'
-    | '/_authenticated/library'
-    | '/_authenticated/profile'
-    | '/_authenticated/progress'
-    | '/_authenticated/support'
-    | '/_authenticated/rooms/$roomId'
-    | '/_authenticated/topics/$topicId'
-    | '/_authenticated/rooms/'
-    | '/_authenticated/topics/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/_authenticated"
+    | "/auth"
+    | "/reset-password"
+    | "/_authenticated/admin"
+    | "/_authenticated/library"
+    | "/_authenticated/motivation"
+    | "/_authenticated/profile"
+    | "/_authenticated/progress"
+    | "/_authenticated/study"
+    | "/_authenticated/support"
+    | "/_authenticated/rooms/$roomId"
+    | "/_authenticated/topics/$topicId"
+    | "/_authenticated/rooms/"
+    | "/_authenticated/topics/";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
+  IndexRoute: typeof IndexRoute;
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren;
+  AuthRoute: typeof AuthRoute;
+  ResetPasswordRoute: typeof ResetPasswordRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/library': {
-      id: '/_authenticated/library'
-      path: '/library'
-      fullPath: '/library'
-      preLoaderRoute: typeof AuthenticatedLibraryRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/progress': {
-      id: '/_authenticated/progress'
-      path: '/progress'
-      fullPath: '/progress'
-      preLoaderRoute: typeof AuthenticatedProgressRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/support': {
-      id: '/_authenticated/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof AuthenticatedSupportRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/rooms/': {
-      id: '/_authenticated/rooms/'
-      path: '/rooms'
-      fullPath: '/rooms/'
-      preLoaderRoute: typeof AuthenticatedRoomsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/rooms/$roomId': {
-      id: '/_authenticated/rooms/$roomId'
-      path: '/rooms/$roomId'
-      fullPath: '/rooms/$roomId'
-      preLoaderRoute: typeof AuthenticatedRoomsRoomIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/topics/': {
-      id: '/_authenticated/topics/'
-      path: '/topics'
-      fullPath: '/topics/'
-      preLoaderRoute: typeof AuthenticatedTopicsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/topics/$topicId': {
-      id: '/_authenticated/topics/$topicId'
-      path: '/topics/$topicId'
-      fullPath: '/topics/$topicId'
-      preLoaderRoute: typeof AuthenticatedTopicsTopicIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_authenticated": {
+      id: "/_authenticated";
+      path: "";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/auth": {
+      id: "/auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/reset-password": {
+      id: "/reset-password";
+      path: "/reset-password";
+      fullPath: "/reset-password";
+      preLoaderRoute: typeof ResetPasswordRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_authenticated/admin": {
+      id: "/_authenticated/admin";
+      path: "/admin";
+      fullPath: "/admin";
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/library": {
+      id: "/_authenticated/library";
+      path: "/library";
+      fullPath: "/library";
+      preLoaderRoute: typeof AuthenticatedLibraryRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/motivation": {
+      id: "/_authenticated/motivation";
+      path: "/motivation";
+      fullPath: "/motivation";
+      preLoaderRoute: typeof AuthenticatedMotivationRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/profile": {
+      id: "/_authenticated/profile";
+      path: "/profile";
+      fullPath: "/profile";
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/progress": {
+      id: "/_authenticated/progress";
+      path: "/progress";
+      fullPath: "/progress";
+      preLoaderRoute: typeof AuthenticatedProgressRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/study": {
+      id: "/_authenticated/study";
+      path: "/study";
+      fullPath: "/study";
+      preLoaderRoute: typeof AuthenticatedStudyRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/support": {
+      id: "/_authenticated/support";
+      path: "/support";
+      fullPath: "/support";
+      preLoaderRoute: typeof AuthenticatedSupportRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/rooms/": {
+      id: "/_authenticated/rooms/";
+      path: "/rooms";
+      fullPath: "/rooms/";
+      preLoaderRoute: typeof AuthenticatedRoomsIndexRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/rooms/$roomId": {
+      id: "/_authenticated/rooms/$roomId";
+      path: "/rooms/$roomId";
+      fullPath: "/rooms/$roomId";
+      preLoaderRoute: typeof AuthenticatedRoomsRoomIdRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/topics/": {
+      id: "/_authenticated/topics/";
+      path: "/topics";
+      fullPath: "/topics/";
+      preLoaderRoute: typeof AuthenticatedTopicsIndexRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/topics/$topicId": {
+      id: "/_authenticated/topics/$topicId";
+      path: "/topics/$topicId";
+      fullPath: "/topics/$topicId";
+      preLoaderRoute: typeof AuthenticatedTopicsTopicIdRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
-  AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
-  AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
-  AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute
-  AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
-  AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
-  AuthenticatedTopicsIndexRoute: typeof AuthenticatedTopicsIndexRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute;
+  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute;
+  AuthenticatedMotivationRoute: typeof AuthenticatedMotivationRoute;
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute;
+  AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute;
+  AuthenticatedStudyRoute: typeof AuthenticatedStudyRoute;
+  AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute;
+  AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute;
+  AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute;
+  AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute;
+  AuthenticatedTopicsIndexRoute: typeof AuthenticatedTopicsIndexRoute;
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedMotivationRoute: AuthenticatedMotivationRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
+  AuthenticatedStudyRoute: AuthenticatedStudyRoute,
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRoute,
   AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,
   AuthenticatedRoomsIndexRoute: AuthenticatedRoomsIndexRoute,
   AuthenticatedTopicsIndexRoute: AuthenticatedTopicsIndexRoute,
-}
+};
 
 const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { startInstance } from "./start.ts";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>;
   }
 }

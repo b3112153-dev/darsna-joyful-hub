@@ -1,6 +1,17 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { GraduationCap, Library, LogOut, MessagesSquare, Shield, User } from "lucide-react";
+import {
+  BookOpen,
+  GraduationCap,
+  Heart,
+  Library,
+  LogOut,
+  Menu,
+  MessagesSquare,
+  Shield,
+  Timer,
+  User,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -11,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "./ThemeToggle";
 import { UserAvatar } from "./UserAvatar";
 
 export function SiteHeader() {
@@ -36,47 +48,128 @@ export function SiteHeader() {
             Darsna <span className="text-brand">Jo</span>
           </span>
         </Link>
-        <nav className="flex items-center gap-2">
+        <nav className="flex items-center gap-1">
+          <ThemeToggle />
           {user ? (
             <>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link to="/rooms">
-                  <MessagesSquare /> الغرف
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link to="/library">
-                  <Library /> المكتبة
-                </Link>
-              </Button>
-              {me?.isAdmin && (
-                <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                  <Link to="/admin">
-                    <Shield /> لوحة التحكم
+              <div className="hidden items-center gap-1 md:flex">
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/rooms">
+                    <MessagesSquare /> الدردشة
                   </Link>
                 </Button>
-              )}
+                <DropdownMenu dir="rtl">
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <BookOpen /> بنوك الأسئلة والملفات
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-52">
+                    <DropdownMenuItem asChild>
+                      <Link to="/library">
+                        <Library /> بنوك الأسئلة والملفات
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/topics">
+                        <BookOpen /> مواضيع ونقاشات
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/motivation">
+                    <Heart /> التحفيز
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/study">
+                    <Timer /> غرف التركيز
+                  </Link>
+                </Button>
+              </div>
+
               <DropdownMenu dir="rtl">
-                <DropdownMenuTrigger className="rounded-full">
-                  <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} />
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="md:hidden"
+                    aria-label="فتح القائمة"
+                  >
+                    <Menu className="size-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-60">
+                  <DropdownMenuItem asChild>
+                    <Link to="/rooms">
+                      <MessagesSquare /> الدردشة
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/library">
+                      <Library /> بنوك الأسئلة والملفات
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/topics">
+                      <BookOpen /> مواضيع ونقاشات
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/motivation">
+                      <Heart /> التحفيز
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/study">
+                      <Timer /> غرف التركيز
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu dir="rtl">
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="rounded-full"
+                    aria-label="قائمة الحساب"
+                  >
+                    <UserAvatar
+                      path={me?.profile?.avatar_url}
+                      name={me?.profile?.display_name}
+                    />
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
-                    <Link to="/rooms"><MessagesSquare /> الغرف</Link>
+                    <Link to="/profile">
+                      <User /> ملفي الشخصي
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/library"><Library /> المكتبة</Link>
+                    <Link to="/progress">
+                      <Timer /> تقدمي
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/profile"><User /> ملفي الشخصي</Link>
+                    <Link to="/support">
+                      <Heart /> تواصل مع الإدارة
+                    </Link>
                   </DropdownMenuItem>
                   {me?.isAdmin && (
                     <DropdownMenuItem asChild>
-                      <Link to="/admin"><Shield /> لوحة التحكم</Link>
+                      <Link to="/admin">
+                        <Shield /> لوحة التحكم
+                      </Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="text-destructive">
+                  <DropdownMenuItem
+                    onClick={signOut}
+                    className="text-destructive"
+                  >
                     <LogOut /> تسجيل الخروج
                   </DropdownMenuItem>
                 </DropdownMenuContent>

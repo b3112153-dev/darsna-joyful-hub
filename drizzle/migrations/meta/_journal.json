@@ -36,6 +36,13 @@
       "when": 1792158310959,
       "tag": "0004_focus_notes_topics_admin_flag",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792165074472,
+      "tag": "0005_motivation_focus_spaces_and_lock",
+      "breakpoints": true
     }
   ]
 }
