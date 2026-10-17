@@ -41,10 +41,10 @@ function Index() {
             </p>
             <div className="flex flex-wrap justify-center gap-3 md:justify-start">
               <Button asChild size="lg" className="bg-brand shadow-soft">
-                <Link to="/rooms">ابدأ الدردشة</Link>
+                <Link to="/focus">ابدأ الدراسة الآن</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="bg-silver-sheen">
-                <Link to="/auth">إنشاء حساب</Link>
+                <Link to="/rooms">ادخل الدردشة</Link>
               </Button>
             </div>
           </div>

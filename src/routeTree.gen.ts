@@ -14,7 +14,9 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedFocusRouteImport } from './routes/_authenticated/focus'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
+import { Route as AuthenticatedMotivationRouteImport } from './routes/_authenticated/motivation'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated/progress'
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
@@ -47,9 +49,19 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFocusRoute = AuthenticatedFocusRouteImport.update({
+  id: '/focus',
+  path: '/focus',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMotivationRoute = AuthenticatedMotivationRouteImport.update({
+  id: '/motivation',
+  path: '/motivation',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -96,7 +108,9 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/motivation': typeof AuthenticatedMotivationRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
@@ -110,7 +124,9 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/motivation': typeof AuthenticatedMotivationRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
@@ -126,7 +142,9 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/focus': typeof AuthenticatedFocusRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
+  '/_authenticated/motivation': typeof AuthenticatedMotivationRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/support': typeof AuthenticatedSupportRoute
@@ -142,7 +160,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/admin'
+    | '/focus'
     | '/library'
+    | '/motivation'
     | '/profile'
     | '/progress'
     | '/support'
@@ -156,7 +176,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/admin'
+    | '/focus'
     | '/library'
+    | '/motivation'
     | '/profile'
     | '/progress'
     | '/support'
@@ -171,7 +193,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/_authenticated/admin'
+    | '/_authenticated/focus'
     | '/_authenticated/library'
+    | '/_authenticated/motivation'
     | '/_authenticated/profile'
     | '/_authenticated/progress'
     | '/_authenticated/support'
@@ -225,11 +249,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/focus': {
+      id: '/_authenticated/focus'
+      path: '/focus'
+      fullPath: '/focus'
+      preLoaderRoute: typeof AuthenticatedFocusRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/library': {
       id: '/_authenticated/library'
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof AuthenticatedLibraryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/motivation': {
+      id: '/_authenticated/motivation'
+      path: '/motivation'
+      fullPath: '/motivation'
+      preLoaderRoute: typeof AuthenticatedMotivationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -286,7 +324,9 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedFocusRoute: typeof AuthenticatedFocusRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedMotivationRoute: typeof AuthenticatedMotivationRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
@@ -298,7 +338,9 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedFocusRoute: AuthenticatedFocusRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedMotivationRoute: AuthenticatedMotivationRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
