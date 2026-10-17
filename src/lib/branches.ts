@@ -10,4 +10,9 @@ export const BRANCHES: { value: Branch; label: string }[] = [
 ];
 
 export const branchLabel = (b: string | null | undefined) =>
-  BRANCHES.find((x) => x.value === b)?.label ?? "مشترك";
+  BRANCHES.find((x) => x.value === b)?.label ??
+  (b === "business_languages"
+    ? "الأعمال واللغات"
+    : b === "health_engineering"
+      ? "الصحي والهندسي"
+      : "مشترك");

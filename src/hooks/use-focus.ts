@@ -18,7 +18,11 @@ export function useMyFocus(userId: string | undefined) {
   const qc = useQueryClient();
   const key = ["focus", userId];
   const now = useNow();
-  const { data: session } = useQuery({
+  const {
+    data: session,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: key,
     enabled: !!userId,
     queryFn: async () =>
@@ -27,7 +31,7 @@ export function useMyFocus(userId: string | undefined) {
           .from("focus_sessions")
           .select("*")
           .eq("user_id", userId!)
-          .in("status", ["running", "paused"])
+          .eq("status", "running")
           .order("started_at", { ascending: false })
           .limit(1)
           .maybeSingle()
@@ -46,9 +50,18 @@ export function useMyFocus(userId: string | undefined) {
     if (session?.status === "running" && left === 0) {
       supabase
         .from("focus_sessions")
-        .update({ status: "completed", remaining_seconds: 0, studied_seconds: session.duration_seconds, finished_at: new Date().toISOString(), ends_at: null })
+        .update({
+          status: "completed",
+          remaining_seconds: 0,
+          studied_seconds: session.duration_seconds,
+          finished_at: new Date().toISOString(),
+        })
         .eq("id", session.id)
-        .then(() => {
+        .then(({ error }) => {
+          if (error) {
+            toast.error("تعذر إنهاء الجلسة تلقائيًا");
+            return;
+          }
           toast.success("خلصت الجلسة! يعطيك العافية 🎉 — الدردشة انفتحت.");
           refresh();
         });
@@ -56,32 +69,28 @@ export function useMyFocus(userId: string | undefined) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.id, session?.status, left]);
 
-  async function start(minutes: number, subject: string, roomId: string | null) {
-    if (!userId) return;
+  async function start(
+    minutes: number,
+    subject: string,
+    roomId: string | null,
+  ) {
+    if (!userId) return false;
     const dur = minutes * 60;
     const { error } = await supabase.from("focus_sessions").insert({
-      user_id: userId, room_id: roomId, subject: subject.trim() || "عام", duration_seconds: dur, remaining_seconds: dur,
-      status: "running", ends_at: new Date(Date.now() + dur * 1000).toISOString(),
+      user_id: userId,
+      room_id: roomId,
+      subject: subject.trim() || "عام",
+      duration_seconds: dur,
+      remaining_seconds: dur,
+      status: "running",
+      ends_at: new Date(Date.now() + dur * 1000).toISOString(),
     });
-    if (error) toast.error("تعذر بدء المؤقت");
+    if (error) {
+      toast.error("تعذر بدء المؤقت");
+      return false;
+    }
     refresh();
+    return true;
   }
-  async function pause() {
-    if (!session) return;
-    await supabase.from("focus_sessions").update({ status: "paused", remaining_seconds: left, ends_at: null }).eq("id", session.id);
-    refresh();
-  }
-  async function resume() {
-    if (!session) return;
-    await supabase.from("focus_sessions").update({ status: "running", ends_at: new Date(Date.now() + left * 1000).toISOString() }).eq("id", session.id);
-    refresh();
-  }
-  async function reset() {
-    if (!session) return;
-    await supabase.from("focus_sessions").update({
-      status: "cancelled", remaining_seconds: left, studied_seconds: session.duration_seconds - left, finished_at: new Date().toISOString(), ends_at: null,
-    }).eq("id", session.id);
-    refresh();
-  }
-  return { session, left, now, start, pause, resume, reset };
+  return { session, left, now, isLoading, isError, start };
 }
