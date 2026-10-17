@@ -149,6 +149,41 @@ export type Database = {
           },
         ]
       }
+      motivation_posts: {
+        Row: {
+          content: string | null
+          created_at: string
+          from_admin: boolean
+          id: string
+          image_path: string | null
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          from_admin?: boolean
+          id?: string
+          image_path?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          from_admin?: boolean
+          id?: string
+          image_path?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "motivation_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -215,6 +250,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          kind: string
           name: string
         }
         Insert: {
@@ -222,6 +258,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          kind?: string
           name: string
         }
         Update: {
@@ -229,6 +266,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          kind?: string
           name?: string
         }
         Relationships: []

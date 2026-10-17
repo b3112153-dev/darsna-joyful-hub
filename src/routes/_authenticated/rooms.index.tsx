@@ -21,7 +21,7 @@ function Rooms() {
   const { me } = useMe();
   const { data: rooms = [], isLoading } = useQuery({
     queryKey: ["rooms"],
-    queryFn: async () => (await supabase.from("rooms").select("*").order("created_at")).data ?? [],
+    queryFn: async () => (await supabase.from("rooms").select("*").eq("kind", "chat").order("created_at")).data ?? [],
   });
   const mine = me?.profile?.branch;
   const sorted = [...rooms].sort((a, b) => Number(b.branch === mine) - Number(a.branch === mine));

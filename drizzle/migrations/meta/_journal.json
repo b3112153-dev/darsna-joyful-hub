@@ -36,6 +36,13 @@
       "when": 1792158310959,
       "tag": "0004_focus_notes_topics_admin_flag",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792260727604,
+      "tag": "0005_room_kind_and_motivation",
+      "breakpoints": true
     }
   ]
 }

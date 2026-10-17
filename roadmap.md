@@ -1,10 +1,15 @@
 # Roadmap
-- [ ] Contact admin (private support chat) + admin tab
-- [ ] Study rounds in rooms (group timers)
-- [ ] Personal study timer (start/pause/resume/reset, duration) locking chat until done
-- [ ] Four rooms: health, languages, business, engineering (+ shared) with private notes + active list
-- [ ] Progress: hours, per subject, weekly summary, streak (saved in DB)
-- [ ] Topics & Discussions: admin posts, students comment after studying, threaded replies when enabled
-- [ ] Dark mode toggle (saved)
+- [x] Contact admin (private support chat) + admin tab
+- [x] Study rounds in rooms (group timers)
+- [x] Personal study timer (start/pause/resume/reset, duration) locking chat until done
+- [x] Rooms with private notes + active list
+- [x] Progress: hours, per subject, weekly summary, streak (saved in DB)
+- [x] Topics & Discussions: admin posts, students comment after studying, threaded replies when enabled
 - [ ] Anonymous admin identity shown to students
+- [ ] Chat rooms = languages, health+engineering, business, shared (keep existing messages)
+- [ ] Homepage redesign (stronger hero, CTAs, Cairo/Tajawal fonts, mobile)
+- [ ] Dark mode with sun/moon toggle, saved, defaults to device setting
+- [ ] Main nav with 4 sections (chat, question banks & files, motivation, focus room); mobile bottom bar
+- [ ] Motivation wall: signed-in users post images/memories/quotes
+- [ ] Focus room: two windows (business+languages, health+engineering)
 - [ ] Test + summary

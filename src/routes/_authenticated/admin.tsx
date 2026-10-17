@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UserAvatar } from "@/components/UserAvatar";
 import { LibraryAdmin } from "@/components/LibraryAdmin";
+import { SupportAdmin } from "@/components/SupportAdmin";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async ({ context }) => {
@@ -40,12 +41,14 @@ function Admin() {
           <TabsTrigger value="users">المستخدمين</TabsTrigger>
           <TabsTrigger value="messages">الرسائل</TabsTrigger>
           <TabsTrigger value="library">المكتبة</TabsTrigger>
+          <TabsTrigger value="support">رسائل الطلاب</TabsTrigger>
         </TabsList>
         <TabsContent value="stats"><Stats /></TabsContent>
         <TabsContent value="rooms"><RoomsAdmin /></TabsContent>
         <TabsContent value="users"><UsersAdmin /></TabsContent>
         <TabsContent value="messages"><MessagesAdmin /></TabsContent>
         <TabsContent value="library"><LibraryAdmin /></TabsContent>
+        <TabsContent value="support"><SupportAdmin /></TabsContent>
       </Tabs>
     </main>
   );

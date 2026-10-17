@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated")({
     return { userId: data.user.id };
   },
   component: () => (
-    <div className="min-h-screen bg-sky">
+    <div className="min-h-screen bg-sky pb-16 md:pb-0">
       <SiteHeader />
       <Outlet />
     </div>
