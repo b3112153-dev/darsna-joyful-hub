@@ -1,4 +1,7 @@
 # Roadmap
+- [ ] Diagnose and fix intermittent hanging and 404; verify direct links and refresh
+- [ ] Add clear loading, failed-request and retry states
+- [ ] Refresh landing page and shared visual design while preserving RTL and existing functions
 - [x] Contact admin (private support chat) + admin tab
 - [x] Study rounds in rooms (group timers)
 - [x] Personal study timer (start/pause/resume/reset, duration) locking chat until done
