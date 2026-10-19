@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      banned_devices: {
+        Row: {
+          created_at: string
+          device_id: string
+          fingerprint: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          fingerprint?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          fingerprint?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       focus_sessions: {
         Row: {
           duration_seconds: number
@@ -79,6 +100,7 @@ export type Database = {
           file_path: string
           file_size: number | null
           id: string
+          round_id: string | null
           subject: string
           title: string
           uploaded_by: string | null
@@ -90,6 +112,7 @@ export type Database = {
           file_path: string
           file_size?: number | null
           id?: string
+          round_id?: string | null
           subject: string
           title: string
           uploaded_by?: string | null
@@ -101,6 +124,7 @@ export type Database = {
           file_path?: string
           file_size?: number | null
           id?: string
+          round_id?: string | null
           subject?: string
           title?: string
           uploaded_by?: string | null
@@ -113,15 +137,21 @@ export type Database = {
           created_at: string
           from_admin: boolean
           id: string
+          image_path: string | null
+          reply_to: string | null
           room_id: string
+          sender_role: string | null
           user_id: string
         }
         Insert: {
-          content: string
+          content?: string
           created_at?: string
           from_admin?: boolean
           id?: string
+          image_path?: string | null
+          reply_to?: string | null
           room_id: string
+          sender_role?: string | null
           user_id: string
         }
         Update: {
@@ -129,10 +159,20 @@ export type Database = {
           created_at?: string
           from_admin?: boolean
           id?: string
+          image_path?: string | null
+          reply_to?: string | null
           room_id?: string
+          sender_role?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "messages_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "messages_room_id_fkey"
             columns: ["room_id"]
@@ -190,6 +230,7 @@ export type Database = {
           branch: Database["public"]["Enums"]["study_branch"] | null
           created_at: string
           display_name: string
+          gender: string | null
           id: string
         }
         Insert: {
@@ -197,6 +238,7 @@ export type Database = {
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
           display_name?: string
+          gender?: string | null
           id: string
         }
         Update: {
@@ -204,6 +246,7 @@ export type Database = {
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
           display_name?: string
+          gender?: string | null
           id?: string
         }
         Relationships: []
@@ -246,25 +289,31 @@ export type Database = {
       }
       rooms: {
         Row: {
+          audience: string
           branch: Database["public"]["Enums"]["study_branch"] | null
           created_at: string
           description: string | null
+          generation: string
           id: string
           kind: string
           name: string
         }
         Insert: {
+          audience?: string
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
           description?: string | null
+          generation?: string
           id?: string
           kind?: string
           name: string
         }
         Update: {
+          audience?: string
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
           description?: string | null
+          generation?: string
           id?: string
           kind?: string
           name?: string
@@ -303,6 +352,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      site_settings: {
+        Row: {
+          id: number
+          launch_date: string
+          owner_id: string | null
+          owner_name: string
+        }
+        Insert: {
+          id?: number
+          launch_date?: string
+          owner_id?: string | null
+          owner_name?: string
+        }
+        Update: {
+          id?: number
+          launch_date?: string
+          owner_id?: string | null
+          owner_name?: string
+        }
+        Relationships: []
       }
       study_sessions: {
         Row: {
@@ -524,6 +594,48 @@ export type Database = {
         }
         Relationships: []
       }
+      user_devices: {
+        Row: {
+          device_id: string
+          fingerprint: string | null
+          last_seen: string
+          user_id: string
+        }
+        Insert: {
+          device_id: string
+          fingerprint?: string | null
+          last_seen?: string
+          user_id: string
+        }
+        Update: {
+          device_id?: string
+          fingerprint?: string | null
+          last_seen?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_mutes: {
+        Row: {
+          created_at: string
+          muted_by: string | null
+          muted_until: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          muted_by?: string | null
+          muted_until: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          muted_by?: string | null
+          muted_until?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -547,6 +659,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_access_room: {
+        Args: { _room_id: string; _user_id: string }
+        Returns: boolean
+      }
+      device_is_banned: {
+        Args: { _device_id: string; _fingerprint: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -556,7 +676,21 @@ export type Database = {
       }
       is_banned: { Args: { _user_id: string }; Returns: boolean }
       is_focusing: { Args: { _user_id: string }; Returns: boolean }
+      is_muted: { Args: { _user_id: string }; Returns: boolean }
+      is_owner: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      owner_list_emails: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          id: string
+        }[]
+      }
+      register_device: {
+        Args: { _device_id: string; _fingerprint: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
