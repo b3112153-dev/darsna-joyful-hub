@@ -43,6 +43,13 @@
       "when": 1792260727604,
       "tag": "0005_room_kind_and_motivation",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792403986343,
+      "tag": "0006_community_v3",
+      "breakpoints": true
     }
   ]
 }

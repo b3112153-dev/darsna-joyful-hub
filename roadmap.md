@@ -1,18 +1,12 @@
 # Roadmap
-- [ ] Diagnose and fix intermittent hanging and 404; verify direct links and refresh
-- [ ] Add clear loading, failed-request and retry states
-- [ ] Refresh landing page and shared visual design while preserving RTL and existing functions
-- [x] Contact admin (private support chat) + admin tab
-- [x] Study rounds in rooms (group timers)
-- [x] Personal study timer (start/pause/resume/reset, duration) locking chat until done
-- [x] Rooms with private notes + active list
-- [x] Progress: hours, per subject, weekly summary, streak (saved in DB)
-- [x] Topics & Discussions: admin posts, students comment after studying, threaded replies when enabled
-- [ ] Anonymous admin identity shown to students
-- [ ] Chat rooms = languages, health+engineering, business, shared (keep existing messages)
-- [ ] Homepage redesign (stronger hero, CTAs, Cairo/Tajawal fonts, mobile)
-- [ ] Dark mode with sun/moon toggle, saved, defaults to device setting
-- [ ] Main nav with 4 sections (chat, question banks & files, motivation, focus room); mobile bottom bar
-- [ ] Motivation wall: signed-in users post images/memories/quotes
-- [ ] Focus room: two windows (business+languages, health+engineering)
-- [ ] Test + summary
+- [x] DB: owner settings, gender lock, gender-gated rooms (girls/boys/all) for Tawjihi + Gen 2010, mutes, replies/images/sender role on messages, student library uploads, owner-only admin grants, owner email list, device bans + realtime on bans
+- [ ] Create chat-images bucket (private, 5MB) and chat UI: reply quote, image send, staff badge/glow
+- [ ] Gender picker on signup/profile; Gen 2010 nav section
+- [ ] Library student upload UI (also from rounds); admin review
+- [ ] Admin: assign admin (owner only), mute, owner emails page, owner name/launch date editor
+- [ ] Device id registration + instant kick to /banned page
+- [ ] Global focus watcher so finished timers count automatically
+- [ ] Unique realtime channel names; shared session provider (stability)
+- [ ] Landing redesign (coral/green/yellow), fix "يراقبون ويحافظون", footer ©, /terms, /about, sitemap.xml
+- [ ] Watermark + copy/print/right-click deterrents on chat and library
+- [ ] Hide "Edit with Lovable" badge
