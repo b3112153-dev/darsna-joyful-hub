@@ -48,7 +48,7 @@ function TopicPage() {
   });
   useEffect(() => {
     const ch = supabase
-      .channel(`topic-${topicId}`)
+      .channel(`topic-${topicId}-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "topic_comments", filter: `topic_id=eq.${topicId}` }, () =>
         qc.invalidateQueries({ queryKey: ["comments", topicId] }),
       )

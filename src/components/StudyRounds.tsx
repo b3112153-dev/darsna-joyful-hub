@@ -68,7 +68,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
   useEffect(() => {
     const refresh = () => qc.invalidateQueries({ queryKey: ["rounds", roomId] });
     const ch = supabase
-      .channel(`rounds-${roomId}`)
+      .channel(`rounds-${roomId}-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "study_sessions", filter: `room_id=eq.${roomId}` }, refresh)
       .on("postgres_changes", { event: "*", schema: "public", table: "session_participants" }, refresh)
       .subscribe();

@@ -22,7 +22,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
 
   useEffect(() => {
     const ch = supabase
-      .channel(`support-${studentId}`)
+      .channel(`support-${studentId}-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "support_messages", filter: `student_id=eq.${studentId}` }, () => {
         qc.invalidateQueries({ queryKey: ["support", studentId] });
         qc.invalidateQueries({ queryKey: ["support-threads"] });
