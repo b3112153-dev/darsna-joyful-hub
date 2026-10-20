@@ -35,6 +35,45 @@ export type Database = {
         }
         Relationships: []
       }
+      dhikra_posts: {
+        Row: {
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          kind: string
+          note: string | null
+          post_date: string
+          title: string
+          youtube_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          kind: string
+          note?: string | null
+          post_date?: string
+          title: string
+          youtube_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          post_date?: string
+          title?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       focus_sessions: {
         Row: {
           duration_seconds: number
@@ -96,6 +135,8 @@ export type Database = {
         Row: {
           branch: string | null
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           file_name: string
           file_path: string
           file_size: number | null
@@ -108,6 +149,8 @@ export type Database = {
         Insert: {
           branch?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           file_name: string
           file_path: string
           file_size?: number | null
@@ -120,6 +163,8 @@ export type Database = {
         Update: {
           branch?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           file_name?: string
           file_path?: string
           file_size?: number | null
@@ -131,10 +176,41 @@ export type Database = {
         }
         Relationships: []
       }
+      message_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           from_admin: boolean
           id: string
           image_path: string | null
@@ -146,6 +222,8 @@ export type Database = {
         Insert: {
           content?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           from_admin?: boolean
           id?: string
           image_path?: string | null
@@ -157,6 +235,8 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           from_admin?: boolean
           id?: string
           image_path?: string | null
@@ -663,6 +743,7 @@ export type Database = {
         Args: { _room_id: string; _user_id: string }
         Returns: boolean
       }
+      can_support: { Args: { _user_id: string }; Returns: boolean }
       device_is_banned: {
         Args: { _device_id: string; _fingerprint: string }
         Returns: boolean
@@ -691,9 +772,13 @@ export type Database = {
         Args: { _device_id: string; _fingerprint: string }
         Returns: boolean
       }
+      restore_deleted: {
+        Args: { _id: string; _table: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role: "admin" | "moderator" | "user" | "support"
       study_branch:
         | "scientific"
         | "literary"
@@ -835,7 +920,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: ["admin", "moderator", "user", "support"],
       study_branch: [
         "scientific",
         "literary",
