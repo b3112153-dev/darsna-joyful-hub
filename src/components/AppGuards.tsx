@@ -31,9 +31,10 @@ export function BanGuard() {
       await supabase.auth.signOut();
       navigate({ to: "/banned", replace: true });
     };
-    deviceIds().then((ids) => supabase.rpc("register_device", ids)).then((r) => {
-      // register_device returns false when this device is banned
-      if (r && r.data === false) kick();
+    deviceIds().then(async (ids) => {
+      await supabase.rpc("register_device", ids);
+      const { data } = await supabase.rpc("device_is_banned", ids);
+      if (data === true) kick();
     });
     const ch = supabase
       .channel(`ban-${user.id}-${crypto.randomUUID()}`)
