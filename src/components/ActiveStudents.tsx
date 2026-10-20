@@ -20,7 +20,7 @@ export function ActiveStudents({ roomId }: { roomId: string }) {
   });
   useEffect(() => {
     const ch = supabase
-      .channel(`active-${roomId}`)
+      .channel(`active-${roomId}-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "focus_sessions", filter: `room_id=eq.${roomId}` }, () =>
         qc.invalidateQueries({ queryKey: ["active", roomId] }),
       )
