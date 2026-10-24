@@ -14,10 +14,12 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BannedRouteImport } from './routes/banned'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedFocusRouteImport } from './routes/_authenticated/focus'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedMotivationRouteImport } from './routes/_authenticated/motivation'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated/progress'
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
@@ -50,6 +52,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -68,6 +75,11 @@ const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
 const AuthenticatedMotivationRoute = AuthenticatedMotivationRouteImport.update({
   id: '/motivation',
   path: '/motivation',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -114,10 +126,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/banned': typeof BannedRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
@@ -131,10 +145,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/banned': typeof BannedRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
@@ -150,10 +166,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/banned': typeof BannedRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/focus': typeof AuthenticatedFocusRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/motivation': typeof AuthenticatedMotivationRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/support': typeof AuthenticatedSupportRoute
@@ -169,10 +187,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/banned'
     | '/reset-password'
+    | '/terms'
     | '/admin'
     | '/focus'
     | '/library'
     | '/motivation'
+    | '/onboarding'
     | '/profile'
     | '/progress'
     | '/support'
@@ -186,10 +206,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/banned'
     | '/reset-password'
+    | '/terms'
     | '/admin'
     | '/focus'
     | '/library'
     | '/motivation'
+    | '/onboarding'
     | '/profile'
     | '/progress'
     | '/support'
@@ -204,10 +226,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/banned'
     | '/reset-password'
+    | '/terms'
     | '/_authenticated/admin'
     | '/_authenticated/focus'
     | '/_authenticated/library'
     | '/_authenticated/motivation'
+    | '/_authenticated/onboarding'
     | '/_authenticated/profile'
     | '/_authenticated/progress'
     | '/_authenticated/support'
@@ -223,6 +247,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BannedRoute: typeof BannedRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -262,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -288,6 +320,13 @@ declare module '@tanstack/react-router' {
       path: '/motivation'
       fullPath: '/motivation'
       preLoaderRoute: typeof AuthenticatedMotivationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -347,6 +386,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFocusRoute: typeof AuthenticatedFocusRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
   AuthenticatedMotivationRoute: typeof AuthenticatedMotivationRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
@@ -361,6 +401,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFocusRoute: AuthenticatedFocusRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedMotivationRoute: AuthenticatedMotivationRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
@@ -379,6 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BannedRoute: BannedRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
