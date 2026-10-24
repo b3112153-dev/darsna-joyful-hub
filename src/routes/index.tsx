@@ -1,9 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { BookOpen, Timer, CalendarDays, Users, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
+import { useMe } from "@/hooks/use-auth";
+import { PageState } from "@/components/PageState";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,10 +31,14 @@ const features = [
 ];
 
 function Index() {
+  const { user, me, loading, isError, refetch } = useMe();
   async function google() {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) toast.error("تعذر تسجيل الدخول عبر Google");
   }
+  if (loading) return <PageState loading />;
+  if (user && isError) return <PageState error retry={() => void refetch()} />;
+  if (user && me) return <Navigate to={me.isStaff || me.isOwner || me.isSupport || me.profile?.onboarded_v2 === true ? "/focus" : "/onboarding"} replace />;
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />

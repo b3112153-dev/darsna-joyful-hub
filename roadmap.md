@@ -1,18 +1,5 @@
-# Roadmap
-- [x] Autumn batch: global light/dark tokens, chat/admin/mod/support styling and visitor welcome
-- [x] Autumn batch: mobile/theme checks, regression tests and build verification
-- [x] Current batch: realtime and incremental 50-message history, editing/deletion and room errors
-- [x] Current batch: session/device/focus safeguards, lazy loading and Arabic error fallback
-- [x] Current batch: public metadata, drsna-joful.com sitemap/robots and protected noindex
-- [x] Current batch: regression tests and mobile/authenticated verification
-- [x] DB: owner settings, gender lock, gender-gated rooms (girls/boys/all) for Tawjihi + Gen 2010, mutes, replies/images/sender role on messages, student library uploads, owner-only admin grants, owner email list, device bans + realtime on bans
-- [ ] Create chat-images bucket (private, 5MB) and chat UI: reply quote, image send, staff badge/glow
-- [ ] Gender picker on signup/profile; Gen 2010 nav section
-- [ ] Library student upload UI (also from rounds); admin review
-- [ ] Admin: assign admin (owner only), mute, owner emails page, owner name/launch date editor
-- [x] Device id registration + instant kick to /banned page
-- [x] Global focus watcher so finished timers count automatically
-- [x] Unique realtime channel names; shared session provider (stability)
-- [ ] Landing redesign (coral/green/yellow), fix "يراقبون ويحافظون", footer ©, /terms, /about, sitemap.xml
-- [ ] Watermark + copy/print/right-click deterrents on chat and library
-- [ ] Hide "Edit with Lovable" badge
+# Current batch
+- [x] Student home with room-free timer and five-item navigation
+- [x] Global focus screen, internal end confirmation and background session continuity
+- [x] Personal tasks with optimistic saving, limits and non-repeating encouragement
+- [x] Existing tests, authenticated flow and light/dark checks at 375, 768 and 1280

@@ -13,10 +13,11 @@ import { UserAvatar } from "./UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
 
 export const MAIN_NAV = [
-  { to: "/rooms", label: "الدردشة", icon: MessagesSquare },
-  { to: "/library", label: "بنوك الأسئلة", icon: BookOpen },
-  { to: "/motivation", label: "التحفيز", icon: Sparkles },
-  { to: "/focus", label: "غرفة التركيز", icon: Timer },
+  { to: "/focus", label: "الرئيسية", icon: Timer },
+  { to: "/rooms", label: "الدردشات", icon: MessagesSquare },
+  { to: "/library", label: "المكتبة", icon: BookOpen },
+  { to: "/motivation", label: "ذكرى", icon: Sparkles },
+  { to: "/profile", label: "ملفي", icon: User },
 ] as const;
 
 export function SiteHeader() {
@@ -44,7 +45,7 @@ export function SiteHeader() {
             </span>
           </Link>
           {user && (
-            <nav className="hidden items-center gap-1 md:flex">
+            <nav className="hidden items-center gap-1 lg:flex">
               {MAIN_NAV.map((n) => (
                 <Link
                   key={n.to}
@@ -94,7 +95,7 @@ export function SiteHeader() {
         </div>
       </header>
       {user && (
-        <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
           {MAIN_NAV.map((n) => (
             <Link
               key={n.to}
