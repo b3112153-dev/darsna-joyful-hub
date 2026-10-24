@@ -1,5 +1,4 @@
 # Current batch
-- [x] Student home with room-free timer and five-item navigation
-- [x] Global focus screen, internal end confirmation and background session continuity
-- [x] Personal tasks with optimistic saving, limits and non-repeating encouragement
-- [x] Existing tests, authenticated flow and light/dark checks at 375, 768 and 1280
+- [ ] Match home/timer/tasks/focus screen and bottom navigation to mobile reference
+- [ ] Restyle room list and existing chat controls without adding missing features or invented counters
+- [ ] Tests and authenticated checks at 375, 390, 768 and 1280 in both themes
