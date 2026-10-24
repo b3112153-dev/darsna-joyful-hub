@@ -70,8 +70,8 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
     if (busy.current) return;
     busy.current = true;
     setPending(true);
-    try { await operation(); await refresh(); }
-    catch { toast.error("ما قدرنا نحفظ المؤقت، جرّب مرة ثانية"); }
+    try { await operation(); await refresh(); return true; }
+    catch { toast.error("ما قدرنا نحفظ المؤقت، جرّب مرة ثانية"); return false; }
     finally { busy.current = false; setPending(false); }
   }
   async function start(minutes: number, subject: string, roomId: string | null) {
@@ -92,7 +92,7 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
   }
   async function reset() {
     if (!session) return;
-    await save(() => readData(supabase.from("focus_sessions").update({
+    return await save(() => readData(supabase.from("focus_sessions").update({
       status: "cancelled", remaining_seconds: left, studied_seconds: session.duration_seconds - left, finished_at: new Date().toISOString(), ends_at: null,
     }).eq("id", session.id)));
   }

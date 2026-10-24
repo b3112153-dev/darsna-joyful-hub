@@ -26,9 +26,9 @@ export function FocusModeScreen() {
   const [endOpen, setEndOpen] = useState(false);
   const { session, left, pending } = focus;
   if (!session || !user) return null;
-  return <main dir="rtl" className="min-h-dvh bg-background px-4 py-6 sm:py-10">
+  return <main dir="rtl" className="min-h-dvh bg-background px-4 py-6 text-foreground sm:py-10">
     <div className="mx-auto max-w-2xl space-y-6">
-      <div className="flex justify-end"><Button variant="ghost" size="sm" onClick={exit}><Minimize2 className="size-4" /> خروج من وضع التركيز</Button></div>
+      <div className="flex justify-end"><Button variant="ghost" size="sm" className="text-muted-foreground" onClick={exit}><Minimize2 className="size-4" /> خروج من وضع التركيز</Button></div>
       <section className="space-y-5 text-center">
         <h1 className="break-words text-2xl font-bold">{session.subject}</h1>
         <p className="font-display text-7xl font-bold tabular-nums text-primary sm:text-8xl" dir="ltr" aria-label="الوقت المتبقي">{fmtClock(left * 1000)}</p>
