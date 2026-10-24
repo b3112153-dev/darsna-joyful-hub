@@ -3,11 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { MessagesSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { branchLabel } from "@/lib/branches";
+import { readData, requestSignal } from "@/lib/requests";
+import { PageState } from "@/components/PageState";
 import { useMe } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/rooms/")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "غرف الدردشة | Darsna Jo" },
       { name: "description", content: "اختر غرفة فرعك وابدأ النقاش مع زملاءك." },
       { property: "og:title", content: "غرف الدردشة | Darsna Jo" },
@@ -18,10 +23,11 @@ export const Route = createFileRoute("/_authenticated/rooms/")({
 });
 
 function Rooms() {
-  const { me } = useMe();
-  const { data: rooms = [], isLoading } = useQuery({
-    queryKey: ["rooms"],
-    queryFn: async () => (await supabase.from("rooms").select("*").eq("kind", "chat").order("created_at")).data ?? [],
+  const { user, me } = useMe();
+  const { data: rooms = [], isLoading, isError, refetch } = useQuery({
+    queryKey: ["rooms", "chat", user?.id],
+    staleTime: 5 * 60_000,
+    queryFn: async ({ signal }) => await readData(supabase.from("rooms").select("*").eq("kind", "chat").order("created_at").abortSignal(requestSignal(signal))) ?? [],
   });
   const mine = me?.profile?.branch;
   const sorted = [...rooms].sort((a, b) => Number(b.branch === mine) - Number(a.branch === mine));
@@ -32,7 +38,7 @@ function Rooms() {
       <p className="mb-6 text-muted-foreground">
         {mine ? `غرفة فرعك (${branchLabel(mine)}) بالأول.` : "حدد فرعك من ملفك الشخصي لنرتب لك الغرف."}
       </p>
-      {isLoading && <p className="text-muted-foreground">جاري التحميل…</p>}
+      <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {sorted.map((r) => (
           <Link

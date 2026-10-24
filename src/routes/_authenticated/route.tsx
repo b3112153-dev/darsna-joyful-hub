@@ -3,13 +3,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/SiteHeader";
 import { BanGuard, FocusWatcher } from "@/components/AppGuards";
 import { OnboardingGate } from "@/components/OnboardingGate";
+import { PageState } from "@/components/PageState";
+import { readData, withTimeout } from "@/lib/requests";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
+  head: () => ({ meta: [{ name: "robots", content: "noindex" }] }),
+  pendingComponent: () => <PageState loading />,
+  errorComponent: () => <PageState error retry={() => window.location.reload()} />,
   beforeLoad: async () => {
-    const { data } = await supabase.auth.getUser();
+    const { data, error } = await withTimeout(supabase.auth.getUser());
+    if (error?.name === "AuthSessionMissingError") throw redirect({ to: "/auth" });
+    if (error) throw error;
     if (!data.user) throw redirect({ to: "/auth" });
-    const { data: banned } = await supabase.rpc("is_banned", { _user_id: data.user.id });
+    const banned = await readData(supabase.rpc("is_banned", { _user_id: data.user.id }));
     if (banned) { await supabase.auth.signOut(); throw redirect({ to: "/banned" }); }
     return { userId: data.user.id };
   },

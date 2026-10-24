@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/banned")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "الحساب موقوف | Darsna Jo" },
       { name: "description", content: "تم إيقاف هذا الحساب من الإدارة." },
       { property: "og:title", content: "الحساب موقوف | Darsna Jo" },

@@ -11,6 +11,9 @@ import { RoomNotes } from "@/components/RoomNotes";
 export const Route = createFileRoute("/_authenticated/focus")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "غرفة التركيز | Darsna Jo" },
       { name: "description", content: "غرفة دراسة صامتة بمؤقت شخصي ونافذتين حسب الحقل." },
       { property: "og:title", content: "غرفة التركيز | Darsna Jo" },

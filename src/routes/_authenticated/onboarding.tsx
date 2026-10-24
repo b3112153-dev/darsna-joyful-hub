@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "التسجيل الأولي | Darsna Jo" },
       { name: "description", content: "أكمل بياناتك مرة وحدة لتبدأ مع درسنا جو." },
       { property: "og:title", content: "التسجيل الأولي | Darsna Jo" },

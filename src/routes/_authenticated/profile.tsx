@@ -14,6 +14,9 @@ import { UserAvatar } from "@/components/UserAvatar";
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "ملفي الشخصي | Darsna Jo" },
       { name: "description", content: "عدّل اسمك وصورتك وفرعك." },
       { property: "og:title", content: "ملفي الشخصي | Darsna Jo" },

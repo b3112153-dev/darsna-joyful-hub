@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { remainingSeconds, type FocusRow } from "@/lib/focus";
+import { readData, requestSignal } from "@/lib/requests";
 
 export function useNow(ms = 1000) {
   const [now, setNow] = useState(() => Date.now());
@@ -14,24 +15,26 @@ export function useNow(ms = 1000) {
 }
 
 /** The current user's active (running/paused) focus session, persisted in the database. */
-export function useMyFocus(userId: string | undefined) {
+export function useMyFocus(userId: string | undefined, autoComplete = false) {
   const qc = useQueryClient();
   const key = ["focus", userId];
   const now = useNow();
+  const completing = useRef<string | null>(null);
   const { data: session } = useQuery({
     queryKey: key,
     enabled: !!userId,
-    queryFn: async () =>
-      ((
-        await supabase
+    staleTime: 30_000,
+    queryFn: async ({ signal }) => {
+      if (!userId) return null;
+      return await readData(supabase
           .from("focus_sessions")
           .select("*")
-          .eq("user_id", userId!)
+          .eq("user_id", userId)
           .in("status", ["running", "paused"])
           .order("started_at", { ascending: false })
           .limit(1)
-          .maybeSingle()
-      ).data ?? null) as FocusRow | null,
+          .abortSignal(requestSignal(signal)).maybeSingle()) as FocusRow | null;
+    },
   });
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["focus", userId] });
@@ -43,18 +46,20 @@ export function useMyFocus(userId: string | undefined) {
 
   // auto-complete when time runs out
   useEffect(() => {
-    if (session?.status === "running" && left === 0) {
-      supabase
+    if (autoComplete && session?.status === "running" && left === 0 && completing.current !== session.id) {
+      completing.current = session.id;
+      void readData(supabase
         .from("focus_sessions")
         .update({ status: "completed", remaining_seconds: 0, studied_seconds: session.duration_seconds, finished_at: new Date().toISOString(), ends_at: null })
-        .eq("id", session.id)
-        .then(() => {
+        .eq("id", session.id).eq("status", "running").select("id"))
+        .then((rows) => {
+          if (!rows?.length) return;
           toast.success("خلصت الجلسة! يعطيك العافية 🎉 — الدردشة انفتحت.");
           refresh();
-        });
+        }).catch(() => { toast.error("تعذر حفظ نهاية الجلسة؛ حاول تحديث الصفحة."); });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.id, session?.status, left]);
+  }, [autoComplete, session?.id, session?.status, left]);
 
   async function start(minutes: number, subject: string, roomId: string | null) {
     if (!userId) return;

@@ -5,6 +5,9 @@ import { SupportThread } from "@/components/SupportThread";
 export const Route = createFileRoute("/_authenticated/support")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "تواصل مع الإدارة | Darsna Jo" },
       { name: "description", content: "محادثة خاصة بينك وبين إدارة Darsna Jo." },
       { property: "og:title", content: "تواصل مع الإدارة | Darsna Jo" },
