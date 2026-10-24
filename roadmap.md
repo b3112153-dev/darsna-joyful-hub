@@ -1,7 +1,7 @@
 # Roadmap
-- [ ] Current batch: realtime and incremental 50-message history, editing/deletion and room errors
-- [ ] Current batch: session/device/focus safeguards, lazy loading and Arabic error fallback
-- [ ] Current batch: public metadata, drsna-joful.com sitemap/robots and protected noindex
+- [x] Current batch: realtime and incremental 50-message history, editing/deletion and room errors
+- [x] Current batch: session/device/focus safeguards, lazy loading and Arabic error fallback
+- [x] Current batch: public metadata, drsna-joful.com sitemap/robots and protected noindex
 - [ ] Current batch: regression tests and mobile/authenticated verification
 - [x] DB: owner settings, gender lock, gender-gated rooms (girls/boys/all) for Tawjihi + Gen 2010, mutes, replies/images/sender role on messages, student library uploads, owner-only admin grants, owner email list, device bans + realtime on bans
 - [ ] Create chat-images bucket (private, 5MB) and chat UI: reply quote, image send, staff badge/glow
