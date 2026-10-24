@@ -5,6 +5,7 @@ import { BanGuard, FocusWatcher } from "@/components/AppGuards";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { PageState } from "@/components/PageState";
 import { readData, withTimeout } from "@/lib/requests";
+import { FocusModeProvider, FocusModeScreen, useFocusMode } from "@/components/FocusMode";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -24,16 +25,18 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function Layout() {
+  return <><BanGuard /><FocusWatcher /><OnboardingGate><FocusModeProvider><LayoutContent /></FocusModeProvider></OnboardingGate></>;
+}
+
+function LayoutContent() {
   const { pathname } = useLocation();
+  const { visible } = useFocusMode();
   const bare = pathname.startsWith("/onboarding");
+  if (visible && !bare) return <FocusModeScreen />;
   return (
-    <div className="min-h-screen bg-sky pb-16 md:pb-0">
+    <div className="min-h-screen bg-sky pb-16 lg:pb-0">
       {!bare && <SiteHeader />}
-      <BanGuard />
-      <FocusWatcher />
-      <OnboardingGate>
-        <Outlet />
-      </OnboardingGate>
+      <Outlet />
     </div>
   );
 }
