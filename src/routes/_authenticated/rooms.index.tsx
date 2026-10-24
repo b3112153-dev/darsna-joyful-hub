@@ -45,7 +45,7 @@ function Rooms() {
               <span className="grid size-10 place-items-center rounded-xl bg-secondary text-primary">
                 <MessagesSquare className="size-5" />
               </span>
-              <span className="rounded-full bg-muted px-3 py-0.5 text-xs text-muted-foreground">{branchLabel(r.branch)}</span>
+              {r.branch && <span className="rounded-full bg-muted px-3 py-0.5 text-xs text-muted-foreground">{branchLabel(r.branch)}</span>}
             </div>
             <h2 className="font-semibold group-hover:text-primary">{r.name}</h2>
             <p className="text-sm text-muted-foreground">{r.description}</p>
