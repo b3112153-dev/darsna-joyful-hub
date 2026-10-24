@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { Pause, Play, RotateCcw, Lock } from "lucide-react";
+import { Pause, Play, RotateCcw, Lock, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { fmtClock } from "./StudyRounds";
 import type { useMyFocus } from "@/hooks/use-focus";
+import { PageState } from "@/components/PageState";
+import { EndFocusDialog } from "@/components/EndFocusDialog";
 
 const PRESETS = [15, 25, 50, 90];
 
-export function FocusTimer({ focus, roomId }: { focus: ReturnType<typeof useMyFocus>; roomId: string }) {
+export function FocusTimer({ focus, roomId }: { focus: ReturnType<typeof useMyFocus>; roomId: string | null }) {
   const { session, left, start, pause, resume, reset } = focus;
   const [minutes, setMinutes] = useState(25);
   const [subject, setSubject] = useState("");
+  const [endOpen, setEndOpen] = useState(false);
+  if (focus.isLoading) return <PageState loading />;
+  if (focus.isError) return <PageState error retry={() => void focus.refetch()} />;
 
   if (session) {
     const pct = 100 - (left / session.duration_seconds) * 100;
@@ -26,12 +31,13 @@ export function FocusTimer({ focus, roomId }: { focus: ReturnType<typeof useMyFo
         <p className="flex items-center justify-center gap-1 text-xs text-muted-foreground"><Lock className="size-3" /> الدردشة مقفلة لحد ما يخلص المؤقت</p>
         <div className="flex justify-center gap-2">
           {paused ? (
-            <Button onClick={resume} className="bg-brand"><Play /> استئناف</Button>
+            <Button disabled={focus.pending} onClick={resume} className="bg-brand"><Play /> استئناف</Button>
           ) : (
-            <Button onClick={pause} variant="outline"><Pause /> إيقاف مؤقت</Button>
+            <Button disabled={focus.pending} onClick={pause} variant="outline"><Pause /> إيقاف مؤقت</Button>
           )}
-          <Button onClick={() => confirm("إعادة ضبط المؤقت؟ رح ينحسب الوقت اللي درسته بس.") && reset()} variant="ghost"><RotateCcw /> إعادة ضبط</Button>
+          <Button disabled={focus.pending} onClick={() => setEndOpen(true)} variant="ghost"><RotateCcw /> إعادة ضبط</Button>
         </div>
+        <EndFocusDialog open={endOpen} onOpenChange={setEndOpen} onEnd={reset} pending={focus.pending} />
       </div>
     );
   }
@@ -51,7 +57,7 @@ export function FocusTimer({ focus, roomId }: { focus: ReturnType<typeof useMyFo
           <Input type="number" min={1} max={240} value={minutes} onChange={(e) => setMinutes(Math.min(240, Math.max(1, Number(e.target.value) || 1)))} className="w-20" />
         </div>
       </div>
-      <Button onClick={() => start(minutes, subject, roomId)} className="w-full bg-brand"><Play /> ابدأ الدراسة</Button>
+      <Button disabled={focus.pending} onClick={() => start(minutes, subject, roomId)} className="w-full bg-brand">{focus.pending ? <LoaderCircle className="animate-spin" /> : <Play />} ابدأ الدراسة</Button>
       <p className="text-center text-xs text-muted-foreground">خلال الجلسة الدردشة بتتقفل، وبتنفتح لحالها لما يخلص الوقت.</p>
     </div>
   );
