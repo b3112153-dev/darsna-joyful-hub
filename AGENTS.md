@@ -18,5 +18,6 @@
 - Heavy page views live in `src/components/pages` and load via `lazyRouteComponent`; route metadata stays eager. Why: navigation downloads only the selected experience.
 - Only the global FocusWatcher completes expired timers. Why: timer views must not duplicate completion requests or notifications.
 - The protected layout owns the global focus-mode provider and swaps its shell for the focus screen; dismissal is session-specific and never cancels the timer. Why: active sessions stay usable across navigation without exposing navigation during focus mode.
+- Automatic focus-screen entry respects a user-scoped, safely hydrated browser preference; explicit entry remains available regardless of it. Why: students can change presentation without changing timer persistence.
 - Personal tasks share a user-scoped Query cache with serialized optimistic mutations and rollback. Why: the home and focus screen show the same tasks without racing concurrent edits.
 - Brand and message-role colors are semantic global CSS tokens, including legacy background utilities. Why: palette changes must update the entire platform without per-page hardcoded colors.

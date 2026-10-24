@@ -3,7 +3,6 @@ import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { UserAvatar } from "@/components/UserAvatar";
 import type { Message } from "@/lib/chat-messages";
 
 export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelete, onDelete, onEdit }: {

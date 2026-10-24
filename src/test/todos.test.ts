@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { completionPatch, ENCOURAGEMENT, nextEncouragement, orderTodos, TODO_LIMIT, validTodoText, type Todo } from "@/lib/todos";
+import { completionPatch, ENCOURAGEMENT, ENCOURAGEMENT_DURATION_MS, nextEncouragement, orderTodos, TODO_LIMIT, validTodoText, type Todo } from "@/lib/todos";
 
 describe("personal task rules", () => {
+  it("shows encouragement for four seconds", () => { expect(ENCOURAGEMENT_DURATION_MS).toBe(4000); });
   it("accepts 1–200 characters only", () => {
     expect(validTodoText("a")).toBe(true);
     expect(validTodoText("a".repeat(200))).toBe(true);

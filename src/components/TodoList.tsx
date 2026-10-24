@@ -5,14 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PageState } from "@/components/PageState";
 import { useTodos } from "@/hooks/use-todos";
-import { TODO_TEXT_LIMIT, validTodoText } from "@/lib/todos";
+import { ENCOURAGEMENT_DURATION_MS, TODO_TEXT_LIMIT, validTodoText } from "@/lib/todos";
 
 export const TodoList = memo(function TodoList({ userId }: { userId: string }) {
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
   const [cheer, setCheer] = useState<{ id: string; message: string } | null>(null);
   const tasks = useTodos(userId);
-  useEffect(() => { if (!cheer) return; const timer = setTimeout(() => setCheer(null), 4000); return () => clearTimeout(timer); }, [cheer]);
+  useEffect(() => { if (!cheer) return; const timer = setTimeout(() => setCheer(null), ENCOURAGEMENT_DURATION_MS); return () => clearTimeout(timer); }, [cheer]);
   return <section className="min-w-0 rounded-[26px] border bg-card px-4 pb-2.5 pt-4 font-display text-card-foreground" aria-label="مهامي">
     <div className="mb-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
       <h2 className="text-[17px] font-extrabold">مهام اليوم</h2>

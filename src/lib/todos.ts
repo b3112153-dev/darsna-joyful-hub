@@ -3,6 +3,7 @@ import type { Tables } from "@/integrations/supabase/types";
 export type Todo = Tables<"todos">;
 export const TODO_LIMIT = 100;
 export const TODO_TEXT_LIMIT = 200;
+export const ENCOURAGEMENT_DURATION_MS = 4000;
 export const ENCOURAGEMENT = [
   "يا سلام عليك! كمل هيك 💪", "خطوة وراء خطوة بتوصل", "شاطر/ة والله!", "هاي المهمة خلصت، الجاي أسهل",
   "قدّها وقدود!", "كل خطوة بتفرق", "إنجازك اليوم بستاهل", "كمل، إنت ماشي صح", "يعطيك العافية!", "مهمة أقل، حلم أقرب",
