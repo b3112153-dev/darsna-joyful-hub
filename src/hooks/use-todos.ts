@@ -37,7 +37,7 @@ export function useTodos(userId: string) {
       if (action.kind === "toggle" && action.done) {
         const next = nextEncouragement(lastEncouragement.get(userId) ?? -1);
         lastEncouragement.set(userId, next);
-        toast.success(ENCOURAGEMENT[next]);
+        return;
       }
     },
     onSettled: async () => { await qc.invalidateQueries({ queryKey: key }); busy.current = false; },
@@ -47,5 +47,6 @@ export function useTodos(userId: string) {
     busy.current = true;
     try { await mutation.mutateAsync(action); return true; } catch { return false; }
   }
-  return { ...query, rows: orderTodos(query.data ?? []), pending: mutation.isPending, act };
+  const encouragement = () => ENCOURAGEMENT[lastEncouragement.get(userId) ?? 0] ?? ENCOURAGEMENT[0];
+  return { ...query, rows: orderTodos(query.data ?? []), pending: mutation.isPending, act, encouragement };
 }

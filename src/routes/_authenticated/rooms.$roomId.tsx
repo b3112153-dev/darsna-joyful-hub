@@ -12,7 +12,6 @@ import { PageState, Unavailable } from "@/components/PageState";
 import { useRoomMessages } from "@/hooks/use-room-messages";
 import { canDeleteMessage } from "@/lib/chat-messages";
 import { readData, requestSignal } from "@/lib/requests";
-import { branchLabel } from "@/lib/branches";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FocusTimer } from "@/components/FocusTimer";
 import { RoomNotes } from "@/components/RoomNotes";
@@ -104,16 +103,17 @@ function ChatRoom() {
   if (roomQuery.isSuccess && room === null) return <Unavailable kind="الغرفة" />;
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh-8rem)] max-w-3xl flex-col px-2 py-3 sm:px-4 md:h-[calc(100dvh-4rem)]">
-      <div className="mb-3 flex items-center gap-3 rounded-2xl border bg-card px-4 py-3 shadow-card">
-        <Link to="/rooms" className="text-muted-foreground hover:text-primary"><ArrowRight className="size-5" /></Link>
-        <div className="flex-1">
-          <h1 className="font-semibold">{room?.name ?? "…"}</h1>
-          <p className="text-xs text-muted-foreground">{branchLabel(room?.branch)}</p>
+    <main className="mx-auto flex h-[calc(100dvh-136px)] max-w-3xl flex-col font-display lg:h-[calc(100dvh-4rem)]">
+      <div className="grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3 rounded-t-[26px] bg-secondary px-4 pb-3.5 pt-5 text-secondary-foreground">
+        <Link to="/rooms" aria-label="العودة للدردشات" className="grid size-11 shrink-0 place-items-center rounded-[14px] bg-card text-card-foreground"><ArrowRight className="size-5" /></Link>
+        <div className="min-w-0">
+          <h1 className="truncate text-lg font-extrabold">{room?.name ?? "…"}</h1>
+          <p className="text-[13px] leading-6 text-muted-foreground">{room?.description}</p>
         </div>
       </div>
+      <p className="bg-secondary px-4 pb-3 text-center text-[13px] font-semibold text-secondary-foreground">نشر الروابط الخارجية ممنوع في الدردشة</p>
       <Tabs value={tab} onValueChange={setTab} dir="rtl" className="flex min-h-0 flex-1 flex-col">
-      <TabsList className="mb-3 grid w-full grid-cols-4">
+      <TabsList className="my-2 grid w-full grid-cols-4">
         <TabsTrigger value="timer">المؤقت</TabsTrigger>
         <TabsTrigger value="chat">الدردشة{locked ? " 🔒" : ""}</TabsTrigger>
         <TabsTrigger value="notes">ملاحظاتي</TabsTrigger>
@@ -126,7 +126,7 @@ function ChatRoom() {
       <TabsContent value="notes" className="overflow-y-auto">{user && <RoomNotes roomId={roomId} userId={user.id} />}</TabsContent>
       <TabsContent value="rounds" className="overflow-y-auto rounded-2xl border bg-card p-4"><StudyRounds roomId={roomId} /></TabsContent>
       <TabsContent value="chat" className="flex min-h-0 flex-1 flex-col">
-      <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto rounded-2xl border bg-card/70 p-3 sm:p-4">
+      <div ref={listRef} className="flex-1 space-y-4 overflow-y-auto bg-background p-3 sm:p-4">
         {chat.hasNextPage && <div className="text-center"><Button variant="outline" size="sm" disabled={chat.isFetchingNextPage} onClick={() => void loadOlder()}>{chat.isFetchingNextPage ? "جاري التحميل…" : "تحميل الأقدم"}</Button></div>}
         <PageState loading={chat.isPending} error={chat.isError} retry={() => void (chat.isFetchNextPageError ? chat.fetchNextPage() : chat.refetch())} />
         {chat.isSuccess && messages.length === 0 && <p className="py-10 text-center text-muted-foreground">لا يوجد رسائل بعد — كن أول من يكتب!</p>}
@@ -140,9 +140,9 @@ function ChatRoom() {
           🔒 الدردشة مقفلة — باقي <span dir="ltr" className="font-bold tabular-nums">{fmtClock(focus.left * 1000)}</span> على نهاية جلستك
         </button>
       ) : (
-        <form onSubmit={send} className="mt-3 flex gap-2">
-          <Input value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder="اكتب رسالتك…" className="h-11 bg-card" />
-          <Button size="icon" disabled={sending || !text.trim() || !chat.isSuccess} className="size-11 shrink-0 bg-brand" aria-label="إرسال"><Send className="size-4 -scale-x-100" /></Button>
+        <form onSubmit={send} className="grid grid-cols-[minmax(0,1fr)_48px] gap-2 border-t bg-card px-3 pb-3.5 pt-2.5">
+          <Input value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder="اكتب رسالتك…" className="h-12 min-w-0 rounded-[16px] border-border bg-background" />
+          <Button size="icon" disabled={sending || !text.trim() || !chat.isSuccess} className="size-12 shrink-0 rounded-[16px] bg-primary" aria-label="إرسال"><Send className="size-5 -scale-x-100" /></Button>
         </form>
       )}
       </TabsContent>

@@ -53,11 +53,15 @@
   --color-support: var(--support);
   --color-support-foreground: var(--support-foreground);
   --color-decoration: var(--decoration);
+  --color-task-border: var(--task-border);
+  --color-task-completed: var(--task-completed);
 
 }
 
 :root {
   --radius: 1.1rem;
+  --task-border: #B08A80;
+  --task-completed: #9A6A62;
   --background: oklch(0.9587288 0.0277339 81.47425);
   --foreground: oklch(0.3363284 0.1161582 29.03673);
   --card: oklch(1.0000000 0.0000000 89.87556);
@@ -103,6 +107,8 @@
 }
 
 .dark {
+  --task-border: var(--muted-foreground);
+  --task-completed: var(--muted-foreground);
   --background: oklch(0.2056009 0.0495219 29.93885);
   --foreground: oklch(0.8857530 0.0697702 76.62280);
   --card: oklch(0.2596735 0.0624396 28.05984);
