@@ -17,3 +17,4 @@
 - Chat history uses cursor-paginated Query pages; Realtime merges only changed messages into that cache. Why: loaded history must survive new messages without full-list refetches.
 - Heavy page views live in `src/components/pages` and load via `lazyRouteComponent`; route metadata stays eager. Why: navigation downloads only the selected experience.
 - Only the global FocusWatcher completes expired timers. Why: timer views must not duplicate completion requests or notifications.
+- Brand and message-role colors are semantic global CSS tokens, including legacy background utilities. Why: palette changes must update the entire platform without per-page hardcoded colors.

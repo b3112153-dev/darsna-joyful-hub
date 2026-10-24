@@ -1,6 +1,6 @@
 # Roadmap
 - [x] Autumn batch: global light/dark tokens, chat/admin/mod/support styling and visitor welcome
-- [ ] Autumn batch: mobile/theme checks, regression tests and build verification
+- [x] Autumn batch: mobile/theme checks, regression tests and build verification
 - [x] Current batch: realtime and incremental 50-message history, editing/deletion and room errors
 - [x] Current batch: session/device/focus safeguards, lazy loading and Arabic error fallback
 - [x] Current batch: public metadata, drsna-joful.com sitemap/robots and protected noindex
