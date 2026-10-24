@@ -1,8 +1,32 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /onboarding
+Disallow: /rooms
+Disallow: /focus
+Disallow: /library
+Disallow: /progress
+Disallow: /motivation
+Disallow: /topics
+Disallow: /support
+Disallow: /profile
+Disallow: /banned
+Disallow: /reset-password
 
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
+Disallow: /onboarding
+Disallow: /rooms
+Disallow: /focus
+Disallow: /library
+Disallow: /progress
+Disallow: /motivation
+Disallow: /topics
+Disallow: /support
+Disallow: /profile
+Disallow: /banned
+Disallow: /reset-password
 
 User-agent: Twitterbot
 Allow: /
@@ -12,5 +36,17 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /onboarding
+Disallow: /rooms
+Disallow: /focus
+Disallow: /library
+Disallow: /progress
+Disallow: /motivation
+Disallow: /topics
+Disallow: /support
+Disallow: /profile
+Disallow: /banned
+Disallow: /reset-password
 
-Sitemap: https://darsna-joyful-hub.lovable.app/sitemap.xml
+Sitemap: https://drsna-joful.com/sitemap.xml
