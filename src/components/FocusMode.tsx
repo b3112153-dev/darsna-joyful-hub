@@ -7,6 +7,7 @@ import { TodoList } from "@/components/TodoList";
 import { EndFocusDialog } from "@/components/EndFocusDialog";
 import { fmtClock } from "@/components/StudyRounds";
 import { Progress } from "@/components/ui/progress";
+import { FOCUS_PREFERENCE_DEFAULT, focusPreferenceEnabled } from "@/lib/focus-preference";
 
 type Mode = { focus: ReturnType<typeof useMyFocus>; visible: boolean; enter: () => void; exit: () => void; enabled: boolean; setEnabled: (value: boolean) => void };
 const FocusModeContext = createContext<Mode | null>(null);
@@ -16,12 +17,12 @@ export function FocusModeProvider({ children }: { children: ReactNode }) {
   const { user } = useSession();
   const focus = useMyFocus(user?.id);
   const [dismissed, setDismissed] = useState<string | null>(null);
-  const [enabled, updateEnabled] = useState(true);
+  const [enabled, updateEnabled] = useState(FOCUS_PREFERENCE_DEFAULT);
   const [ready, setReady] = useState(false);
   const [entered, setEntered] = useState<string | null>(null);
   const storageKey = `darsna-focus-mode-${user?.id ?? "guest"}`;
   useEffect(() => {
-    try { updateEnabled(localStorage.getItem(storageKey) !== "off"); } catch { updateEnabled(true); }
+    try { updateEnabled(focusPreferenceEnabled(localStorage.getItem(storageKey))); } catch { updateEnabled(FOCUS_PREFERENCE_DEFAULT); }
     setReady(true);
   }, [storageKey]);
   const setEnabled = (value: boolean) => { updateEnabled(value); try { localStorage.setItem(storageKey, value ? "on" : "off"); } catch { /* Storage may be unavailable. */ } };

@@ -47,6 +47,6 @@ export function useTodos(userId: string) {
     busy.current = true;
     try { await mutation.mutateAsync(action); return true; } catch { return false; }
   }
-  const encouragement = () => ENCOURAGEMENT[lastEncouragement.get(userId) ?? 0];
+  const encouragement = () => ENCOURAGEMENT[lastEncouragement.get(userId) ?? 0] ?? ENCOURAGEMENT[0];
   return { ...query, rows: orderTodos(query.data ?? []), pending: mutation.isPending, act, encouragement };
 }
