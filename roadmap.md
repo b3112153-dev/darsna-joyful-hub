@@ -2,15 +2,15 @@
 - [x] Current batch: realtime and incremental 50-message history, editing/deletion and room errors
 - [x] Current batch: session/device/focus safeguards, lazy loading and Arabic error fallback
 - [x] Current batch: public metadata, drsna-joful.com sitemap/robots and protected noindex
-- [ ] Current batch: regression tests and mobile/authenticated verification
+- [x] Current batch: regression tests and mobile/authenticated verification
 - [x] DB: owner settings, gender lock, gender-gated rooms (girls/boys/all) for Tawjihi + Gen 2010, mutes, replies/images/sender role on messages, student library uploads, owner-only admin grants, owner email list, device bans + realtime on bans
 - [ ] Create chat-images bucket (private, 5MB) and chat UI: reply quote, image send, staff badge/glow
 - [ ] Gender picker on signup/profile; Gen 2010 nav section
 - [ ] Library student upload UI (also from rounds); admin review
 - [ ] Admin: assign admin (owner only), mute, owner emails page, owner name/launch date editor
-- [ ] Device id registration + instant kick to /banned page
-- [ ] Global focus watcher so finished timers count automatically
-- [ ] Unique realtime channel names; shared session provider (stability)
+- [x] Device id registration + instant kick to /banned page
+- [x] Global focus watcher so finished timers count automatically
+- [x] Unique realtime channel names; shared session provider (stability)
 - [ ] Landing redesign (coral/green/yellow), fix "يراقبون ويحافظون", footer ©, /terms, /about, sitemap.xml
 - [ ] Watermark + copy/print/right-click deterrents on chat and library
 - [ ] Hide "Edit with Lovable" badge

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Plus, Timer, Trash2, Users } from "lucide-react";
@@ -50,6 +50,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
   const qc = useQueryClient();
   const now = useNow();
   const key = ["rounds", roomId];
+  const relevantSessions = useRef(new Set<string>());
 
   const { data: rounds = [] } = useQuery({
     queryKey: key,
@@ -64,13 +65,18 @@ export function StudyRounds({ roomId }: { roomId: string }) {
       return (data ?? []) as Round[];
     },
   });
+  relevantSessions.current = new Set(rounds.map((round) => round.id));
 
   useEffect(() => {
     const refresh = () => qc.invalidateQueries({ queryKey: ["rounds", roomId] });
     const ch = supabase
       .channel(`rounds-${roomId}-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "study_sessions", filter: `room_id=eq.${roomId}` }, refresh)
-      .on("postgres_changes", { event: "*", schema: "public", table: "session_participants" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "session_participants" }, (payload) => {
+        const row = payload.eventType === "DELETE" ? payload.old : payload.new;
+        const sessionId = row["session_id"];
+        if (typeof sessionId === "string" && relevantSessions.current.has(sessionId)) void refresh();
+      })
       .subscribe();
     return () => {
       supabase.removeChannel(ch);

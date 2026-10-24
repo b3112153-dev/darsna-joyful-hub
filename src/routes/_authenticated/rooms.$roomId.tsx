@@ -104,7 +104,7 @@ function ChatRoom() {
   if (roomQuery.isSuccess && room === null) return <Unavailable kind="الغرفة" />;
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl flex-col px-2 py-3 sm:px-4">
+    <main className="mx-auto flex h-[calc(100dvh-8rem)] max-w-3xl flex-col px-2 py-3 sm:px-4 md:h-[calc(100dvh-4rem)]">
       <div className="mb-3 flex items-center gap-3 rounded-2xl border bg-card px-4 py-3 shadow-card">
         <Link to="/rooms" className="text-muted-foreground hover:text-primary"><ArrowRight className="size-5" /></Link>
         <div className="flex-1">

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { SessionContext, useSharedSession } from "./session-context";
+import { withTimeout } from "@/lib/requests";
 
 /** Single auth listener for the whole app; every useSession() reads from it. */
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -32,13 +33,13 @@ export function useMe() {
     staleTime: 5 * 60_000,
     queryFn: async () => {
       if (!user) throw new Error("سجّل دخولك أولاً");
-      const [p, r, b, o, m] = await Promise.all([
+      const [p, r, b, o, m] = await withTimeout(Promise.all([
         supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then((res) => { if (res.error) throw res.error; return res; }),
         supabase.from("user_roles").select("role").eq("user_id", user.id),
         supabase.from("user_bans").select("user_id").eq("user_id", user.id).maybeSingle(),
         supabase.rpc("is_owner", { _user_id: user.id }),
         supabase.from("user_mutes").select("muted_until").eq("user_id", user.id).maybeSingle(),
-      ]);
+      ]));
       for (const result of [p, r, b, o, m]) { if (result.error) throw result.error; }
       const roles = (r.data ?? []).map((x) => x.role);
       const isAdmin = roles.includes("admin");

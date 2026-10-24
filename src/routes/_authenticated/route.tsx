@@ -13,6 +13,7 @@ export const Route = createFileRoute("/_authenticated")({
   errorComponent: () => <PageState error retry={() => window.location.reload()} />,
   beforeLoad: async () => {
     const { data, error } = await withTimeout(supabase.auth.getUser());
+    if (error?.name === "AuthSessionMissingError") throw redirect({ to: "/auth" });
     if (error) throw error;
     if (!data.user) throw redirect({ to: "/auth" });
     const banned = await readData(supabase.rpc("is_banned", { _user_id: data.user.id }));
