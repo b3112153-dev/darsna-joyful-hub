@@ -32,7 +32,7 @@ export function useMe() {
     staleTime: 30_000,
     queryFn: async () => {
       const [p, r, b, o, m] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", user!.id).maybeSingle(),
+        supabase.from("profiles").select("*").eq("id", user!.id).maybeSingle().then((res) => { if (res.error) throw res.error; return res; }),
         supabase.from("user_roles").select("role").eq("user_id", user!.id),
         supabase.from("user_bans").select("user_id").eq("user_id", user!.id).maybeSingle(),
         supabase.rpc("is_owner", { _user_id: user!.id }),
@@ -57,5 +57,5 @@ export function useMe() {
       };
     },
   });
-  return { user, loading: loading || (!!user && q.isLoading), me: q.data };
+  return { user, loading: loading || (!!user && q.isLoading), me: q.data, isError: q.isError, refetch: q.refetch };
 }

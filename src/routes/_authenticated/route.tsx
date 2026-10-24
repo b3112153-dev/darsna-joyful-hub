@@ -1,7 +1,8 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/SiteHeader";
 import { BanGuard, FocusWatcher } from "@/components/AppGuards";
+import { OnboardingGate } from "@/components/OnboardingGate";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -12,12 +13,20 @@ export const Route = createFileRoute("/_authenticated")({
     if (banned) { await supabase.auth.signOut(); throw redirect({ to: "/banned" }); }
     return { userId: data.user.id };
   },
-  component: () => (
+  component: Layout,
+});
+
+function Layout() {
+  const { pathname } = useLocation();
+  const bare = pathname.startsWith("/onboarding");
+  return (
     <div className="min-h-screen bg-sky pb-16 md:pb-0">
-      <SiteHeader />
+      {!bare && <SiteHeader />}
       <BanGuard />
       <FocusWatcher />
-      <Outlet />
+      <OnboardingGate>
+        <Outlet />
+      </OnboardingGate>
     </div>
-  ),
-});
+  );
+}
