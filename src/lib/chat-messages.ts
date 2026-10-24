@@ -7,7 +7,7 @@ export type Message = Database["public"]["Tables"]["messages"]["Row"] & {
 };
 export type MessageCursor = { created_at: string; id: string } | null;
 export type MessagePage = { messages: Message[]; next: MessageCursor };
-export type MessageCache = InfiniteData<MessagePage, MessageCursor>;
+export type MessageCache = InfiniteData<MessagePage>;
 
 export function mergeMessage(cache: MessageCache | undefined, message: Message): MessageCache | undefined {
   if (!cache) return cache;

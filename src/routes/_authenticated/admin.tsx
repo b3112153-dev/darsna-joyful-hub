@@ -20,6 +20,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   },
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "لوحة التحكم | Darsna Jo" },
       { name: "description", content: "إدارة الغرف والمستخدمين والرسائل." },
       { property: "og:title", content: "لوحة التحكم | Darsna Jo" },

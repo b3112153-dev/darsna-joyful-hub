@@ -9,6 +9,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "تعيين كلمة سر جديدة | Darsna Jo" },
       { name: "description", content: "اختر كلمة سر جديدة لحسابك في Darsna Jo." },
       { property: "og:title", content: "تعيين كلمة سر جديدة | Darsna Jo" },

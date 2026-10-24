@@ -42,10 +42,11 @@ export function useRoomMessages(roomId: string, userId: string | undefined, enab
     const channel = supabase.channel(`room-${roomId}-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `room_id=eq.${roomId}` }, (payload) => {
         const row = payload.eventType === "DELETE" ? payload.old : payload.new;
-        if (typeof row.id !== "string") return;
-        if (payload.eventType === "DELETE" || ("deleted_at" in row && row.deleted_at)) {
-          qc.setQueryData<MessageCache>(key, (cache) => removeMessage(cache, row.id));
-        } else void refreshOne(row.id);
+        const id = row['id'];
+        if (typeof id !== "string") return;
+        if (payload.eventType === "DELETE" || ("deleted_at" in row && row['deleted_at'])) {
+          qc.setQueryData<MessageCache>(key, (cache) => removeMessage(cache, id));
+        } else void refreshOne(id);
       }).subscribe();
     return () => { active = false; void supabase.removeChannel(channel); };
   }, [enabled, key, qc, roomId]);
@@ -68,6 +69,7 @@ export function useRoomMessages(roomId: string, userId: string | undefined, enab
     if (!userId || !content.trim()) return false;
     try {
       const message = await readData(supabase.from("messages").update({ content: content.trim() }).eq("id", id).eq("user_id", userId).select(fields).single());
+      if (!message) throw new Error("تعذر تعديل الرسالة");
       qc.setQueryData<MessageCache>(key, (cache) => mergeMessage(cache, message));
       return true;
     } catch { toast.error("تعذر تعديل الرسالة؛ حاول مرة ثانية."); return false; }

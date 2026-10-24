@@ -12,6 +12,9 @@ import { UserAvatar } from "@/components/UserAvatar";
 export const Route = createFileRoute("/_authenticated/motivation")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "التحفيز | Darsna Jo" },
       { name: "description", content: "صور وذكريات وكلمات تحفيزية من طلاب التوجيهي." },
       { property: "og:title", content: "التحفيز | Darsna Jo" },

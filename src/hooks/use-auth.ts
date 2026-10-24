@@ -29,15 +29,17 @@ export function useMe() {
   const q = useQuery({
     queryKey: ["me", user?.id],
     enabled: !!user,
-    staleTime: 30_000,
+    staleTime: 5 * 60_000,
     queryFn: async () => {
+      if (!user) throw new Error("سجّل دخولك أولاً");
       const [p, r, b, o, m] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", user!.id).maybeSingle().then((res) => { if (res.error) throw res.error; return res; }),
-        supabase.from("user_roles").select("role").eq("user_id", user!.id),
-        supabase.from("user_bans").select("user_id").eq("user_id", user!.id).maybeSingle(),
-        supabase.rpc("is_owner", { _user_id: user!.id }),
-        supabase.from("user_mutes").select("muted_until").eq("user_id", user!.id).maybeSingle(),
+        supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then((res) => { if (res.error) throw res.error; return res; }),
+        supabase.from("user_roles").select("role").eq("user_id", user.id),
+        supabase.from("user_bans").select("user_id").eq("user_id", user.id).maybeSingle(),
+        supabase.rpc("is_owner", { _user_id: user.id }),
+        supabase.from("user_mutes").select("muted_until").eq("user_id", user.id).maybeSingle(),
       ]);
+      for (const result of [p, r, b, o, m]) { if (result.error) throw result.error; }
       const roles = (r.data ?? []).map((x) => x.role);
       const isAdmin = roles.includes("admin");
       const isStaff = isAdmin || roles.includes("moderator");

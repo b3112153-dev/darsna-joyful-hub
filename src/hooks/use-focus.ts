@@ -33,7 +33,7 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
           .in("status", ["running", "paused"])
           .order("started_at", { ascending: false })
           .limit(1)
-          .maybeSingle().abortSignal(requestSignal(signal))) as FocusRow | null;
+          .abortSignal(requestSignal(signal)).maybeSingle()) as FocusRow | null;
     },
   });
   const refresh = () => {

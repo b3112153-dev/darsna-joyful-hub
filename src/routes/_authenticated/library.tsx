@@ -12,6 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export const Route = createFileRoute("/_authenticated/library")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "المكتبة | Darsna Jo" },
       { name: "description", content: "ملفات ومراجعات التوجيهي مصنفة حسب الفرع والمادة." },
       { property: "og:title", content: "المكتبة | Darsna Jo" },

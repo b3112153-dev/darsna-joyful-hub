@@ -7,11 +7,15 @@ import hero from "@/assets/hero.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Darsna Jo | مجتمع طلاب التوجيهي الأردني" },
-      { name: "description", content: "غرف دردشة لكل فرع من فروع التوجيهي الأردني، ادرس وناقش واسأل زملاءك." },
-      { property: "og:title", content: "Darsna Jo | مجتمع طلاب التوجيهي الأردني" },
-      { property: "og:description", content: "غرف دردشة لكل فرع من فروع التوجيهي الأردني، ادرس وناقش واسأل زملاءك." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://drsna-joful.com/" },
+      { name: "twitter:card", content: "summary" },
+      { title: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠" },
+      { name: "description", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠، مع غرف دردشة ومؤقت دراسة وجولات جماعية ومكتبة ملفات." },
+      { property: "og:title", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠" },
+      { property: "og:description", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠، مع غرف دردشة ومؤقت دراسة وجولات جماعية ومكتبة ملفات." },
     ],
+    links: [{ rel: "canonical", href: "https://drsna-joful.com/" }],
   }),
   component: Index,
 });

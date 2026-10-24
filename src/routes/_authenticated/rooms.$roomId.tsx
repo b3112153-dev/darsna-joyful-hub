@@ -25,6 +25,9 @@ import { fmtClock } from "@/components/StudyRounds";
 export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "غرفة دردشة | Darsna Jo" },
       { name: "description", content: "دردشة مباشرة مع طلاب التوجيهي." },
       { property: "og:title", content: "غرفة دردشة | Darsna Jo" },
@@ -50,7 +53,7 @@ function ChatRoom() {
   const roomQuery = useQuery({
     queryKey: ["room", roomId, user?.id],
     staleTime: 5 * 60_000,
-    queryFn: ({ signal }) => readData(supabase.from("rooms").select("*").eq("id", roomId).maybeSingle().abortSignal(requestSignal(signal))),
+    queryFn: ({ signal }) => readData(supabase.from("rooms").select("*").eq("id", roomId).abortSignal(requestSignal(signal)).maybeSingle()),
   });
   const room = roomQuery.data;
   const chat = useRoomMessages(roomId, user?.id, roomQuery.isSuccess && !!room);
@@ -88,6 +91,7 @@ function ChatRoom() {
     setSending(true);
     try {
       const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content }).select("*,profiles(display_name,avatar_url)").single());
+      if (!message) throw new Error("تعذر الإرسال");
       chat.append(message);
       setText((current) => current.trim() === content ? "" : current);
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "nearest" }));
