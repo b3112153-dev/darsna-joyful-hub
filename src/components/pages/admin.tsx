@@ -1,3 +1,4 @@
+import { readData } from "@/lib/requests";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -39,11 +40,14 @@ export function Admin() {
 const count = async (t: "profiles" | "messages" | "rooms" | "user_bans", since?: string) => {
   let q = supabase.from(t).select("*", { count: "exact", head: true });
   if (since) q = q.gte("created_at", since);
-  return (await q).count ?? 0;
+  const result = await q;
+  if (result.error) throw result.error;
+  return result.count ?? 0;
 };
 
 function Stats() {
   const { data } = useQuery({
+    throwOnError: true,
     queryKey: ["admin-stats"],
     queryFn: async () => {
       const day = new Date(Date.now() - 86400000).toISOString();
@@ -79,8 +83,10 @@ function RoomsAdmin() {
   const [desc, setDesc] = useState("");
   const [branch, setBranch] = useState<Branch | "general">("general");
   const { data: rooms = [] } = useQuery({
-    queryKey: ["rooms"],
-    queryFn: async () => (await supabase.from("rooms").select("*").order("created_at")).data ?? [],
+    throwOnError: true,
+    queryKey: ["rooms", "admin"],
+    staleTime: 5 * 60_000,
+    queryFn: async () => await readData(supabase.from("rooms").select("*").order("created_at")) ?? [],
   });
   async function add(e: React.FormEvent) {
     e.preventDefault();
@@ -129,6 +135,7 @@ function UsersAdmin() {
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const { data } = useQuery({
+    throwOnError: true,
     queryKey: ["admin-users"],
     queryFn: async () => {
       const [p, r, b] = await Promise.all([
@@ -136,6 +143,7 @@ function UsersAdmin() {
         supabase.from("user_roles").select("user_id,role"),
         supabase.from("user_bans").select("user_id"),
       ]);
+      for (const result of [p, r, b]) { if (result.error) throw result.error; }
       const banned = new Set((b.data ?? []).map((x) => x.user_id));
       return (p.data ?? []).map((u) => ({
         ...u,
@@ -201,13 +209,14 @@ function UsersAdmin() {
 function MessagesAdmin() {
   const qc = useQueryClient();
   const { data = [] } = useQuery({
+    throwOnError: true,
     queryKey: ["admin-messages"],
     queryFn: async () =>
-      (await supabase
+      await readData(supabase
         .from("messages")
-        .select("id,content,created_at,profiles(display_name),rooms(name)")
+        .select("id,content,created_at,profiles(display_name),rooms(name)").is("deleted_at", null)
         .order("created_at", { ascending: false })
-        .limit(100)).data ?? [],
+        .limit(100)) ?? [],
   });
   async function del(id: string) {
     const { error } = await supabase.from("messages").delete().eq("id", id);

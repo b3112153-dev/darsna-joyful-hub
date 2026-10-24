@@ -1,3 +1,5 @@
+import { PageState, Unavailable } from "@/components/PageState";
+import { readData } from "@/lib/requests";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -25,10 +27,10 @@ export function Motivation() {
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
-  const { data: posts = [] } = useQuery({
+  const { data: posts = [], isPending, isError, refetch } = useQuery({
     queryKey: ["motivation"],
     queryFn: async () =>
-      ((await supabase.from("motivation_posts").select("id,user_id,content,image_path,from_admin,created_at,profiles(display_name,avatar_url)").order("created_at", { ascending: false }).limit(60)).data ?? []) as Post[],
+      (await readData(supabase.from("motivation_posts").select("id,user_id,content,image_path,from_admin,created_at,profiles(display_name,avatar_url)").order("created_at", { ascending: false }).limit(60)) ?? []) as Post[],
   });
 
   async function submit(e: React.FormEvent) {
@@ -74,7 +76,8 @@ export function Motivation() {
           </div>
         </form>
       )}
-      {posts.length === 0 && <p className="py-10 text-center text-muted-foreground">كن أول من ينشر!</p>}
+      <PageState loading={isPending} error={isError} retry={() => void refetch()} />
+      {!isPending && !isError && posts.length === 0 && <p className="py-10 text-center text-muted-foreground">كن أول من ينشر!</p>}
       {posts.map((p) => {
         const name = p.from_admin ? "الإدارة" : p.profiles?.display_name;
         return (

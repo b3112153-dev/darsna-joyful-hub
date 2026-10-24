@@ -1,3 +1,5 @@
+import { PageState, Unavailable } from "@/components/PageState";
+import { readData } from "@/lib/requests";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Download, FileText, Search } from "lucide-react";
@@ -15,10 +17,10 @@ export function Library() {
   const [q, setQ] = useState("");
   const [branch, setBranch] = useState("all");
   const [subject, setSubject] = useState("all");
-  const { data: files = [], isLoading } = useQuery({
+  const { data: files = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["library"],
     queryFn: async () =>
-      (await supabase.from("library_files").select("*").order("created_at", { ascending: false })).data ?? [],
+      await readData(supabase.from("library_files").select("*").order("created_at", { ascending: false })) ?? [],
   });
   const subjects = useMemo(() => [...new Set(files.map((f) => f.subject))].sort(), [files]);
   const list = files.filter(
@@ -62,8 +64,8 @@ export function Library() {
           </SelectContent>
         </Select>
       </div>
-      {isLoading && <p className="text-muted-foreground">جاري التحميل…</p>}
-      {!isLoading && list.length === 0 && <p className="py-10 text-center text-muted-foreground">ما في ملفات مطابقة.</p>}
+      <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
+      {!isLoading && !isError && list.length === 0 && <p className="py-10 text-center text-muted-foreground">ما في ملفات مطابقة.</p>}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((f) => (
           <div key={f.id} className="flex flex-col rounded-2xl border bg-card p-5 shadow-card">

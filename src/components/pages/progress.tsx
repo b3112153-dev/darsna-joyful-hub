@@ -1,3 +1,5 @@
+import { PageState, Unavailable } from "@/components/PageState";
+import { readData } from "@/lib/requests";
 import { useQuery } from "@tanstack/react-query";
 import { Flame, Clock, CalendarDays } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,20 +8,22 @@ import { hoursLabel, summarize } from "@/lib/focus";
 
 export function Progress() {
   const { user } = useMe();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["progress", user?.id],
     enabled: !!user,
     queryFn: async () => {
+      if (!user) throw new Error("سجّل دخولك أولاً");
       const since = new Date(Date.now() - 120 * 86400000).toISOString();
-      const { data } = await supabase
+      const data = await readData(supabase
         .from("focus_sessions")
         .select("subject,studied_seconds,started_at")
-        .eq("user_id", user!.id)
+        .eq("user_id", user.id)
         .in("status", ["completed", "cancelled"])
-        .gte("started_at", since);
+        .gte("started_at", since));
       return summarize(data ?? []);
     },
   });
+  if (isError) return <PageState error retry={() => void refetch()} />;
   if (isLoading || !data) return <main className="mx-auto max-w-4xl px-4 py-8 text-muted-foreground">جاري التحميل…</main>;
   const max = Math.max(...data.week.map((d) => d.seconds), 1);
   const maxSub = data.subjects[0]?.seconds ?? 1;

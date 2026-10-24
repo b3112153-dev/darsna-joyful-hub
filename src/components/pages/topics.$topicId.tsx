@@ -1,3 +1,5 @@
+import { PageState, Unavailable } from "@/components/PageState";
+import { readData } from "@/lib/requests";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,9 +24,9 @@ export function TopicPage() {
   const [text, setText] = useState("");
   const [replyTo, setReplyTo] = useState<C | null>(null);
 
-  const { data: topic } = useQuery({
+  const { data: topic, isPending, isError, refetch } = useQuery({
     queryKey: ["topic", topicId],
-    queryFn: async () => (await supabase.from("topics").select("*").eq("id", topicId).maybeSingle()).data,
+    queryFn: async () => await readData(supabase.from("topics").select("*").eq("id", topicId).maybeSingle()),
   });
   const { data: studied } = useQuery({
     queryKey: ["topic-read", topicId, user?.id],
@@ -101,6 +103,10 @@ export function TopicPage() {
       </div>
     );
   }
+
+  if (isPending) return <PageState loading />;
+  if (isError) return <PageState error retry={() => void refetch()} />;
+  if (topic === null) return <Unavailable kind="الصفحة" />;
 
   return (
     <main className="mx-auto max-w-3xl space-y-4 px-4 py-8">

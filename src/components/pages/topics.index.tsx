@@ -1,3 +1,5 @@
+import { PageState, Unavailable } from "@/components/PageState";
+import { readData } from "@/lib/requests";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,10 +15,10 @@ import { Label } from "@/components/ui/label";
 
 export function Topics() {
   const { me } = useMe();
-  const { data: topics = [], isLoading } = useQuery({
+  const { data: topics = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["topics"],
     queryFn: async () =>
-      (await supabase.from("topics").select("id,title,body,subject,created_at,topic_comments(count)").order("created_at", { ascending: false })).data ?? [],
+      await readData(supabase.from("topics").select("id,title,body,subject,created_at,topic_comments(count)").order("created_at", { ascending: false })) ?? [],
   });
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
@@ -25,8 +27,8 @@ export function Topics() {
         <p className="text-muted-foreground">موضوع جديد من الإدارة بشكل دوري — ادرسه وبعدين شارك برأيك.</p>
       </div>
       {me?.isAdmin && <NewTopic />}
-      {isLoading && <p className="text-muted-foreground">جاري التحميل…</p>}
-      {!isLoading && topics.length === 0 && <p className="py-10 text-center text-muted-foreground">ما في مواضيع بعد.</p>}
+      <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
+      {!isLoading && !isError && topics.length === 0 && <p className="py-10 text-center text-muted-foreground">ما في مواضيع بعد.</p>}
       <div className="space-y-3">
         {topics.map((t) => (
           <Link key={t.id} to="/topics/$topicId" params={{ topicId: t.id }} className="block rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-soft">
