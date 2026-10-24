@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { MessagesSquare } from "lucide-react";
+import { MessagesSquare, CircleHelp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { branchLabel } from "@/lib/branches";
 import { readData, requestSignal } from "@/lib/requests";
@@ -33,30 +33,26 @@ function Rooms() {
   const sorted = [...rooms].sort((a, b) => Number(b.branch === mine) - Number(a.branch === mine));
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="mb-1 text-3xl font-bold">غرف الدردشة</h1>
-      <p className="mb-6 text-muted-foreground">
-        {mine ? `غرفة فرعك (${branchLabel(mine)}) بالأول.` : "حدد فرعك من ملفك الشخصي لنرتب لك الغرف."}
-      </p>
+    <main className="mx-auto max-w-2xl px-5 py-6 font-display">
+      <h1 className="mb-1 text-[28px] font-extrabold">الدردشات</h1>
+      <p className="mb-5 text-sm leading-7 text-muted-foreground">غرفتك والجولة المشتركة والدعم، كلها هون</p>
       <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3">
         {sorted.map((r) => (
           <Link
             key={r.id}
             to="/rooms/$roomId"
             params={{ roomId: r.id }}
-            className={`group rounded-2xl border bg-card p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-soft ${r.branch === mine && mine ? "border-primary" : ""}`}
+            className="group grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3 rounded-[26px] bg-secondary p-4 text-secondary-foreground transition hover:shadow-soft"
           >
-            <div className="mb-3 flex items-center justify-between">
-              <span className="grid size-10 place-items-center rounded-xl bg-secondary text-primary">
-                <MessagesSquare className="size-5" />
+              <span className="grid size-14 shrink-0 place-items-center rounded-[18px] bg-card text-lg font-extrabold text-card-foreground">
+                {r.generation === "gen2009" ? "٢٠٠٩" : r.generation === "gen2010" ? "٢٠١٠" : <MessagesSquare className="size-6" />}
               </span>
-              {r.branch && <span className="rounded-full bg-muted px-3 py-0.5 text-xs text-muted-foreground">{branchLabel(r.branch)}</span>}
-            </div>
-            <h2 className="font-semibold group-hover:text-primary">{r.name}</h2>
-            <p className="text-sm text-muted-foreground">{r.description}</p>
+            <div className="min-w-0"><h2 className="truncate text-[17px] font-extrabold">{r.name}</h2><p className="text-[13px] font-semibold leading-6 text-muted-foreground">{r.description}</p>{r.branch && <p className="truncate text-sm text-muted-foreground">{branchLabel(r.branch)}</p>}</div>
           </Link>
         ))}
+        <Link to="/support" className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3 rounded-[26px] bg-peach p-4 text-peach-foreground"><span className="grid size-14 shrink-0 place-items-center rounded-[18px] bg-card text-card-foreground"><CircleHelp className="size-7" /></span><div className="min-w-0"><h2 className="text-[17px] font-extrabold">الدعم</h2><p className="text-[13px] font-semibold text-muted-foreground">تواصل مع الإدارة</p></div></Link>
+        {!isLoading && !isError && !me?.isStaff && !me?.isOwner && rooms.length === 1 && rooms.every((r) => r.audience === me?.profile?.gender && r.generation === me?.profile?.generation) && <p className="rounded-[22px] border-2 border-dashed p-4 text-sm leading-7 text-muted-foreground">بتشوف بس غرفتك. غرف الجيل والجنس التانيين مخفية عنك.</p>}
       </div>
     </main>
   );
