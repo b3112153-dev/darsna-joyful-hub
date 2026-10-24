@@ -95,15 +95,15 @@ export function SiteHeader() {
         </div>
       </header>
       {user && (
-        <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-40 grid h-[calc(72px+env(safe-area-inset-bottom))] grid-cols-5 border-t bg-card pb-[env(safe-area-inset-bottom)] font-display lg:hidden">
           {MAIN_NAV.map((n) => (
             <Link
               key={n.to}
               to={n.to}
-              className="flex flex-col items-center gap-0.5 py-2 text-[11px] text-muted-foreground"
-              activeProps={{ className: "text-primary font-semibold" }}
+              className="group flex min-w-0 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground"
+              activeProps={{ className: "text-foreground font-extrabold" }}
             >
-              <n.icon className="size-5" /> {n.label}
+              <span className="grid h-[30px] w-[52px] place-items-center rounded-full group-data-[status=active]:bg-secondary"><n.icon className="size-5" /></span><span>{n.label}</span>
             </Link>
           ))}
         </nav>
