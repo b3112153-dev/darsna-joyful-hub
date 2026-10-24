@@ -307,27 +307,42 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          birth_date: string | null
           branch: Database["public"]["Enums"]["study_branch"] | null
           created_at: string
           display_name: string
           gender: string | null
+          generation: string | null
           id: string
+          onboarded_v2: boolean
+          terms_accepted_at: string | null
+          terms_version: string | null
         }
         Insert: {
           avatar_url?: string | null
+          birth_date?: string | null
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
           display_name?: string
           gender?: string | null
+          generation?: string | null
           id: string
+          onboarded_v2?: boolean
+          terms_accepted_at?: string | null
+          terms_version?: string | null
         }
         Update: {
           avatar_url?: string | null
+          birth_date?: string | null
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
           display_name?: string
           gender?: string | null
+          generation?: string | null
           id?: string
+          onboarded_v2?: boolean
+          terms_accepted_at?: string | null
+          terms_version?: string | null
         }
         Relationships: []
       }
@@ -503,25 +518,44 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           id: string
+          image_path: string | null
+          reply_to: string | null
           sender_id: string
           student_id: string
         }
         Insert: {
-          content: string
+          content?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
+          image_path?: string | null
+          reply_to?: string | null
           sender_id: string
           student_id: string
         }
         Update: {
           content?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           id?: string
+          image_path?: string | null
+          reply_to?: string | null
           sender_id?: string
           student_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "support_messages_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "support_messages"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "support_messages_sender_id_fkey"
             columns: ["sender_id"]
@@ -534,6 +568,35 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "support_messages"
             referencedColumns: ["id"]
           },
         ]
@@ -744,6 +807,10 @@ export type Database = {
         Returns: boolean
       }
       can_support: { Args: { _user_id: string }; Returns: boolean }
+      complete_onboarding: {
+        Args: { _birth: string; _gender: string; _terms_version: string }
+        Returns: undefined
+      }
       device_is_banned: {
         Args: { _device_id: string; _fingerprint: string }
         Returns: boolean
