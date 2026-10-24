@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MessagesSquare, ShieldCheck, Users, BookOpen } from "lucide-react";
+import { BookOpen, Timer, CalendarDays, Users, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
-import hero from "@/assets/hero.jpg";
+import { lovable } from "@/integrations/lovable";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,59 +22,46 @@ export const Route = createFileRoute("/")({
 });
 
 const features = [
-  { icon: MessagesSquare, title: "غرف حسب الفرع", text: "غرفة للصحي والهندسي، غرفة للأعمال واللغات، وغرفة مشتركة للكل." },
-  { icon: Users, title: "زملاء من كل الأردن", text: "اسأل، جاوب، وشارك ملخصاتك مع طلاب من كل المحافظات." },
-  { icon: ShieldCheck, title: "بيئة آمنة", text: "مشرفين يراقبوا المحتوى ويحافظوا على جو محترم." },
-  { icon: BookOpen, title: "تركيز على الدراسة", text: "مساحة هادئة ونظيفة بدون تشتيت." },
+  { icon: Users, title: "جولة الدراسة", text: "ادرس مع غيرك", color: "bg-secondary text-secondary-foreground", tilt: "-rotate-2" },
+  { icon: Timer, title: "المؤقت", text: "تركيز بدون إزعاج", color: "bg-peach text-peach-foreground", tilt: "rotate-2" },
+  { icon: CalendarDays, title: "حلّها", text: "جدول على قدّك", color: "bg-mint text-mint-foreground", tilt: "rotate-1" },
+  { icon: BookOpen, title: "المكتبة", text: "ملفات من الطلاب", color: "bg-secondary text-secondary-foreground", tilt: "-rotate-1" },
 ];
 
 function Index() {
+  async function google() {
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    if (result.error) toast.error("تعذر تسجيل الدخول عبر Google");
+  }
   return (
-    <div className="min-h-screen bg-sky">
+    <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4">
-        <section className="grid items-center gap-10 py-12 md:grid-cols-2 md:py-20">
-          <div className="space-y-6 text-center md:text-start">
-            <span className="inline-block rounded-full border border-silver bg-card px-4 py-1 text-sm text-secondary-foreground">
-              توجيهي 2026 🇯🇴
-            </span>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-              ادرس مع زملاءك في <span className="text-brand">Darsna Jo</span>
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              منصة عربية لطلاب التوجيهي الأردني: غرف دردشة مباشرة لكل فرع، تسأل فيها وتتناقش وتحضّر للامتحانات مع غيرك.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3 md:justify-start">
-              <Button asChild size="lg" className="bg-brand shadow-soft">
-                <Link to="/focus">ابدأ الدراسة الآن</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="bg-silver-sheen">
-                <Link to="/rooms">ادخل الدردشة</Link>
-              </Button>
-            </div>
+      <main className="mx-auto max-w-5xl px-5 py-8 sm:px-8 sm:py-12">
+        <section className="rise-in text-center">
+          <div className="mb-5 flex items-center justify-center gap-3">
+            <span className="grid size-12 place-items-center rounded-2xl bg-primary text-primary-foreground"><BookOpen className="size-7" /></span>
+            <p className="font-display text-3xl font-bold">درسنا جو</p>
           </div>
-          <img
-            src={hero}
-            width={1280}
-            height={960}
-            alt="طلاب توجيهي يدرسون معاً"
-            className="w-full rounded-3xl border-4 border-card shadow-soft"
-          />
+          <span className="inline-flex rounded-full border bg-card px-4 py-1.5 text-sm font-bold text-primary">توجيهي ٢٠٠٩ و٢٠١٠</span>
+          <h1 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-extrabold leading-normal sm:text-5xl">الدراسة أخف لما نكون سوا</h1>
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-muted-foreground">غرف دراسة لكل جيل، مؤقت تركيز، وجدول على قدّك. وفي ناس حقيقية بتجاوبك لما تعلق.</p>
+          <div className="mx-auto mt-7 flex max-w-sm flex-wrap justify-center gap-3">
+            <Button asChild size="lg" className="flex-1 rounded-2xl"><Link to="/auth">إنشاء حساب <ArrowLeft className="size-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline" className="flex-1 rounded-2xl"><Link to="/auth">عندي حساب</Link></Button>
+          </div>
+          <Button variant="ghost" onClick={google} className="mt-3 gap-2 text-muted-foreground"><span className="font-display font-bold" aria-hidden="true">G</span> المتابعة باستخدام Google</Button>
         </section>
-        <section className="grid gap-4 pb-20 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((f) => (
-            <div key={f.title} className="rounded-2xl border bg-card p-6 shadow-card">
-              <span className="mb-4 grid size-11 place-items-center rounded-xl bg-secondary text-primary">
-                <f.icon className="size-5" />
-              </span>
-              <h3 className="mb-1 font-semibold">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.text}</p>
-            </div>
-          ))}
+        <section className="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-4 pb-5 sm:mt-14 sm:gap-6 lg:grid-cols-4">
+          {features.map((f) => <article key={f.title} className={`rounded-3xl border p-4 shadow-card transition-transform hover:rotate-0 sm:p-6 ${f.color} ${f.tilt}`}>
+            <f.icon className="mb-5 size-8" strokeWidth={1.5} />
+            <h2 className="text-lg font-bold">{f.title}</h2>
+            <p className="mt-1 text-sm leading-relaxed">{f.text}</p>
+          </article>)}
         </section>
       </main>
-      <footer className="border-t bg-card py-6 text-center text-sm text-muted-foreground">
-        © 2026 Darsna Jo — صُنع لطلاب الأردن
+      <footer className="border-t px-5 py-6 text-center text-sm text-muted-foreground">
+        <p>© 2026 Darsna Jo — جميع الحقوق محفوظة</p>
+        <Link to="/terms" className="mt-2 inline-block underline underline-offset-4 hover:text-primary">الشروط والخصوصية</Link>
       </footer>
     </div>
   );

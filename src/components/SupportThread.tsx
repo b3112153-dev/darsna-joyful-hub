@@ -54,8 +54,8 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
           const fromAdmin = m.sender_id !== studentId;
           return (
             <div key={m.id} className={`flex ${own ? "justify-start" : "justify-end"}`}>
-              <div className={`max-w-[80%] rounded-2xl px-3 py-2 ${own ? "bg-bubble-own text-bubble-own-foreground" : "bg-bubble"}`}>
-                {!own && <p className="mb-0.5 text-xs font-semibold text-primary">{fromAdmin ? "الإدارة" : "الطالب"}</p>}
+              <div className={`max-w-[80%] rounded-2xl px-3 py-2 ${fromAdmin ? "bg-support text-support-foreground" : own ? "bg-bubble-own text-bubble-own-foreground" : "border bg-bubble text-card-foreground"}`}>
+                {fromAdmin ? <span className="mb-1 inline-block rounded-full bg-role-badge px-2 py-0.5 text-xs font-semibold text-role-badge-foreground">الدعم</span> : !own && <p className="mb-0.5 text-xs font-semibold">الطالب</p>}
                 <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>
                 <p className="mt-1 text-[10px] opacity-70">{new Date(m.created_at).toLocaleString("ar-JO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}</p>
               </div>

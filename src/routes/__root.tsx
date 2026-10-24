@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Darsna Jo | منصة طلاب التوجيهي الأردني" },
       { name: "description", content: "Darsna Jo مجتمع دراسي لطلاب التوجيهي في الأردن." },
       { property: "og:type", content: "website" },
-      { name: "theme-color", content: "#a8dcf7" },
+      { name: "theme-color", content: "#FBF0DD" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
@@ -117,7 +117,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark")}catch(e){}`,
           }}
         />
         <HeadContent />
