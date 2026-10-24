@@ -40,9 +40,11 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
   const [pending, setPending] = useState(false);
   const busy = useRef(false);
   const refresh = () => {
-    qc.invalidateQueries({ queryKey: ["focus", userId] });
-    qc.invalidateQueries({ queryKey: ["progress"] });
-    qc.invalidateQueries({ queryKey: ["active"] });
+    return Promise.all([
+      qc.invalidateQueries({ queryKey: ["focus", userId] }),
+      qc.invalidateQueries({ queryKey: ["progress"] }),
+      qc.invalidateQueries({ queryKey: ["active"] }),
+    ]);
   };
 
   const left = session ? remainingSeconds(session, now) : 0;
