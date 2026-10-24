@@ -6,10 +6,10 @@ import { readData, requestSignal } from "@/lib/requests";
 import { completionPatch, ENCOURAGEMENT, nextEncouragement, orderTodos, TODO_LIMIT, validTodoText, type Todo } from "@/lib/todos";
 
 type Action = { kind: "add"; text: string; id: string } | { kind: "toggle"; id: string; done: boolean } | { kind: "delete"; id: string };
+const lastEncouragement = new Map<string, number>();
 export function useTodos(userId: string) {
   const qc = useQueryClient();
   const key = ["todos", userId];
-  const previous = useRef(-1);
   const busy = useRef(false);
   const query = useQuery({ queryKey: key, staleTime: 30_000, queryFn: async ({ signal }) =>
     await readData(supabase.from("todos").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(TODO_LIMIT).abortSignal(requestSignal(signal))) ?? [] });
@@ -34,7 +34,11 @@ export function useTodos(userId: string) {
     },
     onError: (_error, _action, context) => { qc.setQueryData(key, context?.snapshot); toast.error("ما قدرنا نحفظ المهمة، جرّب مرة ثانية"); },
     onSuccess: (_data, action) => {
-      if (action.kind === "toggle" && action.done) { previous.current = nextEncouragement(previous.current); toast.success(ENCOURAGEMENT[previous.current]); }
+      if (action.kind === "toggle" && action.done) {
+        const next = nextEncouragement(lastEncouragement.get(userId) ?? -1);
+        lastEncouragement.set(userId, next);
+        toast.success(ENCOURAGEMENT[next]);
+      }
     },
     onSettled: async () => { await qc.invalidateQueries({ queryKey: key }); busy.current = false; },
   });
