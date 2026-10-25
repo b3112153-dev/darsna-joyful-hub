@@ -15,6 +15,7 @@ import { SessionProvider } from "@/hooks/use-auth";
 import { LangProvider, useT } from "@/lib/i18n";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
 import { Button } from "@/components/ui/button";
+import { ProfileSync } from "@/components/ProfileSync";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -149,6 +150,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <AppErrorBoundary><SessionProvider><LangProvider>
+        <ProfileSync />
         <Outlet />
         <Toaster position="top-center" richColors />
       </LangProvider></SessionProvider></AppErrorBoundary>

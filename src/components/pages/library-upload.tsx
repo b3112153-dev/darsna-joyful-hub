@@ -13,10 +13,11 @@ import { PageState } from "@/components/PageState";
 import { fileValidation, formatSize, hasExternalLink, validDraftQuestion, type DraftQuestion } from "@/lib/library";
 import { withTimeout } from "@/lib/requests";
 import { Route } from "@/routes/_authenticated/library_.upload";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 const newQuestion = (): DraftQuestion => ({ prompt: "", options: ["", ""], correct: 0 });
 export function LibraryUpload() {
+  const { lang } = useLang();
   const { tab: initialTab } = Route.useSearch();
   const [tab, setTab] = useState(initialTab ?? "file");
   const [title, setTitle] = useState(""); const [subject, setSubject] = useState(""); const [unit, setUnit] = useState("");
@@ -54,10 +55,10 @@ export function LibraryUpload() {
     finally { lock.current = false; setBusy(false); }
   }
   if (loading || isError) return <PageState loading={loading} error={isError} retry={() => void refetch()} />;
-  return <main dir="rtl" className="mx-auto max-w-2xl px-4 py-6 pb-24 font-display">
+  return <main dir={lang === "ar" ? "rtl" : "ltr"} className="mx-auto max-w-2xl px-4 py-6 pb-24 font-display">
     <Button variant="ghost" onClick={() => navigate({ to: "/library" })}><ArrowRight /> {t("المكتبة")}</Button>
     <h1 className="my-5 text-3xl font-extrabold">{t("ارفع للمكتبة")}</h1>
-    <Tabs value={tab} onValueChange={(v) => { if (!busy && (v === "file" || v === "quiz")) setTab(v); }} dir="rtl">
+    <Tabs value={tab} onValueChange={(v) => { if (!busy && (v === "file" || v === "quiz")) setTab(v); }} dir={lang === "ar" ? "rtl" : "ltr"}>
       <TabsList className="h-14 w-full rounded-[20px] bg-library-tabs p-1"><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="file">{t("ملف أو صورة")}</TabsTrigger><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="quiz">{t("أسئلة اختبار")}</TabsTrigger></TabsList>
       <form onSubmit={submit} className="mt-6 space-y-5">
         <fieldset disabled={busy} className="space-y-5">

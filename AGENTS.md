@@ -13,7 +13,9 @@
 - Permissions are enforced by RLS using `has_role` / `is_staff` / `is_banned` security-definer functions; client checks are UI-only. Why: the browser client is untrusted.
 - Roles live only in `user_roles`, bans only in `user_bans` (admin/mod-writable). Why: avoid self-escalation via profile edits.
 - The first user to sign up becomes admin (signup trigger). Why: bootstraps admin access without manual SQL.
-- Avatars live in a private bucket; `profiles.avatar_url` stores the storage path, resolved via signed URLs in `UserAvatar`. Why: public buckets are blocked in this workspace.
+- User identity surfaces render AvatarPic from joined/batched profiles.nickname/avatar/gender and shared cached avatar_images; legacy account uploads remain available. Why: wardrobe identity must be consistent without per-person image requests.
+- Profile reads use explicit public field allowlists; private onboarding fields are never requested from profiles. Why: onboarding data is not public identity data.
+- Student and staff chat experiences use separate lazy views with role-scoped controls; support inbox/history load in 50-row pages with user-scoped local read markers. Why: keep student navigation private and staff mobile lists lightweight.
 - Chat history uses cursor-paginated Query pages; Realtime merges only changed messages into that cache. Why: loaded history must survive new messages without full-list refetches.
 - Heavy page views live in `src/components/pages` and load via `lazyRouteComponent`; route metadata stays eager. Why: navigation downloads only the selected experience.
 - Only the global FocusWatcher completes expired timers. Why: timer views must not duplicate completion requests or notifications.

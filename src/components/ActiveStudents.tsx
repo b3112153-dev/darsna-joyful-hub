@@ -1,18 +1,21 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserAvatar } from "./UserAvatar";
+import { AvatarPic } from "./AvatarPic";
+import { profileName } from "@/lib/identity";
+import { useMe } from "@/hooks/use-auth";
 import { t } from "@/lib/i18n";
 
 export function ActiveStudents({ roomId }: { roomId: string }) {
   const qc = useQueryClient();
+  const { me } = useMe();
   const { data = [] } = useQuery({
     queryKey: ["active", roomId],
     refetchInterval: 30000,
     queryFn: async () => {
       const { data } = await supabase
         .from("focus_sessions")
-        .select("user_id,subject,status,ends_at,profiles(display_name,avatar_url)")
+        .select("user_id,subject,status,ends_at,profiles(display_name,nickname,avatar,gender)")
         .eq("room_id", roomId)
         .in("status", ["running", "paused"]);
       const now = Date.now();
@@ -39,10 +42,10 @@ export function ActiveStudents({ roomId }: { roomId: string }) {
         {data.map((s) => (
           <div key={s.user_id} className="flex items-center gap-2 rounded-full bg-secondary py-1 pe-3 ps-1">
             <span className="relative">
-              <UserAvatar path={s.profiles?.avatar_url} name={s.profiles?.display_name} className="size-7" />
+              <AvatarPic profile={s.profiles} className="size-7" />
               <span className={`absolute -bottom-0.5 -end-0.5 size-2.5 rounded-full ring-2 ring-card ${s.status === "paused" ? "bg-silver" : "bg-primary"}`} />
             </span>
-            <span className="text-xs"><b>{s.profiles?.display_name}</b> · {s.subject}</span>
+            <span className="text-xs"><b>{profileName(s.profiles, !!(me?.isStaff || me?.isSupport || me?.isOwner))}</b> · {s.subject}</span>
           </div>
         ))}
       </div>

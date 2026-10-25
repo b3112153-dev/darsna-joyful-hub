@@ -14,10 +14,10 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://drsna-joful.com/" },
       { name: "twitter:card", content: "summary" },
-      { title: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠" },
-      { name: "description", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠، مع غرف دردشة ومؤقت دراسة وجولات جماعية ومكتبة ملفات." },
-      { property: "og:title", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠" },
-      { property: "og:description", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني ٢٠٠٩ و٢٠١٠، مع غرف دردشة ومؤقت دراسة وجولات جماعية ومكتبة ملفات." },
+      { title: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني 2009 و2010" },
+      { name: "description", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني 2009 و2010، مع غرف دردشة ومؤقت دراسة وجولات جماعية ومكتبة ملفات." },
+      { property: "og:title", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني 2009 و2010" },
+      { property: "og:description", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني 2009 و2010، مع غرف دردشة ومؤقت دراسة وجولات جماعية ومكتبة ملفات." },
     ],
     links: [{ rel: "canonical", href: "https://drsna-joful.com/" }],
   }),
@@ -49,7 +49,7 @@ function Index() {
             <span className="grid size-12 place-items-center rounded-2xl bg-primary text-primary-foreground"><BookOpen className="size-7" /></span>
             <p className="font-display text-3xl font-bold">{t("درسنا جو")}</p>
           </div>
-          <span className="inline-flex rounded-full border bg-card px-4 py-1.5 text-sm font-bold text-primary">{t("توجيهي ٢٠٠٩ و٢٠١٠")}</span>
+          <span className="inline-flex rounded-full border bg-card px-4 py-1.5 text-sm font-bold text-primary">{t("توجيهي 2009 و2010")}</span>
           <h1 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-extrabold leading-normal sm:text-5xl">{t("الدراسة أخف لما نكون سوا")}</h1>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-muted-foreground">{t("غرف دراسة لكل جيل، مؤقت تركيز، وجدول على قدّك. وفي ناس حقيقية بتجاوبك لما تعلق.")}</p>
           <div className="mx-auto mt-7 flex max-w-sm flex-wrap justify-center gap-3">

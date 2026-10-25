@@ -59,7 +59,7 @@ export function Plan() {
     void (async () => {
       try {
         const { data } = await supabase.rpc("penalize_missed_exams");
-        if (typeof data === "number" && data > 0) toast(`انخصم ${arDigits(data)} نقاط لأنك ما حليت الامتحان خلال ٢٤ ساعة`);
+        if (typeof data === "number" && data > 0) toast(`انخصم ${arDigits(data)} نقاط لأنك ما حليت الامتحان خلال 24 ساعة`);
       } catch { /* بصمت */ }
     })();
   }, [user?.id]);

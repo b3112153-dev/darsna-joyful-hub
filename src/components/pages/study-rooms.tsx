@@ -6,14 +6,14 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
 import { useAvatarImages } from "@/hooks/use-avatar";
-import { AvatarPreview } from "@/components/AvatarPreview";
+import { AvatarPic } from "@/components/AvatarPic";
 import { PageState } from "@/components/PageState";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AvatarState } from "@/hooks/use-wallet";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 export const SCENES = [
   { id: "library", label: "مكتبة", icon: BookOpen, card: "bg-secondary", page: "bg-secondary" },
@@ -64,7 +64,7 @@ export function useRoomPresence(roomIds: string[]) {
 export function AvatarChip({ presence, images, size = "size-10" }: { presence: Presence; images: Record<string, string>; size?: string }) {
   return (
     <div className="flex w-14 flex-col items-center gap-1">
-      <AvatarPreview avatar={presence.profiles?.avatar} images={images} gender={presence.profiles?.gender} animate={presence.status === "running"} className={size} />
+      <AvatarPic profile={presence.profiles} images={images} animate={presence.status === "running"} className={size} />
       <span className="w-full truncate text-center text-[10px] font-bold">{presence.profiles?.nickname ?? t("طالب")}</span>
       <span className={`rounded-full px-1.5 py-px text-[9px] font-semibold ${presence.status === "paused" ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
         {presence.status === "paused" ? t("استراحة") : "يدرس"}
@@ -74,6 +74,7 @@ export function AvatarChip({ presence, images, size = "size-10" }: { presence: P
 }
 
 export function StudyRooms() {
+  const { lang } = useLang();
   const { user } = useMe();
   const navigate = useNavigate();
   const images = useAvatarImages();
@@ -120,12 +121,12 @@ export function StudyRooms() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button className="rounded-[14px]"><Plus className="size-4" /> {t("روم جديد")}</Button></DialogTrigger>
-          <DialogContent dir="rtl" className="font-display">
+          <DialogContent dir={lang === "ar" ? "rtl" : "ltr"} className="font-display">
             <DialogHeader><DialogTitle>{t("روم دراسة جديد")}</DialogTitle></DialogHeader>
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="room-name">{t("الاسم (٢–٣٠ حرف)")}</Label>
-                <Input id="room-name" maxLength={30} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("مثلاً: روم الفجر")} />
+                <Label htmlFor="room-name">{t("الاسم (2–30 حرف)")}</Label>
+                <Input id="room-name" maxLength={30} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("مثلاً: Study Room الفجر")} />
               </div>
               <div className="space-y-1.5">
                 <Label>{t("المشهد")}</Label>
@@ -162,7 +163,7 @@ export function StudyRooms() {
                 {members.length > 0 && images.data && (
                   <div className="mt-1.5 flex gap-1 overflow-hidden">
                     {members.slice(0, 6).map((p) => (
-                      <AvatarPreview key={p.user_id} avatar={p.profiles?.avatar} images={images.data} gender={p.profiles?.gender} animate={false} className="size-7 shrink-0" />
+                      <AvatarPic key={p.user_id} profile={p.profiles} images={images.data} className="size-7" />
                     ))}
                   </div>
                 )}

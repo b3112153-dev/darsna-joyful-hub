@@ -17,7 +17,7 @@ export const TodoList = memo(function TodoList({ userId }: { userId: string }) {
   return <section className="min-w-0 rounded-[26px] border bg-card px-4 pb-2.5 pt-4 font-display text-card-foreground" aria-label={t("مهامي")}>
     <div className="mb-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
       <h2 className="text-[17px] font-extrabold">{t("مهام اليوم")}</h2>
-      <span className="text-xs font-semibold text-muted-foreground">{tasks.rows.filter((task) => task.done).length.toLocaleString("ar-JO")} من {tasks.rows.length.toLocaleString("ar-JO")}</span>
+      <span className="text-xs font-semibold text-muted-foreground">{tasks.rows.filter((task) => task.done).length.toLocaleString("ar-u-nu-latn")} من {tasks.rows.length.toLocaleString("ar-u-nu-latn")}</span>
     </div>
     {tasks.isLoading ? <PageState loading /> : tasks.isError ? <PageState error retry={() => void tasks.refetch()} /> : <>
       {!tasks.rows.length && <p className="py-5 text-center text-sm text-muted-foreground">{t("يوم جديد، خطوة جديدة.")}</p>}

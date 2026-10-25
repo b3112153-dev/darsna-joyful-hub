@@ -11,12 +11,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "sonner";
 import { startStudyProgram } from "@/components/FocusExtras";
 import { MAX_PROGRAM_HOURS } from "@/lib/study-program";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 const PRESETS = [15, 25, 50, 90];
 const HOUR_PRESETS = [1, 2, 3, 4];
 
 export function FocusTimer({ focus, roomId, compact = false }: { focus: ReturnType<typeof useMyFocus>; roomId: string | null; compact?: boolean }) {
+  const { lang } = useLang();
   const { session, left, start, pause, resume, reset } = focus;
   const [minutes, setMinutes] = useState(25);
   const [subject, setSubject] = useState("");
@@ -27,7 +28,7 @@ export function FocusTimer({ focus, roomId, compact = false }: { focus: ReturnTy
   if (compact) return <section className="min-w-0 rounded-[26px] bg-secondary p-4 text-secondary-foreground" aria-label={t("مؤقت الدراسة")}>
     <p className="flex items-center gap-1.5 whitespace-nowrap text-[13px] font-semibold"><span className="size-1.5 shrink-0 animate-pulse rounded-full bg-primary motion-reduce:animate-none" /> {t("مؤقت الدراسة")}</p>
     <Popover><PopoverTrigger asChild><Button variant="ghost" className="mt-2 h-auto w-full px-0 py-1 text-[42px] font-extrabold leading-tight tabular-nums text-secondary-foreground" aria-label={t("اختيار المادة والمدة")} dir="ltr">{fmtClock((session ? left : minutes * 60) * 1000)}</Button></PopoverTrigger>
-      <PopoverContent dir="rtl" className="w-72 space-y-3 rounded-[20px] font-display">
+      <PopoverContent dir={lang === "ar" ? "rtl" : "ltr"} className="w-72 space-y-3 rounded-[20px] font-display">
         <Label htmlFor="compact-subject">{t("المادة")}</Label><Input id="compact-subject" maxLength={60} placeholder={t("مثلاً: رياضيات")} value={subject} onChange={(event) => setSubject(event.target.value)} disabled={!!session} />
         <Label htmlFor="compact-duration">{t("المدة (دقيقة)")}</Label><div className="flex flex-wrap gap-2">{PRESETS.map((m) => <Button key={m} size="sm" variant={minutes === m ? "default" : "outline"} disabled={!!session} onClick={() => setMinutes(m)}>{m}</Button>)}</div>
         <Input id="compact-duration" type="number" min={1} max={240} value={minutes} disabled={!!session} onChange={(event) => setMinutes(Math.min(240, Math.max(1, Number(event.target.value) || 1)))} />

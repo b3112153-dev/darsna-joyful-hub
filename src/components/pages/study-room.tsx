@@ -75,7 +75,7 @@ export function StudyRoom() {
 
         {full ? (
           <section className="space-y-3 rounded-[26px] border bg-card p-6 text-center shadow-card">
-            <p className="font-extrabold">الروم ممتلئ ({max} طلاب)</p>
+            <p className="font-extrabold">Study Room ممتلئ ({max} طلاب)</p>
             <p className="text-sm text-muted-foreground">{t("جرّب روم ثاني أو ارجع بعد شوي.")}</p>
             <Button asChild variant="outline"><Link to="/study-rooms"><DoorOpen className="size-4" /> {t("رومات الدراسة")}</Link></Button>
           </section>
@@ -83,7 +83,7 @@ export function StudyRoom() {
           <FocusTimer focus={focus} roomId={roomId} />
         )}
 
-        <Button variant="ghost" className="w-full" onClick={() => navigate({ to: "/study-rooms" })}><DoorOpen className="size-4" /> {t("مغادرة")}</Button>
+        <Button variant="ghost" className="w-full" onClick={() => navigate({ to: "/study-rooms" })}><DoorOpen className="size-4" /> Leave Room</Button>
       </div>
     </main>
   );

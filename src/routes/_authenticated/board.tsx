@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
 import { useAvatarImages } from "@/hooks/use-avatar";
 import { readData } from "@/lib/requests";
-import { AvatarPreview } from "@/components/AvatarPreview";
+import { AvatarPic } from "@/components/AvatarPic";
 import { PageState } from "@/components/PageState";
 import { Button } from "@/components/ui/button";
 import type { AvatarState } from "@/hooks/use-wallet";
@@ -92,7 +92,7 @@ function Board() {
       {board.data && (
         <>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            {rows.length} طالب درسوا هذا الأسبوع، وأول ١٠ بياخدوا جائزة
+            {rows.length} طالب درسوا هذا الأسبوع، وأول 10 بياخدوا جائزة
           </p>
 
           {rows.length === 0 && (
@@ -113,7 +113,7 @@ function Board() {
                   )}
                 >
                   <span className={cn("mb-1 font-display text-lg font-extrabold", r.rank === 1 && "text-primary")}>#{r.rank}</span>
-                  <AvatarPreview avatar={r.avatar} images={images.data ?? {}} gender={me?.profile?.gender} animate={false} className="size-16" />
+                  <AvatarPic profile={r} images={images.data ?? {}} className="size-16" />
                   <p className="mt-2 w-full truncate text-sm font-bold">{r.nickname || t("طالب")}</p>
                   <p className="text-xs text-muted-foreground">{r.hours} ساعة</p>
                   <span className="mt-1.5 rounded-full bg-staff px-2.5 py-0.5 text-xs font-bold text-staff-foreground">{PRIZES[r.rank]} JD</span>
@@ -126,7 +126,7 @@ function Board() {
             {rest.map((r) => (
               <div key={r.user_id} className={cn("flex items-center gap-3 p-3", r.is_me && "bg-secondary/60")}>
                 <span className="w-8 text-center font-display font-extrabold text-muted-foreground">{r.rank}</span>
-                <AvatarPreview avatar={r.avatar} images={images.data ?? {}} gender={me?.profile?.gender} animate={false} className="size-10" />
+                <AvatarPic profile={r} images={images.data ?? {}} className="size-10" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold">{r.nickname || t("طالب")}{r.is_me && t(" (أنت)")}</p>
                   <p className="text-xs text-muted-foreground">{r.hours} ساعة</p>

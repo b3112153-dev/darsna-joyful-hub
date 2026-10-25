@@ -82,8 +82,7 @@ export const MAX_DAYS = 60;
 /** تدرّج الأسبوع الأول/الثاني ثم كامل الهدف. */
 export const RAMP = [0.7, 0.85, 1];
 
-const AR = "٠١٢٣٤٥٦٧٨٩";
-export const arDigits = (s: string | number) => String(s).replace(/\d/g, (d) => AR[Number(d)]!);
+export const arDigits = (s: string | number) => String(s);
 
 export function fmtMin(min: number): string {
   const m = ((min % 1440) + 1440) % 1440;

@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserAvatar } from "./UserAvatar";
+import { AvatarPic } from "./AvatarPic";
 import { ThemeToggle } from "./ThemeToggle";
 import { LangToggle } from "./LangToggle";
-import { useT } from "@/lib/i18n";
+import { useLang, useT } from "@/lib/i18n";
 
 export const MAIN_NAV = [
   { to: "/focus", label: "الرئيسية", icon: Timer },
@@ -26,7 +26,8 @@ export const MAIN_NAV = [
 export function SiteHeader() {
   const { user, me } = useMe();
   const t = useT();
-  const canAdmin = !!me && (me.isStaff || me.isSupport);
+  const { lang } = useLang();
+  const canAdmin = !!me && (me.isStaff || me.isSupport || me.isOwner);
   const qc = useQueryClient();
   const navigate = useNavigate();
 
@@ -73,9 +74,9 @@ export function SiteHeader() {
                     <Link to="/support"><Headset /> تواصل مع الإدارة</Link>
                   </Button>
                 )}
-                <DropdownMenu dir="rtl">
+                <DropdownMenu dir={lang === "ar" ? "rtl" : "ltr"}>
                   <DropdownMenuTrigger className="rounded-full">
-                    <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} />
+                    <AvatarPic profile={me?.profile} />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52">
                     <DropdownMenuItem asChild><Link to="/progress"><BarChart3 /> {t("تقدمي")}</Link></DropdownMenuItem>

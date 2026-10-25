@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserAvatar } from "./UserAvatar";
-import { t } from "@/lib/i18n";
+import { AvatarPic } from "./AvatarPic";
+import type { PublicProfile } from "@/lib/identity";
+import { useLang, t } from "@/lib/i18n";
 
 export function roundTimes(startsAt: string, minutes: number, now: number) {
   const start = new Date(startsAt).getTime();
@@ -43,7 +44,7 @@ type Round = {
   starts_at: string;
   duration_minutes: number;
   created_by: string;
-  session_participants: { user_id: string; profiles: { display_name: string; avatar_url: string | null } | null }[];
+  session_participants: { user_id: string; profiles: PublicProfile | null }[];
 };
 
 export function StudyRounds({ roomId }: { roomId: string }) {
@@ -59,7 +60,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
       const since = new Date(Date.now() - 4 * 3600000).toISOString();
       const { data } = await supabase
         .from("study_sessions")
-        .select("id,title,starts_at,duration_minutes,created_by,session_participants(user_id,profiles(display_name,avatar_url))")
+        .select("id,title,starts_at,duration_minutes,created_by,session_participants(user_id,profiles(display_name,nickname,avatar,gender))")
         .eq("room_id", roomId)
         .gte("starts_at", since)
         .order("starts_at");
@@ -151,7 +152,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center -space-x-2 space-x-reverse">
                   {r.session_participants.slice(0, 5).map((p) => (
-                    <UserAvatar key={p.user_id} path={p.profiles?.avatar_url} name={p.profiles?.display_name} className="size-6 ring-2 ring-card" />
+                    <AvatarPic key={p.user_id} profile={p.profiles} className="size-6 ring-2 ring-card" />
                   ))}
                   <span className="ps-3 text-xs text-muted-foreground flex items-center gap-1"><Users className="size-3" />{r.session_participants.length}</span>
                 </div>
@@ -170,6 +171,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
 }
 
 function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
+  const { lang } = useLang();
   const { user } = useMe();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -201,7 +203,7 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" className="h-7"><Plus /> {t("جولة جديدة")}</Button>
       </DialogTrigger>
-      <DialogContent dir="rtl">
+      <DialogContent dir={lang === "ar" ? "rtl" : "ltr"}>
         <DialogHeader><DialogTitle>{t("جولة دراسة جديدة")}</DialogTitle></DialogHeader>
         <form onSubmit={create} className="space-y-4">
           <div className="space-y-1.5">
@@ -211,7 +213,7 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>{t("مدة الجولة")}</Label>
-              <Select dir="rtl" value={duration} onValueChange={setDuration}>
+              <Select dir={lang === "ar" ? "rtl" : "ltr"} value={duration} onValueChange={setDuration}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {[15, 25, 30, 45, 60, 90, 120].map((m) => <SelectItem key={m} value={String(m)}>{m} دقيقة</SelectItem>)}
@@ -220,7 +222,7 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
             </div>
             <div className="space-y-1.5">
               <Label>{t("تبدأ")}</Label>
-              <Select dir="rtl" value={startIn} onValueChange={setStartIn}>
+              <Select dir={lang === "ar" ? "rtl" : "ltr"} value={startIn} onValueChange={setStartIn}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="0">{t("هلأ")}</SelectItem>

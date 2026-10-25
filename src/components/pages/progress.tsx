@@ -44,7 +44,7 @@ export function Progress() {
             <div key={d.date.toISOString()} className="flex flex-1 flex-col items-center gap-1">
               <span className="text-[10px] text-muted-foreground">{d.seconds ? Math.round(d.seconds / 60) : ""}</span>
               <div className="w-full rounded-t-lg bg-brand" style={{ height: `${(d.seconds / max) * 100}%`, minHeight: d.seconds ? 4 : 0 }} />
-              <span className="text-xs text-muted-foreground">{d.date.toLocaleDateString("ar-JO", { weekday: "short" })}</span>
+              <span className="text-xs text-muted-foreground">{d.date.toLocaleDateString("ar-u-nu-latn", { weekday: "short" })}</span>
             </div>
           ))}
         </div>

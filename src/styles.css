@@ -56,10 +56,12 @@
   --color-task-border: var(--task-border);
   --color-task-completed: var(--task-completed);
   --color-library-tabs: var(--library-tabs);
+  --color-avatar-foreground: var(--avatar-foreground);
 
 }
 
 :root {
+  --avatar-foreground: #66140e;
   --library-tabs: #F0E0C4;
   --radius: 1.1rem;
   --task-border: #B08A80;
@@ -162,6 +164,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
   }
   h1, h2, h3, h4 { font-family: var(--font-display); }
 }

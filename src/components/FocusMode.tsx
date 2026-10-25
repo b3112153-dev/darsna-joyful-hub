@@ -9,7 +9,7 @@ import { fmtClock } from "@/components/StudyRounds";
 import { Progress } from "@/components/ui/progress";
 import { FOCUS_PREFERENCE_DEFAULT, focusPreferenceEnabled } from "@/lib/focus-preference";
 import { SoundsSheet } from "@/components/SoundsSheet";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 type Mode = { focus: ReturnType<typeof useMyFocus>; visible: boolean; enter: () => void; exit: () => void; enabled: boolean; setEnabled: (value: boolean) => void };
 const FocusModeContext = createContext<Mode | null>(null);
@@ -33,12 +33,13 @@ export function FocusModeProvider({ children }: { children: ReactNode }) {
 }
 
 export function FocusModeScreen() {
+  const { lang } = useLang();
   const { user } = useSession();
   const { focus, exit } = useFocusMode();
   const [endOpen, setEndOpen] = useState(false);
   const { session, left, pending } = focus;
   if (!session || !user) return null;
-  return <main dir="rtl" className="min-h-dvh bg-background px-5 py-6 font-display text-foreground sm:py-10">
+  return <main dir={lang === "ar" ? "rtl" : "ltr"} className="min-h-dvh bg-background px-5 py-6 font-display text-foreground sm:py-10">
     <div className="mx-auto max-w-[440px] space-y-5">
       <div className="flex justify-end"><Button variant="ghost" size="sm" className="text-muted-foreground" onClick={exit}><Minimize2 className="size-4" /> {t("خروج من وضع التركيز")}</Button></div>
       <section className="space-y-5 text-center">
