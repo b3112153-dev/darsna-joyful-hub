@@ -72,7 +72,7 @@ export function useRoomMessages(roomId: string, userId: string | undefined, enab
       if (!message) throw new Error("تعذر تعديل الرسالة");
       qc.setQueryData<MessageCache>(key, (cache) => mergeMessage(cache, message));
       return true;
-    } catch { toast.error("تعذر تعديل الرسالة؛ حاول مرة ثانية."); return false; }
+    } catch (error) { toast.error(error instanceof Error && error.message ? error.message : "تعذر تعديل الرسالة؛ حاول مرة ثانية."); return false; }
   }, [key, qc, userId]);
 
   const append = useCallback((message: Message) => qc.setQueryData<MessageCache>(key, (cache) => mergeMessage(cache, message)), [key, qc]);
