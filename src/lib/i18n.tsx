@@ -6,7 +6,8 @@ export type Lang = "ar" | "en";
 let current: Lang = "ar";
 
 /** Non-hook translator for module code (toasts, lib helpers). */
-export function t(ar: string): string {
+export function t(ar: string | null | undefined): string {
+  if (!ar) return "";
   return current === "en" ? (EN[ar] ?? ar) : ar;
 }
 
@@ -61,5 +62,5 @@ export function useLang() {
 /** Hook translator: t("نص عربي") → English when the active language is en. */
 export function useT() {
   const { lang } = useLang();
-  return (ar: string) => (lang === "en" ? (EN[ar] ?? ar) : ar);
+  return (ar: string | null | undefined) => (ar ? (lang === "en" ? (EN[ar] ?? ar) : ar) : "");
 }
