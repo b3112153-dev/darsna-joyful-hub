@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { REACTION_EMOJIS } from "@/lib/reactions";
+import { t } from "@/lib/i18n";
 
 type Actions = {
   onReact: (emoji: string) => void;
@@ -51,10 +52,10 @@ export function MessageActionsBar({ actions, children }: { actions: Actions; chi
           ))}
         </div>
         <div className="grid grid-cols-2 gap-1 border-t pt-1.5">
-          <Button size="sm" variant="ghost" className="justify-start" onClick={pick(actions.onReply)}><Reply /> رد</Button>
+          <Button size="sm" variant="ghost" className="justify-start" onClick={pick(actions.onReply)}><Reply /> {t("رد")}</Button>
           <CopyButton onCopy={pick(actions.onCopy)} />
-          {actions.onEdit && <Button size="sm" variant="ghost" className="justify-start" onClick={pick(actions.onEdit)}><Pencil /> تعديل</Button>}
-          {actions.onDelete && <Button size="sm" variant="ghost" className="justify-start text-destructive" onClick={pick(actions.onDelete)}><Trash2 /> حذف</Button>}
+          {actions.onEdit && <Button size="sm" variant="ghost" className="justify-start" onClick={pick(actions.onEdit)}><Pencil /> {t("تعديل")}</Button>}
+          {actions.onDelete && <Button size="sm" variant="ghost" className="justify-start text-destructive" onClick={pick(actions.onDelete)}><Trash2 /> {t("حذف")}</Button>}
         </div>
       </PopoverContent>
     </Popover>
@@ -62,16 +63,16 @@ export function MessageActionsBar({ actions, children }: { actions: Actions; chi
 }
 
 function CopyButton({ onCopy }: { onCopy: () => void }) {
-  return <Button size="sm" variant="ghost" className="justify-start" onClick={onCopy}><Copy /> نسخ</Button>;
+  return <Button size="sm" variant="ghost" className="justify-start" onClick={onCopy}><Copy /> {t("نسخ")}</Button>;
 }
 
 export function MoreButton({ onClick }: { onClick: () => void }) {
-  return <Button variant="ghost" size="icon" aria-label="خيارات الرسالة" onClick={onClick} className="size-8 shrink-0 text-muted-foreground"><MoreHorizontal className="size-4" /></Button>;
+  return <Button variant="ghost" size="icon" aria-label={t("خيارات الرسالة")} onClick={onClick} className="size-8 shrink-0 text-muted-foreground"><MoreHorizontal className="size-4" /></Button>;
 }
 
 export async function copyMessage(content: string) {
   try {
     await navigator.clipboard.writeText(content);
-    toast.success("انحفظت بالحافظة", { icon: <Check className="size-4" /> });
-  } catch { toast.error("تعذر النسخ"); }
+    toast.success(t("انحفظت بالحافظة"), { icon: <Check className="size-4" /> });
+  } catch { toast.error(t("تعذر النسخ")); }
 }

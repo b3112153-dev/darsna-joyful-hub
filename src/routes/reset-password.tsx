@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SiteHeader } from "@/components/SiteHeader";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -25,19 +26,19 @@ function Reset() {
   const navigate = useNavigate();
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 8) { toast.error("8 أحرف على الأقل"); return; }
+    if (pw.length < 8) { toast.error(t("8 أحرف على الأقل")); return; }
     const { error } = await supabase.auth.updateUser({ password: pw });
     if (error) { toast.error(error.message); return; }
-    toast.success("تم تغيير كلمة السر");
+    toast.success(t("تم تغيير كلمة السر"));
     navigate({ to: "/rooms" });
   }
   return (
     <div className="min-h-screen bg-sky">
       <SiteHeader />
       <form onSubmit={submit} className="mx-auto mt-12 max-w-md space-y-4 rounded-3xl border bg-card p-8 shadow-soft">
-        <h1 className="text-xl font-bold">كلمة سر جديدة</h1>
+        <h1 className="text-xl font-bold">{t("كلمة سر جديدة")}</h1>
         <Input type="password" dir="ltr" value={pw} onChange={(e) => setPw(e.target.value)} />
-        <Button className="w-full bg-brand">حفظ</Button>
+        <Button className="w-full bg-brand">{t("حفظ")}</Button>
       </form>
     </div>
   );

@@ -5,6 +5,7 @@ import { Flame, Clock, CalendarDays } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
 import { hoursLabel, summarize } from "@/lib/focus";
+import { t } from "@/lib/i18n";
 
 export function Progress() {
   const { user } = useMe();
@@ -12,7 +13,7 @@ export function Progress() {
     queryKey: ["progress", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      if (!user) throw new Error("سجّل دخولك أولاً");
+      if (!user) throw new Error(t("سجّل دخولك أولاً"));
       const since = new Date(Date.now() - 120 * 86400000).toISOString();
       const data = await readData(supabase
         .from("focus_sessions")
@@ -24,20 +25,20 @@ export function Progress() {
     },
   });
   if (isError) return <PageState error retry={() => void refetch()} />;
-  if (isLoading || !data) return <main className="mx-auto max-w-4xl px-4 py-8 text-muted-foreground">جاري التحميل…</main>;
+  if (isLoading || !data) return <main className="mx-auto max-w-4xl px-4 py-8 text-muted-foreground">{t("جاري التحميل…")}</main>;
   const max = Math.max(...data.week.map((d) => d.seconds), 1);
   const maxSub = data.subjects[0]?.seconds ?? 1;
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-8">
-      <h1 className="text-3xl font-bold">تقدمي</h1>
+      <h1 className="text-3xl font-bold">{t("تقدمي")}</h1>
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat icon={Flame} label="أيام متتالية" value={`${data.streak} يوم`} />
-        <Stat icon={CalendarDays} label="هالأسبوع" value={hoursLabel(data.weekTotal)} />
-        <Stat icon={Clock} label="المجموع" value={hoursLabel(data.total)} />
+        <Stat icon={CalendarDays} label={t("هالأسبوع")} value={hoursLabel(data.weekTotal)} />
+        <Stat icon={Clock} label={t("المجموع")} value={hoursLabel(data.total)} />
       </div>
       <section className="rounded-2xl border bg-card p-5 shadow-card">
-        <h2 className="mb-4 font-semibold">آخر 7 أيام</h2>
+        <h2 className="mb-4 font-semibold">{t("آخر 7 أيام")}</h2>
         <div className="flex h-40 items-end gap-2">
           {data.week.map((d) => (
             <div key={d.date.toISOString()} className="flex flex-1 flex-col items-center gap-1">
@@ -47,11 +48,11 @@ export function Progress() {
             </div>
           ))}
         </div>
-        <p className="mt-2 text-xs text-muted-foreground">الأرقام بالدقائق</p>
+        <p className="mt-2 text-xs text-muted-foreground">{t("الأرقام بالدقائق")}</p>
       </section>
       <section className="rounded-2xl border bg-card p-5 shadow-card">
-        <h2 className="mb-4 font-semibold">حسب المادة</h2>
-        {data.subjects.length === 0 && <p className="text-sm text-muted-foreground">لسا ما خلصت أي جلسة — ابدأ المؤقت من أي غرفة.</p>}
+        <h2 className="mb-4 font-semibold">{t("حسب المادة")}</h2>
+        {data.subjects.length === 0 && <p className="text-sm text-muted-foreground">{t("لسا ما خلصت أي جلسة — ابدأ المؤقت من أي غرفة.")}</p>}
         <div className="space-y-3">
           {data.subjects.map((s) => (
             <div key={s.subject}>

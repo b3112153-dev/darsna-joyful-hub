@@ -6,6 +6,7 @@ import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import { useMe } from "@/hooks/use-auth";
 import { PageState } from "@/components/PageState";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,7 +35,7 @@ function Index() {
   const { user, me, loading, isError, refetch } = useMe();
   async function google() {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) toast.error("تعذر تسجيل الدخول عبر Google");
+    if (result.error) toast.error(t("تعذر تسجيل الدخول عبر Google"));
   }
   if (loading) return <PageState loading />;
   if (user && isError) return <PageState error retry={() => void refetch()} />;
@@ -46,16 +47,16 @@ function Index() {
         <section className="rise-in text-center">
           <div className="mb-5 flex items-center justify-center gap-3">
             <span className="grid size-12 place-items-center rounded-2xl bg-primary text-primary-foreground"><BookOpen className="size-7" /></span>
-            <p className="font-display text-3xl font-bold">درسنا جو</p>
+            <p className="font-display text-3xl font-bold">{t("درسنا جو")}</p>
           </div>
-          <span className="inline-flex rounded-full border bg-card px-4 py-1.5 text-sm font-bold text-primary">توجيهي ٢٠٠٩ و٢٠١٠</span>
-          <h1 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-extrabold leading-normal sm:text-5xl">الدراسة أخف لما نكون سوا</h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-muted-foreground">غرف دراسة لكل جيل، مؤقت تركيز، وجدول على قدّك. وفي ناس حقيقية بتجاوبك لما تعلق.</p>
+          <span className="inline-flex rounded-full border bg-card px-4 py-1.5 text-sm font-bold text-primary">{t("توجيهي ٢٠٠٩ و٢٠١٠")}</span>
+          <h1 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-extrabold leading-normal sm:text-5xl">{t("الدراسة أخف لما نكون سوا")}</h1>
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-muted-foreground">{t("غرف دراسة لكل جيل، مؤقت تركيز، وجدول على قدّك. وفي ناس حقيقية بتجاوبك لما تعلق.")}</p>
           <div className="mx-auto mt-7 flex max-w-sm flex-wrap justify-center gap-3">
-            <Button asChild size="lg" className="flex-1 rounded-2xl"><Link to="/auth">إنشاء حساب <ArrowLeft className="size-4" /></Link></Button>
-            <Button asChild size="lg" variant="outline" className="flex-1 rounded-2xl"><Link to="/auth">عندي حساب</Link></Button>
+            <Button asChild size="lg" className="flex-1 rounded-2xl"><Link to="/auth">{t("إنشاء حساب")} <ArrowLeft className="size-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline" className="flex-1 rounded-2xl"><Link to="/auth">{t("عندي حساب")}</Link></Button>
           </div>
-          <Button variant="ghost" onClick={google} className="mt-3 gap-2 text-muted-foreground"><span className="font-display font-bold" aria-hidden="true">G</span> المتابعة باستخدام Google</Button>
+          <Button variant="ghost" onClick={google} className="mt-3 gap-2 text-muted-foreground"><span className="font-display font-bold" aria-hidden="true">G</span> {t("المتابعة باستخدام Google")}</Button>
         </section>
         <section className="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-4 pb-5 sm:mt-14 sm:gap-6 lg:grid-cols-4">
           {features.map((f) => <article key={f.title} className={`rounded-3xl border p-4 shadow-card transition-transform hover:rotate-0 sm:p-6 ${f.color} ${f.tilt}`}>
@@ -66,8 +67,8 @@ function Index() {
         </section>
       </main>
       <footer className="border-t px-5 py-6 text-center text-sm text-muted-foreground">
-        <p>© 2026 Darsna Jo — جميع الحقوق محفوظة</p>
-        <Link to="/terms" className="mt-2 inline-block underline underline-offset-4 hover:text-primary">الشروط والخصوصية</Link>
+        <p>{t("© 2026 Darsna Jo — جميع الحقوق محفوظة")}</p>
+        <Link to="/terms" className="mt-2 inline-block underline underline-offset-4 hover:text-primary">{t("الشروط والخصوصية")}</Link>
       </footer>
     </div>
   );

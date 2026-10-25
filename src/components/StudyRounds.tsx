@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UserAvatar } from "./UserAvatar";
+import { t } from "@/lib/i18n";
 
 export function roundTimes(startsAt: string, minutes: number, now: number) {
   const start = new Date(startsAt).getTime();
@@ -101,7 +102,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
   async function join(id: string) {
     if (!user) return;
     const { error } = await supabase.from("session_participants").insert({ session_id: id, user_id: user.id });
-    if (error) toast.error("تعذر الانضمام");
+    if (error) toast.error(t("تعذر الانضمام"));
     qc.invalidateQueries({ queryKey: key });
   }
   async function leave(id: string) {
@@ -110,7 +111,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
     qc.invalidateQueries({ queryKey: key });
   }
   async function remove(id: string) {
-    if (!confirm("إلغاء الجولة؟")) return;
+    if (!confirm(t("إلغاء الجولة؟"))) return;
     await supabase.from("study_sessions").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: key });
   }
@@ -118,29 +119,29 @@ export function StudyRounds({ roomId }: { roomId: string }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <p className="flex items-center gap-1.5 text-sm font-semibold"><Timer className="size-4 text-primary" /> جولات الدراسة</p>
+        <p className="flex items-center gap-1.5 text-sm font-semibold"><Timer className="size-4 text-primary" /> {t("جولات الدراسة")}</p>
         {!me?.isBanned && <NewRound roomId={roomId} onDone={() => qc.invalidateQueries({ queryKey: key })} />}
       </div>
-      {visible.length === 0 && <p className="text-xs text-muted-foreground">ما في جولات حالياً — ابدأ وحدة وخلّي زملاءك ينضموا!</p>}
+      {visible.length === 0 && <p className="text-xs text-muted-foreground">{t("ما في جولات حالياً — ابدأ وحدة وخلّي زملاءك ينضموا!")}</p>}
       <div className="flex gap-2 overflow-x-auto pb-1">
         {visible.map((r) => {
-          const t = roundTimes(r.starts_at, r.duration_minutes, now);
+          const rt = roundTimes(r.starts_at, r.duration_minutes, now);
           const joined = r.session_participants.some((p) => p.user_id === user?.id);
-          const live = t.status === "live";
-          const progress = live ? ((now - t.start) / (t.end - t.start)) * 100 : 0;
+          const live = rt.status === "live";
+          const progress = live ? ((now - rt.start) / (rt.end - rt.start)) * 100 : 0;
           return (
             <div key={r.id} className={`min-w-60 shrink-0 rounded-xl border p-3 ${live ? "border-primary bg-secondary" : "bg-card"}`}>
               <div className="mb-1 flex items-start justify-between gap-2">
                 <p className="text-sm font-semibold break-words">{r.title}</p>
                 {(r.created_by === user?.id || me?.isStaff) && (
-                  <button onClick={() => remove(r.id)} aria-label="إلغاء" className="text-muted-foreground hover:text-destructive"><Trash2 className="size-3.5" /></button>
+                  <button onClick={() => remove(r.id)} aria-label={t("إلغاء")} className="text-muted-foreground hover:text-destructive"><Trash2 className="size-3.5" /></button>
                 )}
               </div>
               <p className="font-display text-2xl font-bold tabular-nums text-primary" dir="ltr">
-                {fmtClock(live ? t.end - now : t.start - now)}
+                {fmtClock(live ? rt.end - now : rt.start - now)}
               </p>
               <p className="mb-2 text-xs text-muted-foreground">
-                {live ? "متبقي على نهاية الجولة" : "باقي على البداية"} · {r.duration_minutes} دقيقة
+                {live ? t("متبقي على نهاية الجولة") : "باقي على البداية"} · {r.duration_minutes} دقيقة
               </p>
               {live && (
                 <div className="mb-2 h-1.5 overflow-hidden rounded-full bg-muted">
@@ -155,9 +156,9 @@ export function StudyRounds({ roomId }: { roomId: string }) {
                   <span className="ps-3 text-xs text-muted-foreground flex items-center gap-1"><Users className="size-3" />{r.session_participants.length}</span>
                 </div>
                 {joined ? (
-                  <Button size="sm" variant="outline" onClick={() => leave(r.id)}>مغادرة</Button>
+                  <Button size="sm" variant="outline" onClick={() => leave(r.id)}>{t("مغادرة")}</Button>
                 ) : (
-                  <Button size="sm" className="bg-brand" disabled={me?.isBanned} onClick={() => join(r.id)}>انضمام</Button>
+                  <Button size="sm" className="bg-brand" disabled={me?.isBanned} onClick={() => join(r.id)}>{t("انضمام")}</Button>
                 )}
               </div>
             </div>
@@ -185,11 +186,11 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
       .select("id")
       .single();
     if (error || !data) {
-      toast.error("تعذر إنشاء الجولة");
+      toast.error(t("تعذر إنشاء الجولة"));
       return;
     }
     await supabase.from("session_participants").insert({ session_id: data.id, user_id: user.id });
-    toast.success("تم إنشاء الجولة");
+    toast.success(t("تم إنشاء الجولة"));
     setTitle("");
     setOpen(false);
     onDone();
@@ -198,18 +199,18 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" className="h-7"><Plus /> جولة جديدة</Button>
+        <Button size="sm" variant="outline" className="h-7"><Plus /> {t("جولة جديدة")}</Button>
       </DialogTrigger>
       <DialogContent dir="rtl">
-        <DialogHeader><DialogTitle>جولة دراسة جديدة</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{t("جولة دراسة جديدة")}</DialogTitle></DialogHeader>
         <form onSubmit={create} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>شو رح تدرسوا؟</Label>
-            <Input required minLength={2} maxLength={80} placeholder="مثلاً: حل أسئلة الوحدة الثانية" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Label>{t("شو رح تدرسوا؟")}</Label>
+            <Input required minLength={2} maxLength={80} placeholder={t("مثلاً: حل أسئلة الوحدة الثانية")} value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label>مدة الجولة</Label>
+              <Label>{t("مدة الجولة")}</Label>
               <Select dir="rtl" value={duration} onValueChange={setDuration}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -218,17 +219,17 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>تبدأ</Label>
+              <Label>{t("تبدأ")}</Label>
               <Select dir="rtl" value={startIn} onValueChange={setStartIn}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="0">هلأ</SelectItem>
+                  <SelectItem value="0">{t("هلأ")}</SelectItem>
                   {[5, 10, 15, 30, 60].map((m) => <SelectItem key={m} value={String(m)}>بعد {m} دقيقة</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
           </div>
-          <Button className="w-full bg-brand">إنشاء الجولة</Button>
+          <Button className="w-full bg-brand">{t("إنشاء الجولة")}</Button>
         </form>
       </DialogContent>
     </Dialog>

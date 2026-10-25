@@ -1,11 +1,12 @@
 import type { Json } from "@/integrations/supabase/types";
+import { t } from "@/lib/i18n";
 
 export const MAX_LIBRARY_BYTES = 10 * 1024 * 1024;
 export const LIBRARY_EXTENSIONS = ["pdf", "png", "jpg", "jpeg", "webp", "gif", "bmp", "avif", "heic", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "txt"];
 export const hasExternalLink = (text: string) => /https?:|www\./i.test(text);
 export function fileValidation(file: { name: string; size: number }) {
-  if (file.size > MAX_LIBRARY_BYTES) return "حجم الملف لازم يكون ١٠ ميغا أو أقل";
-  if (!LIBRARY_EXTENSIONS.includes(file.name.split(".").pop()?.toLowerCase() ?? "")) return "نوع الملف غير مسموح";
+  if (file.size > MAX_LIBRARY_BYTES) return t("حجم الملف لازم يكون ١٠ ميغا أو أقل");
+  if (!LIBRARY_EXTENSIONS.includes(file.name.split(".").pop()?.toLowerCase() ?? "")) return t("نوع الملف غير مسموح");
   return null;
 }
 export const formatSize = (n: number | null) => !n ? "" : n >= 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.ceil(n / 1024)} KB`;

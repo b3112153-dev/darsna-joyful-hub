@@ -7,6 +7,7 @@ import { useMyFocus } from "@/hooks/use-focus";
 import { deviceIds } from "@/lib/device";
 import { readData } from "@/lib/requests";
 import { toast } from "sonner";
+import { t } from "@/lib/i18n";
 
 /** Keeps the student's timer counting toward weekly stats on every page. */
 export function FocusWatcher() {
@@ -42,7 +43,7 @@ export function BanGuard() {
         if (!active) return;
         const banned = await readData(supabase.rpc("device_is_banned", ids));
         if (active && banned === true) await kick();
-      }).catch(() => { if (active) { registered.current = null; toast.error("تعذر التحقق من الجهاز؛ أعد تحميل الصفحة."); } });
+      }).catch(() => { if (active) { registered.current = null; toast.error(t("تعذر التحقق من الجهاز؛ أعد تحميل الصفحة.")); } });
     }
     const ch = supabase
       .channel(`ban-${user.id}-${crypto.randomUUID()}`)

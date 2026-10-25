@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { reactionToggle, type ReactionRow } from "@/lib/reactions";
+import { t } from "@/lib/i18n";
 
 type Table = "message_reactions" | "support_reactions";
 
@@ -45,7 +46,7 @@ export function useReactions(table: Table, messageIds: string[], userId: string 
         const { error } = await supabase.from(table).insert({ message_id: messageId, user_id: userId, emoji: add } as never);
         if (error) throw error;
       }
-    } catch { toast.error("تعذر حفظ التفاعل؛ حاول مرة ثانية."); }
+    } catch { toast.error(t("تعذر حفظ التفاعل؛ حاول مرة ثانية.")); }
     await qc.invalidateQueries({ queryKey: key });
   }
 

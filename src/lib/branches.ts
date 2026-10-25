@@ -1,4 +1,5 @@
 import type { Database } from "@/integrations/supabase/types";
+import { t } from "@/lib/i18n";
 
 export type Branch = Database["public"]["Enums"]["study_branch"];
 
@@ -18,4 +19,4 @@ const LABELS: Partial<Record<Branch, string>> = {
   engineering: "الهندسي",
 };
 
-export const branchLabel = (b: string | null | undefined) => (b && LABELS[b as Branch]) || "مشترك";
+export const branchLabel = (b: string | null | undefined) => (b && LABELS[b as Branch]) || t("مشترك");

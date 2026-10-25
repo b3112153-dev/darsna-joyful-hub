@@ -8,6 +8,7 @@ import { useMe } from "@/hooks/use-auth";
 import { PageState } from "@/components/PageState";
 import { Progress } from "@/components/ui/progress";
 import { DHIKR_ENCOURAGEMENT, DHIKR_ITEMS, ammanDayOfYear, ammanHour, ammanToday, dhikrStreak, fardComplete, storyIndex, storyUnlocked } from "@/lib/dhikr";
+import { t } from "@/lib/i18n";
 
 type Story = { id: string; kind: string; title: string; body: string; source: string | null; sort: number };
 
@@ -44,7 +45,7 @@ export function Dhikr() {
   const streak = useMemo(() => dhikrStreak(dailyQuery.data ?? [], today), [dailyQuery.data, today]);
   const doneCount = DHIKR_ITEMS.filter((item) => todayItems.includes(item.id)).length;
   const complete = fardComplete(todayItems);
-  const encouragement = DHIKR_ENCOURAGEMENT[ammanDayOfYear() % DHIKR_ENCOURAGEMENT.length];
+  const encouragement = t(DHIKR_ENCOURAGEMENT[ammanDayOfYear() % DHIKR_ENCOURAGEMENT.length]!);
   const stories = storiesQuery.data ?? [];
   const story = stories.length ? stories[storyIndex(stories.length, ammanDayOfYear())] : null;
   const unlocked = storyUnlocked(todayItems, ammanHour());
@@ -58,7 +59,7 @@ export function Dhikr() {
       if (error) throw error;
       if (!todayItems.includes(id) && fardComplete(next)) toast.success(encouragement);
       await qc.invalidateQueries({ queryKey: ["dhikr", user.id] });
-    } catch { toast.error("تعذر الحفظ؛ حاول مرة ثانية."); }
+    } catch { toast.error(t("تعذر الحفظ؛ حاول مرة ثانية.")); }
     finally { setSaving(false); }
   }
 
@@ -66,11 +67,11 @@ export function Dhikr() {
     <main className="mx-auto max-w-[480px] space-y-4 px-5 py-6 font-display">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-[26px] font-extrabold">ذكرى</h1>
+          <h1 className="text-[26px] font-extrabold">{t("ذكرى")}</h1>
           <p className="text-sm text-muted-foreground">أذكارك وفرائضك اليومية، يوم {today}</p>
         </div>
         {canManage && (
-          <Link to="/admin/dhikr" aria-label="إدارة قصص ذكرى" className="grid size-11 shrink-0 place-items-center rounded-[14px] border bg-card"><Settings2 className="size-5" /></Link>
+          <Link to="/admin/dhikr" aria-label={t("إدارة قصص ذكرى")} className="grid size-11 shrink-0 place-items-center rounded-[14px] border bg-card"><Settings2 className="size-5" /></Link>
         )}
       </div>
 
@@ -81,13 +82,13 @@ export function Dhikr() {
           <section className="space-y-2 rounded-[20px] border bg-card p-4 shadow-card">
             <div className="flex items-center justify-between text-sm font-bold">
               <span>إنجاز اليوم: {doneCount} من {DHIKR_ITEMS.length}</span>
-              <span className="flex items-center gap-1 text-primary"><Flame className="size-4" /> {streak} {streak === 1 ? "يوم" : "أيام"} متتالية</span>
+              <span className="flex items-center gap-1 text-primary"><Flame className="size-4" /> {streak} {streak === 1 ? t("يوم") : "أيام"} متتالية</span>
             </div>
-            <Progress value={(doneCount / DHIKR_ITEMS.length) * 100} className="h-2" aria-label="شريط إنجاز اليوم" />
+            <Progress value={(doneCount / DHIKR_ITEMS.length) * 100} className="h-2" aria-label={t("شريط إنجاز اليوم")} />
             {complete && <p className="rounded-[14px] bg-secondary px-3 py-2 text-center text-sm font-bold">{encouragement}</p>}
           </section>
 
-          <section className="space-y-2" aria-label="قائمة التأشير اليومية">
+          <section className="space-y-2" aria-label={t("قائمة التأشير اليومية")}>
             {DHIKR_ITEMS.map((item) => {
               const checked = todayItems.includes(item.id);
               return (
@@ -100,16 +101,16 @@ export function Dhikr() {
             })}
           </section>
 
-          <section className="rounded-[20px] border bg-card p-4 shadow-card" aria-label="قصة اليوم">
-            <h2 className="mb-2 flex items-center gap-2 text-sm font-extrabold"><BookOpen className="size-4" /> قصة اليوم</h2>
+          <section className="rounded-[20px] border bg-card p-4 shadow-card" aria-label={t("قصة اليوم")}>
+            <h2 className="mb-2 flex items-center gap-2 text-sm font-extrabold"><BookOpen className="size-4" /> {t("قصة اليوم")}</h2>
             <PageState loading={storiesQuery.isPending} error={storiesQuery.isError} retry={() => void storiesQuery.refetch()} />
-            {storiesQuery.isSuccess && stories.length === 0 && <p className="py-4 text-center text-sm text-muted-foreground">قريباً 🤍</p>}
+            {storiesQuery.isSuccess && stories.length === 0 && <p className="py-4 text-center text-sm text-muted-foreground">{t("قريباً 🤍")}</p>}
             {storiesQuery.isSuccess && story && !unlocked && (
-              <p className="py-4 text-center text-sm leading-7 text-muted-foreground">🔒 بتنفتح قصة اليوم بعد ما تكمل الفروض الخمسة، أو بعد الساعة ٨ مساءً.</p>
+              <p className="py-4 text-center text-sm leading-7 text-muted-foreground">{t("🔒 بتنفتح قصة اليوم بعد ما تكمل الفروض الخمسة، أو بعد الساعة ٨ مساءً.")}</p>
             )}
             {storiesQuery.isSuccess && story && unlocked && (
               <article className="space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground">{story.kind === "muwashshah" ? "موشح أندلسي" : "قصة نبي"}</p>
+                <p className="text-xs font-semibold text-muted-foreground">{story.kind === "muwashshah" ? t("موشح أندلسي") : "قصة نبي"}</p>
                 <h3 className="text-base font-extrabold">{story.title}</h3>
                 <p className="whitespace-pre-wrap text-sm leading-7">{story.body}</p>
                 {story.source && <p className="text-xs text-muted-foreground">المصدر: {story.source}</p>}

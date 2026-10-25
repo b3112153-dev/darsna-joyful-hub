@@ -5,6 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { SessionContext, useSharedSession } from "./session-context";
 import { withTimeout } from "@/lib/requests";
+import { t } from "@/lib/i18n";
 
 /** Single auth listener for the whole app; every useSession() reads from it. */
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -32,7 +33,7 @@ export function useMe() {
     enabled: !!user,
     staleTime: 5 * 60_000,
     queryFn: async () => {
-      if (!user) throw new Error("سجّل دخولك أولاً");
+      if (!user) throw new Error(t("سجّل دخولك أولاً"));
       const [p, r, b, o, m] = await withTimeout(Promise.all([
         supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then((res) => { if (res.error) throw res.error; return res; }),
         supabase.from("user_roles").select("role").eq("user_id", user.id),

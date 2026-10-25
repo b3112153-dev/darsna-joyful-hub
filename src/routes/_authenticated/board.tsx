@@ -28,6 +28,7 @@ export const Route = createFileRoute("/_authenticated/board")({
 });
 
 import { BOARD_PRIZES as PRIZES, weekDaysLeft } from "@/lib/avatar-shop";
+import { t } from "@/lib/i18n";
 
 type Row = { rank: number; user_id: string; nickname: string; avatar: AvatarState; hours: number; is_me: boolean };
 
@@ -66,10 +67,10 @@ function Board() {
   return (
     <main className="mx-auto max-w-lg px-4 pb-32 pt-6">
       <div className="flex items-center gap-3">
-        <Button asChild size="icon" variant="ghost" aria-label="رجوع"><Link to="/focus"><ArrowRight /></Link></Button>
+        <Button asChild size="icon" variant="ghost" aria-label={t("رجوع")}><Link to="/focus"><ArrowRight /></Link></Button>
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold">لوحة الأسبوع</h1>
-          <p className="text-xs text-muted-foreground">تنتهي بعد {daysLeft()} {daysLeft() === 1 ? "يوم" : "أيام"}</p>
+          <h1 className="text-2xl font-bold">{t("لوحة الأسبوع")}</h1>
+          <p className="text-xs text-muted-foreground">تنتهي بعد {daysLeft()} {daysLeft() === 1 ? t("يوم") : "أيام"}</p>
         </div>
       </div>
 
@@ -97,7 +98,7 @@ function Board() {
           {rows.length === 0 && (
             <div className="mt-6 rounded-[20px] border bg-card p-8 text-center text-muted-foreground shadow-card">
               <Trophy className="mx-auto mb-2 size-8 text-primary" />
-              لسا ما حدا درس هذا الأسبوع — كون أولهم!
+              {t("لسا ما حدا درس هذا الأسبوع — كون أولهم!")}
             </div>
           )}
 
@@ -113,7 +114,7 @@ function Board() {
                 >
                   <span className={cn("mb-1 font-display text-lg font-extrabold", r.rank === 1 && "text-primary")}>#{r.rank}</span>
                   <AvatarPreview avatar={r.avatar} images={images.data ?? {}} gender={me?.profile?.gender} animate={false} className="size-16" />
-                  <p className="mt-2 w-full truncate text-sm font-bold">{r.nickname || "طالب"}</p>
+                  <p className="mt-2 w-full truncate text-sm font-bold">{r.nickname || t("طالب")}</p>
                   <p className="text-xs text-muted-foreground">{r.hours} ساعة</p>
                   <span className="mt-1.5 rounded-full bg-staff px-2.5 py-0.5 text-xs font-bold text-staff-foreground">{PRIZES[r.rank]} JD</span>
                 </div>
@@ -127,7 +128,7 @@ function Board() {
                 <span className="w-8 text-center font-display font-extrabold text-muted-foreground">{r.rank}</span>
                 <AvatarPreview avatar={r.avatar} images={images.data ?? {}} gender={me?.profile?.gender} animate={false} className="size-10" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold">{r.nickname || "طالب"}{r.is_me && " (أنت)"}</p>
+                  <p className="truncate text-sm font-bold">{r.nickname || t("طالب")}{r.is_me && t(" (أنت)")}</p>
                   <p className="text-xs text-muted-foreground">{r.hours} ساعة</p>
                 </div>
                 {PRIZES[r.rank] && (
@@ -138,7 +139,7 @@ function Board() {
           </div>
 
           <p className="mt-6 rounded-[20px] bg-secondary/50 p-4 text-center text-xs leading-6 text-muted-foreground">
-            اللوحة بتبدأ من جديد كل سبت. بتظهر الأسماء المستعارة والأفتارات بس، مش الأسماء الحقيقية. الجوائز لطلاب نفس دفعتك فقط.
+            {t("اللوحة بتبدأ من جديد كل سبت. بتظهر الأسماء المستعارة والأفتارات بس، مش الأسماء الحقيقية. الجوائز لطلاب نفس دفعتك فقط.")}
           </p>
         </>
       )}
@@ -146,7 +147,7 @@ function Board() {
       {board.data && !meRow && (
         <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-30 mx-auto max-w-lg px-4 pb-2 lg:bottom-4">
           <div className="rounded-[20px] border bg-card p-3 text-center text-sm font-semibold shadow-soft">
-            {me?.profile?.gender === "female" ? "أنتِ" : "أنت"} لسا خارج اللوحة — ابدأ جلسة دراسة وادخل الترتيب!
+            {me?.profile?.gender === "female" ? t("أنتِ") : "أنت"} لسا خارج اللوحة — ابدأ جلسة دراسة وادخل الترتيب!
           </div>
         </div>
       )}
@@ -155,13 +156,13 @@ function Board() {
           <div className="flex items-center gap-3 rounded-[20px] border bg-card p-3 shadow-soft">
             <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand font-display text-sm font-extrabold text-primary-foreground">{meRow.rank}</span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold">{me?.profile?.gender === "female" ? "أنتِ" : "أنت"}: {meRow.nickname || "طالب"} · {meRow.hours} ساعة</p>
+              <p className="truncate text-sm font-bold">{me?.profile?.gender === "female" ? t("أنتِ") : "أنت"}: {meRow.nickname || t("طالب")} · {meRow.hours} ساعة</p>
               {ahead && (
                 <p className="text-xs text-muted-foreground">
                   ناقصك {(Math.max(0, ahead.hours - meRow.hours)).toFixed(1)} ساعة للمركز {ahead.rank}
                 </p>
               )}
-              {!ahead && <p className="text-xs text-muted-foreground">أنت بالصدارة، حافظ عليها!</p>}
+              {!ahead && <p className="text-xs text-muted-foreground">{t("أنت بالصدارة، حافظ عليها!")}</p>}
             </div>
           </div>
         </div>

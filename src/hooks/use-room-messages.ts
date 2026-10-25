@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { requestSignal, readData } from "@/lib/requests";
 import { MESSAGE_PAGE_SIZE, mergeMessage, orderedMessages, removeMessage, type Message, type MessageCache, type MessageCursor } from "@/lib/chat-messages";
+import { t } from "@/lib/i18n";
 
 const fields = "*,profiles(display_name,avatar_url)";
 
@@ -37,7 +38,7 @@ export function useRoomMessages(roomId: string, userId: string | undefined, enab
         const message = await readData(supabase.from("messages").select(fields).eq("id", id).eq("room_id", roomId).is("deleted_at", null).maybeSingle());
         if (!active) return;
         qc.setQueryData<MessageCache>(key, (cache) => message && !pendingDeletes.current.has(id) ? mergeMessage(cache, message) : removeMessage(cache, id));
-      } catch { if (active) toast.error("تعذر تحديث الرسالة؛ تأكد من اتصالك."); }
+      } catch { if (active) toast.error(t("تعذر تحديث الرسالة؛ تأكد من اتصالك.")); }
     };
     const channel = supabase.channel(`room-${roomId}-${crypto.randomUUID()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `room_id=eq.${roomId}` }, (payload) => {
@@ -61,7 +62,7 @@ export function useRoomMessages(roomId: string, userId: string | undefined, enab
       await readData(supabase.from("messages").delete().eq("id", id));
     } catch {
       if (previous) qc.setQueryData<MessageCache>(key, (cache) => mergeMessage(cache, previous));
-      toast.error("تعذر الحذف، رجّعنا الرسالة.");
+      toast.error(t("تعذر الحذف، رجّعنا الرسالة."));
     } finally { pendingDeletes.current.delete(id); }
   }, [key, qc]);
 
@@ -69,7 +70,7 @@ export function useRoomMessages(roomId: string, userId: string | undefined, enab
     if (!userId || !content.trim()) return false;
     try {
       const message = await readData(supabase.from("messages").update({ content: content.trim() }).eq("id", id).eq("user_id", userId).select(fields).single());
-      if (!message) throw new Error("تعذر تعديل الرسالة");
+      if (!message) throw new Error(t("تعذر تعديل الرسالة"));
       qc.setQueryData<MessageCache>(key, (cache) => mergeMessage(cache, message));
       return true;
     } catch (error) { toast.error(error instanceof Error && error.message ? error.message : "تعذر تعديل الرسالة؛ حاول مرة ثانية."); return false; }

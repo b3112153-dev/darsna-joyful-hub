@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useMe } from "@/hooks/use-auth";
+import { t } from "@/lib/i18n";
 
 /** Forces students through /onboarding once; staff skip it. Network errors never redirect. */
 export function OnboardingGate({ children }: { children: ReactNode }) {
@@ -14,16 +15,16 @@ export function OnboardingGate({ children }: { children: ReactNode }) {
     if (needs && !onOnboarding) navigate({ to: "/onboarding", replace: true });
   }, [needs, onOnboarding, navigate]);
 
-  if (loading) return <Center><p className="text-muted-foreground">جاري التحميل…</p></Center>;
+  if (loading) return <Center><p className="text-muted-foreground">{t("جاري التحميل…")}</p></Center>;
   if (isError || !me) {
     return (
       <Center>
-        <p className="mb-4">ما قدرنا نحمّل بياناتك، تأكد من النت.</p>
-        <button onClick={() => refetch()} className="rounded-xl bg-primary px-5 py-2.5 text-primary-foreground">إعادة المحاولة</button>
+        <p className="mb-4">{t("ما قدرنا نحمّل بياناتك، تأكد من النت.")}</p>
+        <button onClick={() => refetch()} className="rounded-xl bg-primary px-5 py-2.5 text-primary-foreground">{t("إعادة المحاولة")}</button>
       </Center>
     );
   }
-  if (needs && !onOnboarding) return <Center><p className="text-muted-foreground">جاري التحويل…</p></Center>;
+  if (needs && !onOnboarding) return <Center><p className="text-muted-foreground">{t("جاري التحويل…")}</p></Center>;
   return <>{children}</>;
 }
 

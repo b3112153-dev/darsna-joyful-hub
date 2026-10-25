@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageActionsBar, copyMessage } from "@/components/MessageActions";
 import { canEditNow, groupReactions, type ReactionRow } from "@/lib/reactions";
+import { t } from "@/lib/i18n";
 
 type SupportMessage = {
   id: string;
@@ -59,17 +60,17 @@ const SupportBubble = memo(function SupportBubble({ m, own, fromAdmin, canDelete
         ...(canDelete ? { onDelete: () => onDelete(m.id) } : {}),
       }}>
         <div className={`max-w-[85%] cursor-pointer select-none rounded-2xl px-3 py-2 ${fromAdmin ? "border-2 border-staff-border bg-staff text-staff-foreground" : own ? "bg-bubble-own text-bubble-own-foreground" : "border bg-bubble text-card-foreground"}`}>
-          {fromAdmin ? <span className="mb-1 inline-block rounded-full bg-role-badge px-2 py-0.5 text-xs font-semibold text-role-badge-foreground">الدعم</span> : !own && <p className="mb-0.5 text-xs font-semibold">الطالب</p>}
+          {fromAdmin ? <span className="mb-1 inline-block rounded-full bg-role-badge px-2 py-0.5 text-xs font-semibold text-role-badge-foreground">{t("الدعم")}</span> : !own && <p className="mb-0.5 text-xs font-semibold">{t("الطالب")}</p>}
           {replyPreview !== null && (
             <p className="mb-1.5 truncate rounded-[12px] border-r-4 border-primary/60 bg-background/50 px-2 py-1 text-xs text-muted-foreground">{replyPreview}</p>
           )}
           {editing ? <form onSubmit={(event) => { event.preventDefault(); void save(); }} className="space-y-2">
-            <Input aria-label="تعديل الرسالة" value={draft} maxLength={2000} onChange={(event) => setDraft(event.target.value)} />
-            <div className="flex gap-1"><Button size="sm" disabled={saving || !draft.trim()}>حفظ</Button><Button size="sm" variant="ghost" type="button" disabled={saving} onClick={() => setEditing(false)}>إلغاء</Button></div>
+            <Input aria-label={t("تعديل الرسالة")} value={draft} maxLength={2000} onChange={(event) => setDraft(event.target.value)} />
+            <div className="flex gap-1"><Button size="sm" disabled={saving || !draft.trim()}>{t("حفظ")}</Button><Button size="sm" variant="ghost" type="button" disabled={saving} onClick={() => setEditing(false)}>{t("إلغاء")}</Button></div>
           </form> : <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>}
           <p className="mt-1 text-[10px] opacity-70">
             {new Date(m.created_at).toLocaleString("ar-JO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}
-            {m.edited_at && " · معدّلة"}
+            {m.edited_at && t(" · معدّلة")}
           </p>
         </div>
       </MessageActionsBar>
@@ -102,7 +103,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
       ((await supabase.from("support_messages").select("*").eq("student_id", studentId).is("deleted_at", null).order("created_at").limit(300)).data ?? []) as SupportMessage[],
   });
   const reactionsApi = useReactions("support_reactions", msgs.map((m) => m.id), user?.id, studentId);
-  const previewOf = (id: string | null) => id ? msgs.find((m) => m.id === id)?.content ?? "رسالة محذوفة" : null;
+  const previewOf = (id: string | null) => id ? msgs.find((m) => m.id === id)?.content ?? t("رسالة محذوفة") : null;
 
   useEffect(() => {
     const ch = supabase
@@ -125,21 +126,21 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
     if (!content || !user) return;
     setText("");
     const { error } = await supabase.from("support_messages").insert({ student_id: studentId, sender_id: user.id, content, reply_to: replyTo?.id ?? null } as never);
-    if (error) toast.error("تعذر الإرسال");
+    if (error) toast.error(t("تعذر الإرسال"));
     else setReplyTo(null);
     qc.invalidateQueries({ queryKey: key });
   }
 
   async function remove(id: string) {
     const { error } = await supabase.from("support_messages").delete().eq("id", id);
-    if (error) toast.error("تعذر الحذف؛ حاول مرة ثانية.");
+    if (error) toast.error(t("تعذر الحذف؛ حاول مرة ثانية."));
     qc.invalidateQueries({ queryKey: key });
   }
 
   async function edit(id: string, content: string) {
     if (!user || !content.trim()) return false;
     const { error } = await supabase.from("support_messages").update({ content: content.trim() } as never).eq("id", id).eq("sender_id", user.id);
-    if (error) { toast.error(error.message || "تعذر تعديل الرسالة؛ حاول مرة ثانية."); return false; }
+    if (error) { toast.error(error.message || t("تعذر تعديل الرسالة؛ حاول مرة ثانية.")); return false; }
     qc.invalidateQueries({ queryKey: key });
     return true;
   }
@@ -147,7 +148,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
   return (
     <div className={`flex flex-col ${className}`}>
       <div className="flex-1 space-y-2 overflow-y-auto rounded-2xl border bg-card/70 p-3">
-        {msgs.length === 0 && <p className="py-8 text-center text-sm text-muted-foreground">ابدأ المحادثة…</p>}
+        {msgs.length === 0 && <p className="py-8 text-center text-sm text-muted-foreground">{t("ابدأ المحادثة…")}</p>}
         {msgs.map((m) => {
           const own = m.sender_id === user?.id;
           const fromAdmin = m.sender_id !== studentId;
@@ -164,12 +165,12 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
         {replyTo && (
           <div className="flex items-center gap-2 rounded-[14px] border-r-4 border-primary bg-secondary px-3 py-2 text-xs">
             <span className="min-w-0 flex-1 truncate">رد على: {replyTo.content}</span>
-            <button type="button" aria-label="إلغاء الرد" className="shrink-0 font-bold text-muted-foreground" onClick={() => setReplyTo(null)}>✕</button>
+            <button type="button" aria-label={t("إلغاء الرد")} className="shrink-0 font-bold text-muted-foreground" onClick={() => setReplyTo(null)}>✕</button>
           </div>
         )}
         <div className="flex gap-2">
-          <Input value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder="اكتب رسالتك…" className="h-11 bg-card" />
-          <Button size="icon" className="size-11 bg-brand" aria-label="إرسال"><Send className="size-4 -scale-x-100" /></Button>
+          <Input value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder={t("اكتب رسالتك…")} className="h-11 bg-card" />
+          <Button size="icon" className="size-11 bg-brand" aria-label={t("إرسال")}><Send className="size-4 -scale-x-100" /></Button>
         </div>
       </form>
     </div>
