@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { remainingSeconds, type FocusRow } from "@/lib/focus";
 import { readData, requestSignal } from "@/lib/requests";
+import { t } from "@/lib/i18n";
 
 export function useNow(ms = 1000) {
   const [now, setNow] = useState(() => Date.now());
@@ -60,9 +61,9 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
         .eq("id", session.id).eq("status", "running").select("id"))
         .then((rows) => {
           if (!rows?.length) return;
-          toast.success("خلصت الجلسة! يعطيك العافية، إنجازك بقرّبك لهدفك 🎉");
+          toast.success(t("خلصت الجلسة! يعطيك العافية، إنجازك بقرّبك لهدفك 🎉"));
           refresh();
-        }).catch(() => { toast.error("تعذر حفظ نهاية الجلسة؛ حاول تحديث الصفحة."); });
+        }).catch(() => { toast.error(t("تعذر حفظ نهاية الجلسة؛ حاول تحديث الصفحة.")); });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoComplete, session?.id, session?.status, left]);
@@ -72,7 +73,7 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
     busy.current = true;
     setPending(true);
     try { await operation(); await refresh(); return true; }
-    catch { toast.error("ما قدرنا نحفظ المؤقت، جرّب مرة ثانية"); return false; }
+    catch { toast.error(t("ما قدرنا نحفظ المؤقت، جرّب مرة ثانية")); return false; }
     finally { busy.current = false; setPending(false); }
   }
   async function start(minutes: number, subject: string, roomId: string | null) {

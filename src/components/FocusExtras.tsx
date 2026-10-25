@@ -9,6 +9,7 @@ import { soundEngine } from "@/lib/sounds";
 import { buildStudyProgram, type ProgramBlock } from "@/lib/study-program";
 import { getProgram, setProgram, subscribeProgram } from "@/lib/study-program-store";
 import { fmtClock } from "@/components/StudyRounds";
+import { t } from "@/lib/i18n";
 
 export function useProgram() {
   return useSyncExternalStore(subscribeProgram, getProgram);
@@ -73,7 +74,7 @@ export function FocusExtras() {
   useEffect(() => {
     if (attendanceDue && countdown <= 0) {
       setAttendanceDue(false);
-      void focus.pause().then(() => toast.error("تم إيقاف الجلسة لأنك غير موجود"));
+      void focus.pause().then(() => toast.error(t("تم إيقاف الجلسة لأنك غير موجود")));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attendanceDue, countdown]);
@@ -93,7 +94,7 @@ export function FocusExtras() {
       const block: ProgramBlock | undefined = program.blocks[next];
       if (!block) {
         setProgram(null);
-        toast.success("خلصت برنامجك كامل! يعطيك العافية 🎉");
+        toast.success(t("خلصت برنامجك كامل! يعطيك العافية 🎉"));
         return;
       }
       if (block.kind === "break") {
@@ -139,10 +140,10 @@ export function FocusExtras() {
       <div dir="rtl" className="fixed inset-0 z-[70] grid place-items-center bg-background/95 px-6 font-display backdrop-blur">
         <div className="w-full max-w-sm space-y-5 rounded-[26px] border bg-card p-8 text-center shadow-card">
           <p className="text-2xl">👋</p>
-          <h2 className="text-xl font-extrabold">ما زلت معنا؟</h2>
+          <h2 className="text-xl font-extrabold">{t("ما زلت معنا؟")}</h2>
           <p className="text-sm text-muted-foreground">أكبس الزر خلال {countdown} ثواني وإلا بنوقف الجلسة مؤقتاً.</p>
           <p className="text-4xl font-extrabold tabular-nums text-primary" dir="ltr">{countdown}</p>
-          <Button className="h-14 w-full rounded-[16px] text-lg" onClick={() => { ack.current = { sessionId: session?.id ?? "", studied }; setAttendanceDue(false); }}>أنا هون</Button>
+          <Button className="h-14 w-full rounded-[16px] text-lg" onClick={() => { ack.current = { sessionId: session?.id ?? "", studied }; setAttendanceDue(false); }}>{t("أنا هون")}</Button>
         </div>
       </div>
     );
@@ -155,7 +156,7 @@ export function FocusExtras() {
       <div dir="rtl" className="fixed inset-0 z-[60] grid place-items-center bg-background/95 px-6 font-display backdrop-blur">
         <div className="w-full max-w-sm space-y-5 rounded-[26px] border bg-card p-8 text-center shadow-card">
           <p className="text-2xl">☕</p>
-          <h2 className="text-xl font-extrabold">استراحة</h2>
+          <h2 className="text-xl font-extrabold">{t("استراحة")}</h2>
           <p className="text-sm text-muted-foreground">خلصت جلسة {studyDone} من {studyTotal}. خذ نفس، الاستراحة ما بتنحسب دراسة.</p>
           <p className="text-4xl font-extrabold tabular-nums text-primary" dir="ltr">{fmtClock(breakLeft * 1000)}</p>
           <Progress value={100 - (breakLeft / (program.breakEndsAt ? ((program.blocks[program.index]?.minutes ?? 1) * 60) : 1)) * 100} className="h-1.5" />
@@ -164,8 +165,8 @@ export function FocusExtras() {
               const next = program.index + 1;
               const block = program.blocks[next];
               if (block?.kind === "study") { soundEngine.beep(); setProgram({ ...program, index: next, breakEndsAt: null }); void focus.start(block.minutes, program.subject, program.roomId); }
-            }}>ابدأ هلأ</Button>
-            <Button variant="ghost" className="h-12 rounded-[16px]" onClick={() => setProgram(null)}>إنهاء البرنامج</Button>
+            }}>{t("ابدأ هلأ")}</Button>
+            <Button variant="ghost" className="h-12 rounded-[16px]" onClick={() => setProgram(null)}>{t("إنهاء البرنامج")}</Button>
           </div>
         </div>
       </div>

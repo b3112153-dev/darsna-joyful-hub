@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { readData, requestSignal } from "@/lib/requests";
 import { completionPatch, ENCOURAGEMENT, nextEncouragement, orderTodos, TODO_LIMIT, validTodoText, type Todo } from "@/lib/todos";
+import { t } from "@/lib/i18n";
 
 type Action = { kind: "add"; text: string; id: string } | { kind: "toggle"; id: string; done: boolean } | { kind: "delete"; id: string };
 const lastEncouragement = new Map<string, number>();
@@ -32,7 +33,7 @@ export function useTodos(userId: string) {
       });
       return { snapshot };
     },
-    onError: (_error, _action, context) => { qc.setQueryData(key, context?.snapshot); toast.error("ما قدرنا نحفظ المهمة، جرّب مرة ثانية"); },
+    onError: (_error, _action, context) => { qc.setQueryData(key, context?.snapshot); toast.error(t("ما قدرنا نحفظ المهمة، جرّب مرة ثانية")); },
     onSuccess: (_data, action) => {
       if (action.kind === "toggle" && action.done) {
         const next = nextEncouragement(lastEncouragement.get(userId) ?? -1);

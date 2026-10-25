@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { t } from "@/lib/i18n";
 
 export function Topics() {
   const { me } = useMe();
@@ -23,12 +24,12 @@ export function Topics() {
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
       <div>
-        <h1 className="text-3xl font-bold">مواضيع ونقاشات</h1>
-        <p className="text-muted-foreground">موضوع جديد من الإدارة بشكل دوري — ادرسه وبعدين شارك برأيك.</p>
+        <h1 className="text-3xl font-bold">{t("مواضيع ونقاشات")}</h1>
+        <p className="text-muted-foreground">{t("موضوع جديد من الإدارة بشكل دوري — ادرسه وبعدين شارك برأيك.")}</p>
       </div>
       {me?.isAdmin && <NewTopic />}
       <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
-      {!isLoading && !isError && topics.length === 0 && <p className="py-10 text-center text-muted-foreground">ما في مواضيع بعد.</p>}
+      {!isLoading && !isError && topics.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("ما في مواضيع بعد.")}</p>}
       <div className="space-y-3">
         {topics.map((t) => (
           <Link key={t.id} to="/topics/$topicId" params={{ topicId: t.id }} className="block rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-soft">
@@ -55,22 +56,22 @@ function NewTopic() {
     if (!user) return;
     const { error } = await supabase.from("topics").insert({ title: title.trim(), body: body.trim(), subject: subject.trim() || null, allow_replies: replies, created_by: user.id });
     if (error) {
-      toast.error("تعذر النشر");
+      toast.error(t("تعذر النشر"));
       return;
     }
     setTitle(""); setBody(""); setSubject("");
-    toast.success("تم نشر الموضوع");
+    toast.success(t("تم نشر الموضوع"));
     qc.invalidateQueries({ queryKey: ["topics"] });
   }
   return (
     <form onSubmit={submit} className="space-y-3 rounded-2xl border border-primary bg-card p-4 shadow-card">
-      <p className="text-sm font-semibold">نشر موضوع جديد (يظهر باسم "الإدارة")</p>
-      <Input required minLength={2} maxLength={150} placeholder="عنوان الموضوع" value={title} onChange={(e) => setTitle(e.target.value)} />
-      <Input maxLength={60} placeholder="المادة (اختياري)" value={subject} onChange={(e) => setSubject(e.target.value)} />
-      <Textarea required maxLength={10000} placeholder="محتوى الموضوع…" value={body} onChange={(e) => setBody(e.target.value)} className="min-h-28" />
+      <p className="text-sm font-semibold">{t("نشر موضوع جديد (يظهر باسم \"الإدارة\")")}</p>
+      <Input required minLength={2} maxLength={150} placeholder={t("عنوان الموضوع")} value={title} onChange={(e) => setTitle(e.target.value)} />
+      <Input maxLength={60} placeholder={t("المادة (اختياري)")} value={subject} onChange={(e) => setSubject(e.target.value)} />
+      <Textarea required maxLength={10000} placeholder={t("محتوى الموضوع…")} value={body} onChange={(e) => setBody(e.target.value)} className="min-h-28" />
       <div className="flex items-center justify-between">
-        <Label className="flex items-center gap-2"><Switch checked={replies} onCheckedChange={setReplies} /> السماح بالردود على التعليقات</Label>
-        <Button className="bg-brand">نشر</Button>
+        <Label className="flex items-center gap-2"><Switch checked={replies} onCheckedChange={setReplies} /> {t("السماح بالردود على التعليقات")}</Label>
+        <Button className="bg-brand">{t("نشر")}</Button>
       </div>
     </form>
   );

@@ -22,6 +22,7 @@ import { AvatarPreview } from "@/components/AvatarPreview";
 import { WalletChip } from "@/components/WalletChip";
 import { PageState } from "@/components/PageState";
 import { cn } from "@/lib/utils";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -63,7 +64,7 @@ function Profile() {
   return (
     <main className="mx-auto max-w-lg space-y-4 px-4 py-6">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">ملفي</h1>
+        <h1 className="text-2xl font-bold">{t("ملفي")}</h1>
         <WalletChip userId={user?.id} />
       </div>
       {wallet.isLoading && <PageState loading />}
@@ -73,7 +74,7 @@ function Profile() {
           <LevelCard wallet={wallet.data} />
           <AvatarCard wallet={wallet.data} gender={gender} userId={user!.id} />
           <Button asChild variant="outline" className="w-full">
-            <Link to="/board"><Trophy /> لوحة الأسبوع</Link>
+            <Link to="/board"><Trophy /> {t("لوحة الأسبوع")}</Link>
           </Button>
           <AccountCard />
         </>
@@ -182,13 +183,13 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
         />
       </div>
       <div className="mt-3 text-center">
-        <Button variant="outline" size="sm" onClick={() => setNickOpen(true)}>سمّي أفتارك</Button>
-        <p className="mt-1.5 text-xs text-muted-foreground">تقدر تغيّره مرة كل ٤٠ يوم</p>
+        <Button variant="outline" size="sm" onClick={() => setNickOpen(true)}>{t("سمّي أفتارك")}</Button>
+        <p className="mt-1.5 text-xs text-muted-foreground">{t("تقدر تغيّره مرة كل ٤٠ يوم")}</p>
       </div>
 
       {gender === "female" && (
         <div className="mt-4 rounded-2xl bg-secondary/50 p-3">
-          <p className="mb-2 text-sm font-bold">لون الشعر</p>
+          <p className="mb-2 text-sm font-bold">{t("لون الشعر")}</p>
           <div className="flex flex-wrap items-center gap-2">
             {HAIR_COLORS.map((c) => (
               <button
@@ -203,7 +204,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
             ))}
             <input
               type="color"
-              aria-label="لون مخصص"
+              aria-label={t("لون مخصص")}
               value={worn["hairColor"] ?? "#aa5533"}
               onChange={(e) => setHairColor(e.target.value)}
               className="size-8 cursor-pointer rounded-full border-2 border-card bg-transparent"
@@ -251,11 +252,11 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
                   لابسته{it.category !== "outfit" && " — اخلعه"}
                 </Button>
               ) : owned ? (
-                <Button size="sm" className="mt-2 bg-brand" disabled={busy === it.id} onClick={() => wear(it)}>ألبس</Button>
+                <Button size="sm" className="mt-2 bg-brand" disabled={busy === it.id} onClick={() => wear(it)}>{t("ألبس")}</Button>
               ) : !levelOk ? (
                 <Button size="sm" variant="outline" className="mt-2" disabled>مفتوح بالمستوى {it.level_req}</Button>
               ) : !canAfford ? (
-                <Button size="sm" variant="outline" className="mt-2" disabled>رصيدك ما يكفي</Button>
+                <Button size="sm" variant="outline" className="mt-2" disabled>{t("رصيدك ما يكفي")}</Button>
               ) : (
                 <Button size="sm" className="mt-2 bg-brand" disabled={busy === it.id} onClick={() => buy(it)}>اشتري بـ {it.price} JD</Button>
               )}
@@ -263,7 +264,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
           );
         })}
       </div>
-      {catalog.data && items.length === 0 && <p className="mt-3 text-center text-sm text-muted-foreground">ما في أغراض بهالقسم بعد</p>}
+      {catalog.data && items.length === 0 && <p className="mt-3 text-center text-sm text-muted-foreground">{t("ما في أغراض بهالقسم بعد")}</p>}
 
       <NicknameDialog
         open={nickOpen}
@@ -282,23 +283,23 @@ function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
   const [busy, setBusy] = useState(false);
   async function save() {
     const n = name.trim();
-    if (n.length < 2 || n.length > 16) { toast.error("الاسم من ٢ إلى ١٦ حرف"); return; }
+    if (n.length < 2 || n.length > 16) { toast.error(t("الاسم من ٢ إلى ١٦ حرف")); return; }
     setBusy(true);
     const { error } = await supabase.rpc("set_nickname", { _n: n });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
-    toast.success("تم حفظ الاسم");
+    toast.success(t("تم حفظ الاسم"));
     onSaved(n);
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent dir="rtl" className={mandatory ? "[&>button]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>سمّي أفتارك</DialogTitle>
-          <DialogDescription>هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل ٤٠ يوم (حد أقصى ١٦ حرف).</DialogDescription>
+          <DialogTitle>{t("سمّي أفتارك")}</DialogTitle>
+          <DialogDescription>{t("هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل ٤٠ يوم (حد أقصى ١٦ حرف).")}</DialogDescription>
         </DialogHeader>
-        <Input value={name} maxLength={16} placeholder="اسمك المستعار" onChange={(e) => setName(e.target.value)} />
-        <Button onClick={save} disabled={busy} className="bg-brand">حفظ</Button>
+        <Input value={name} maxLength={16} placeholder={t("اسمك المستعار")} onChange={(e) => setName(e.target.value)} />
+        <Button onClick={save} disabled={busy} className="bg-brand">{t("حفظ")}</Button>
       </DialogContent>
     </Dialog>
   );
@@ -319,53 +320,53 @@ function AccountCard() {
   }, [me?.profile]);
 
   async function save() {
-    if (!user || name.trim().length < 2) { toast.error("الاسم قصير"); return; }
+    if (!user || name.trim().length < 2) { toast.error(t("الاسم قصير")); return; }
     setBusy(true);
     const { error } = await supabase
       .from("profiles")
       .update({ display_name: name.trim().slice(0, 40), branch: branch || null })
       .eq("id", user.id);
     setBusy(false);
-    if (error) { toast.error("تعذر الحفظ"); return; }
-    toast.success("تم الحفظ");
+    if (error) { toast.error(t("تعذر الحفظ")); return; }
+    toast.success(t("تم الحفظ"));
     qc.invalidateQueries({ queryKey: ["me"] });
   }
 
   async function upload(file: File) {
     if (!user) return;
-    if (!file.type.startsWith("image/")) { toast.error("اختر صورة"); return; }
+    if (!file.type.startsWith("image/")) { toast.error(t("اختر صورة")); return; }
     const path = `${user.id}/${Date.now()}.${file.name.split(".").pop()}`;
     const { error } = await supabase.storage.from("avatars").upload(path, file);
-    if (error) { toast.error("تعذر رفع الصورة (الحد 3MB)"); return; }
+    if (error) { toast.error(t("تعذر رفع الصورة (الحد 3MB)")); return; }
     await supabase.from("profiles").update({ avatar_url: path }).eq("id", user.id);
-    toast.success("تم تحديث الصورة");
+    toast.success(t("تم تحديث الصورة"));
     qc.invalidateQueries({ queryKey: ["me"] });
   }
 
   return (
     <section className="space-y-6 rounded-[20px] border bg-card p-6 shadow-card">
-      <h2 className="text-lg font-bold">إعدادات الحساب</h2>
+      <h2 className="text-lg font-bold">{t("إعدادات الحساب")}</h2>
       <div className="flex items-center gap-4">
         <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} className="size-20" />
         <Label className="cursor-pointer rounded-lg border bg-silver-sheen px-4 py-2 text-sm">
-          تغيير الصورة
+          {t("تغيير الصورة")}
           <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
         </Label>
       </div>
       <div className="space-y-1.5">
-        <Label>الاسم</Label>
+        <Label>{t("الاسم")}</Label>
         <Input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} />
       </div>
       <div className="space-y-1.5">
-        <Label>الفرع</Label>
+        <Label>{t("الفرع")}</Label>
         <Select dir="rtl" value={branch} onValueChange={(v) => setBranch(v as Branch)}>
-          <SelectTrigger><SelectValue placeholder="اختر فرعك" /></SelectTrigger>
+          <SelectTrigger><SelectValue placeholder={t("اختر فرعك")} /></SelectTrigger>
           <SelectContent>
             {BRANCHES.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
-      <Button onClick={save} disabled={busy} className="w-full bg-brand">حفظ</Button>
+      <Button onClick={save} disabled={busy} className="w-full bg-brand">{t("حفظ")}</Button>
     </section>
   );
 }

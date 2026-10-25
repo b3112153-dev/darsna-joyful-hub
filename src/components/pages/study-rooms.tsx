@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AvatarState } from "@/hooks/use-wallet";
+import { t } from "@/lib/i18n";
 
 export const SCENES = [
   { id: "library", label: "مكتبة", icon: BookOpen, card: "bg-secondary", page: "bg-secondary" },
@@ -114,20 +115,20 @@ export function StudyRooms() {
     <main className="mx-auto max-w-2xl px-5 py-6 font-display">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-[26px] font-extrabold">رومات الدراسة</h1>
-          <p className="text-sm text-muted-foreground">ادرس مع رفقاتك بنفس المشهد — بدون دردشة، بس تركيز</p>
+          <h1 className="text-[26px] font-extrabold">{t("رومات الدراسة")}</h1>
+          <p className="text-sm text-muted-foreground">{t("ادرس مع رفقاتك بنفس المشهد — بدون دردشة، بس تركيز")}</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button className="rounded-[14px]"><Plus className="size-4" /> روم جديد</Button></DialogTrigger>
+          <DialogTrigger asChild><Button className="rounded-[14px]"><Plus className="size-4" /> {t("روم جديد")}</Button></DialogTrigger>
           <DialogContent dir="rtl" className="font-display">
-            <DialogHeader><DialogTitle>روم دراسة جديد</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{t("روم دراسة جديد")}</DialogTitle></DialogHeader>
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="room-name">الاسم (٢–٣٠ حرف)</Label>
-                <Input id="room-name" maxLength={30} value={name} onChange={(e) => setName(e.target.value)} placeholder="مثلاً: روم الفجر" />
+                <Label htmlFor="room-name">{t("الاسم (٢–٣٠ حرف)")}</Label>
+                <Input id="room-name" maxLength={30} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("مثلاً: روم الفجر")} />
               </div>
               <div className="space-y-1.5">
-                <Label>المشهد</Label>
+                <Label>{t("المشهد")}</Label>
                 <div className="grid grid-cols-3 gap-2">
                   {SCENES.map((s) => (
                     <button key={s.id} type="button" onClick={() => setScene(s.id)}
@@ -170,7 +171,7 @@ export function StudyRooms() {
           );
         })}
         {roomsQuery.isSuccess && rooms.length === 0 && (
-          <p className="rounded-[22px] border-2 border-dashed p-6 text-center text-sm text-muted-foreground">ما في رومات دراسة متاحة إلك حالياً — جرّب تنشئ واحد!</p>
+          <p className="rounded-[22px] border-2 border-dashed p-6 text-center text-sm text-muted-foreground">{t("ما في رومات دراسة متاحة إلك حالياً — جرّب تنشئ واحد!")}</p>
         )}
       </div>
     </main>

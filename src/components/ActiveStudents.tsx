@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { UserAvatar } from "./UserAvatar";
+import { t } from "@/lib/i18n";
 
 export function ActiveStudents({ roomId }: { roomId: string }) {
   const qc = useQueryClient();
@@ -33,7 +34,7 @@ export function ActiveStudents({ roomId }: { roomId: string }) {
   return (
     <div className="space-y-2 rounded-2xl border bg-card p-4 shadow-card">
       <p className="text-sm font-semibold">بدرسوا هلأ ({data.length})</p>
-      {data.length === 0 && <p className="text-xs text-muted-foreground">ما حدا بدرس حالياً بهاي الغرفة.</p>}
+      {data.length === 0 && <p className="text-xs text-muted-foreground">{t("ما حدا بدرس حالياً بهاي الغرفة.")}</p>}
       <div className="flex flex-wrap gap-3">
         {data.map((s) => (
           <div key={s.user_id} className="flex items-center gap-2 rounded-full bg-secondary py-1 pe-3 ps-1">

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMe } from "@/hooks/use-auth";
 import { SupportThread } from "@/components/SupportThread";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/support")({
   head: () => ({
@@ -22,8 +23,8 @@ function Support() {
   return (
     <main className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl flex-col px-2 py-3 sm:px-4">
       <div className="mb-3 rounded-2xl border bg-card px-4 py-3 shadow-card">
-        <h1 className="font-semibold">تواصل مع الإدارة</h1>
-        <p className="text-xs text-muted-foreground">محادثة خاصة — بس إنت والإدارة بتشوفوها.</p>
+        <h1 className="font-semibold">{t("تواصل مع الإدارة")}</h1>
+        <p className="text-xs text-muted-foreground">{t("محادثة خاصة — بس إنت والإدارة بتشوفوها.")}</p>
       </div>
       {user && <SupportThread studentId={user.id} className="flex-1 min-h-0" />}
     </main>

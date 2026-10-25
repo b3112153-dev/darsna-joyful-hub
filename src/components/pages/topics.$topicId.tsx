@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { UserAvatar } from "@/components/UserAvatar";
+import { t } from "@/lib/i18n";
 
 
 const Route = getRouteApi("/_authenticated/topics/$topicId");
@@ -56,14 +57,14 @@ export function TopicPage() {
     if (!user) return;
     await supabase.from("topic_reads").insert({ topic_id: topicId, user_id: user.id });
     qc.invalidateQueries({ queryKey: ["topic-read", topicId] });
-    toast.success("ممتاز! هلأ بتقدر تعلّق");
+    toast.success(t("ممتاز! هلأ بتقدر تعلّق"));
   }
   async function send(e: React.FormEvent) {
     e.preventDefault();
     if (!user || !text.trim()) return;
     const { error } = await supabase.from("topic_comments").insert({ topic_id: topicId, user_id: user.id, content: text.trim(), parent_id: replyTo?.id ?? null });
     if (error) {
-      toast.error("تعذر إرسال التعليق");
+      toast.error(t("تعذر إرسال التعليق"));
       return;
     }
     setText(""); setReplyTo(null);
@@ -93,7 +94,7 @@ export function TopicPage() {
             <div className="mt-1 flex gap-3 text-xs text-muted-foreground">
               <span>{new Date(c.created_at).toLocaleString("ar-JO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}</span>
               {topic?.allow_replies && canComment && depth < 3 && (
-                <button onClick={() => setReplyTo(c)} className="flex items-center gap-1 hover:text-primary"><CornerDownLeft className="size-3" /> رد</button>
+                <button onClick={() => setReplyTo(c)} className="flex items-center gap-1 hover:text-primary"><CornerDownLeft className="size-3" /> {t("رد")}</button>
               )}
               {(c.user_id === user?.id || me?.isStaff) && <button onClick={() => del(c.id)} className="hover:text-destructive"><Trash2 className="size-3" /></button>}
             </div>
@@ -110,23 +111,23 @@ export function TopicPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-4 px-4 py-8">
-      <Link to="/topics" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"><ArrowRight className="size-4" /> كل المواضيع</Link>
+      <Link to="/topics" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"><ArrowRight className="size-4" /> {t("كل المواضيع")}</Link>
       {topic && (
         <article className="rounded-2xl border bg-card p-6 shadow-card">
           <p className="mb-1 text-xs text-muted-foreground">الإدارة · {topic.subject ?? "عام"}</p>
           <h1 className="mb-3 text-2xl font-bold">{topic.title}</h1>
           <p className="whitespace-pre-wrap leading-relaxed">{topic.body}</p>
           {me?.isAdmin && (
-            <Label className="mt-4 flex items-center gap-2 text-sm"><Switch checked={topic.allow_replies} onCheckedChange={toggleReplies} /> السماح بالردود</Label>
+            <Label className="mt-4 flex items-center gap-2 text-sm"><Switch checked={topic.allow_replies} onCheckedChange={toggleReplies} /> {t("السماح بالردود")}</Label>
           )}
         </article>
       )}
       {!canComment && (
-        <Button onClick={markStudied} className="w-full bg-brand"><CheckCircle2 /> خلصت دراسة الموضوع — بدي أعلّق</Button>
+        <Button onClick={markStudied} className="w-full bg-brand"><CheckCircle2 /> {t("خلصت دراسة الموضوع — بدي أعلّق")}</Button>
       )}
       <section className="rounded-2xl border bg-card p-4 shadow-card">
         <h2 className="mb-2 font-semibold">التعليقات ({comments.length})</h2>
-        {roots.length === 0 && <p className="py-4 text-sm text-muted-foreground">ما في تعليقات بعد.</p>}
+        {roots.length === 0 && <p className="py-4 text-sm text-muted-foreground">{t("ما في تعليقات بعد.")}</p>}
         {roots.map((c) => <Comment key={c.id} c={c} depth={0} />)}
         {canComment && !me?.isBanned && (
           <form onSubmit={send} className="mt-3 space-y-2">
@@ -136,8 +137,8 @@ export function TopicPage() {
                 <button type="button" onClick={() => setReplyTo(null)}>✕</button>
               </p>
             )}
-            <Textarea value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder="شاركنا رأيك أو سؤالك…" />
-            <Button className="bg-brand">إرسال</Button>
+            <Textarea value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder={t("شاركنا رأيك أو سؤالك…")} />
+            <Button className="bg-brand">{t("إرسال")}</Button>
           </form>
         )}
       </section>

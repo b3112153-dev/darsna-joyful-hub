@@ -13,6 +13,7 @@ import { PageState } from "@/components/PageState";
 import { fileValidation, formatSize, hasExternalLink, validDraftQuestion, type DraftQuestion } from "@/lib/library";
 import { withTimeout } from "@/lib/requests";
 import { Route } from "@/routes/_authenticated/library_.upload";
+import { t } from "@/lib/i18n";
 
 const newQuestion = (): DraftQuestion => ({ prompt: "", options: ["", ""], correct: 0 });
 export function LibraryUpload() {
@@ -48,34 +49,34 @@ export function LibraryUpload() {
         if (result.error) throw result.error;
       }
       await qc.invalidateQueries({ queryKey: ["library"] }); await qc.invalidateQueries({ queryKey: ["quizzes"] });
-      toast.success("تم الإرسال للمراجعة"); navigate({ to: "/library" });
+      toast.success(t("تم الإرسال للمراجعة")); navigate({ to: "/library" });
     } catch { if (uploadedPath) await withTimeout(supabase.storage.from("library").remove([uploadedPath])).catch(() => undefined); setError("ما قدرنا نرسل، جرّب مرة ثانية"); }
     finally { lock.current = false; setBusy(false); }
   }
   if (loading || isError) return <PageState loading={loading} error={isError} retry={() => void refetch()} />;
   return <main dir="rtl" className="mx-auto max-w-2xl px-4 py-6 pb-24 font-display">
-    <Button variant="ghost" onClick={() => navigate({ to: "/library" })}><ArrowRight /> المكتبة</Button>
-    <h1 className="my-5 text-3xl font-extrabold">ارفع للمكتبة</h1>
+    <Button variant="ghost" onClick={() => navigate({ to: "/library" })}><ArrowRight /> {t("المكتبة")}</Button>
+    <h1 className="my-5 text-3xl font-extrabold">{t("ارفع للمكتبة")}</h1>
     <Tabs value={tab} onValueChange={(v) => { if (!busy && (v === "file" || v === "quiz")) setTab(v); }} dir="rtl">
-      <TabsList className="h-14 w-full rounded-[20px] bg-library-tabs p-1"><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="file">ملف أو صورة</TabsTrigger><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="quiz">أسئلة اختبار</TabsTrigger></TabsList>
+      <TabsList className="h-14 w-full rounded-[20px] bg-library-tabs p-1"><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="file">{t("ملف أو صورة")}</TabsTrigger><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="quiz">{t("أسئلة اختبار")}</TabsTrigger></TabsList>
       <form onSubmit={submit} className="mt-6 space-y-5">
         <fieldset disabled={busy} className="space-y-5">
           <TabsContent value="file">
             <input ref={input} type="file" className="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.avif,.heic,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" onChange={(e) => choose(e.target.files?.[0])} />
-            {file ? <div className="flex items-center gap-3 rounded-[20px] border bg-card p-4"><Upload className="shrink-0" /><div className="min-w-0 flex-1"><p className="break-all font-bold">{file.name}</p><p className="text-sm text-muted-foreground">{formatSize(file.size)}</p></div><Button type="button" size="icon" variant="ghost" aria-label="إزالة الملف" onClick={() => { setFile(null); if (input.current) input.current.value = ""; }}><X /></Button></div> : <Button type="button" variant="outline" className="h-36 w-full flex-col rounded-[20px] border-2 border-dashed bg-card whitespace-normal" onClick={() => input.current?.click()}><Upload className="size-8" /><span>اضغط لاختيار ملف</span><span className="text-xs text-muted-foreground">PDF، صور، Word، PowerPoint، Excel، نص — حتى ١٠ ميغا</span></Button>}
+            {file ? <div className="flex items-center gap-3 rounded-[20px] border bg-card p-4"><Upload className="shrink-0" /><div className="min-w-0 flex-1"><p className="break-all font-bold">{file.name}</p><p className="text-sm text-muted-foreground">{formatSize(file.size)}</p></div><Button type="button" size="icon" variant="ghost" aria-label={t("إزالة الملف")} onClick={() => { setFile(null); if (input.current) input.current.value = ""; }}><X /></Button></div> : <Button type="button" variant="outline" className="h-36 w-full flex-col rounded-[20px] border-2 border-dashed bg-card whitespace-normal" onClick={() => input.current?.click()}><Upload className="size-8" /><span>{t("اضغط لاختيار ملف")}</span><span className="text-xs text-muted-foreground">{t("PDF، صور، Word، PowerPoint، Excel، نص — حتى ١٠ ميغا")}</span></Button>}
           </TabsContent>
-          <label className="block space-y-2"><span>العنوان</span><Input required maxLength={120} value={title} onChange={(e) => setTitle(e.target.value)} /></label>
-          <div className="grid gap-4 sm:grid-cols-2"><label className="space-y-2"><span>المادة</span><Input required maxLength={60} value={subject} onChange={(e) => setSubject(e.target.value)} /></label><label className="space-y-2"><span>الوحدة</span><Input maxLength={60} value={unit} onChange={(e) => setUnit(e.target.value)} /></label></div>
+          <label className="block space-y-2"><span>{t("العنوان")}</span><Input required maxLength={120} value={title} onChange={(e) => setTitle(e.target.value)} /></label>
+          <div className="grid gap-4 sm:grid-cols-2"><label className="space-y-2"><span>{t("المادة")}</span><Input required maxLength={60} value={subject} onChange={(e) => setSubject(e.target.value)} /></label><label className="space-y-2"><span>{t("الوحدة")}</span><Input maxLength={60} value={unit} onChange={(e) => setUnit(e.target.value)} /></label></div>
           <TabsContent value="quiz" className="space-y-5">
-            <label className="block space-y-2"><span>المدة بالدقائق</span><Input type="number" min={1} max={180} step={1} value={minutes} onChange={(e) => setMinutes(Number(e.target.value))} /></label>
+            <label className="block space-y-2"><span>{t("المدة بالدقائق")}</span><Input type="number" min={1} max={180} step={1} value={minutes} onChange={(e) => setMinutes(Number(e.target.value))} /></label>
             {questions.map((q, i) => <section key={i} className="space-y-3 border-b pb-5"><div className="flex items-center justify-between"><h2 className="font-bold">السؤال {i + 1}</h2>{questions.length > 1 && <Button type="button" size="icon" variant="ghost" aria-label={`حذف السؤال ${i + 1}`} onClick={() => setQuestions((rows) => rows.filter((_, j) => j !== i))}><X /></Button>}</div><Textarea aria-label={`نص السؤال ${i + 1}`} maxLength={600} value={q.prompt} onChange={(e) => updateQuestion(i, { prompt: e.target.value })} />
-              {q.options.map((option, j) => <div key={j} className="flex items-center gap-2"><input type="radio" name={`correct-${i}`} aria-label={`الإجابة الصحيحة الخيار ${j + 1} للسؤال ${i + 1}`} checked={q.correct === j} onChange={() => updateQuestion(i, { correct: j })} className="size-5 accent-primary" /><Input aria-label={`الخيار ${j + 1} للسؤال ${i + 1}`} maxLength={600} value={option} onChange={(e) => updateQuestion(i, { options: q.options.map((o, k) => k === j ? e.target.value : o) })} />{q.options.length > 2 && <Button type="button" variant="ghost" size="icon" aria-label="حذف الخيار" onClick={() => updateQuestion(i, { options: q.options.filter((_, k) => k !== j), correct: q.correct === j ? 0 : q.correct > j ? q.correct - 1 : q.correct })}><X /></Button>}</div>)}
-              {q.options.length < 6 && <Button type="button" variant="outline" onClick={() => updateQuestion(i, { options: [...q.options, ""] })}><Plus /> خيار</Button>}
+              {q.options.map((option, j) => <div key={j} className="flex items-center gap-2"><input type="radio" name={`correct-${i}`} aria-label={`الإجابة الصحيحة الخيار ${j + 1} للسؤال ${i + 1}`} checked={q.correct === j} onChange={() => updateQuestion(i, { correct: j })} className="size-5 accent-primary" /><Input aria-label={`الخيار ${j + 1} للسؤال ${i + 1}`} maxLength={600} value={option} onChange={(e) => updateQuestion(i, { options: q.options.map((o, k) => k === j ? e.target.value : o) })} />{q.options.length > 2 && <Button type="button" variant="ghost" size="icon" aria-label={t("حذف الخيار")} onClick={() => updateQuestion(i, { options: q.options.filter((_, k) => k !== j), correct: q.correct === j ? 0 : q.correct > j ? q.correct - 1 : q.correct })}><X /></Button>}</div>)}
+              {q.options.length < 6 && <Button type="button" variant="outline" onClick={() => updateQuestion(i, { options: [...q.options, ""] })}><Plus /> {t("خيار")}</Button>}
             </section>)}
-            <Button type="button" variant="secondary" disabled={questions.length >= 60} onClick={() => setQuestions((rows) => [...rows, newQuestion()])}><Plus /> إضافة سؤال</Button>
+            <Button type="button" variant="secondary" disabled={questions.length >= 60} onClick={() => setQuestions((rows) => [...rows, newQuestion()])}><Plus /> {t("إضافة سؤال")}</Button>
           </TabsContent>
         </fieldset>
-        <p className="rounded-[20px] bg-peach p-4 text-sm text-peach-foreground">بعد ما ترسله، فريق الدعم بيراجعه وبعدين بينشر للكل. ما بيظهر لغيرك قبل الموافقة، وممنوع الروابط الخارجية.</p>
+        <p className="rounded-[20px] bg-peach p-4 text-sm text-peach-foreground">{t("بعد ما ترسله، فريق الدعم بيراجعه وبعدين بينشر للكل. ما بيظهر لغيرك قبل الموافقة، وممنوع الروابط الخارجية.")}</p>
         {error && <p role="alert" className="text-destructive">{error}</p>}
         <Button disabled={busy} className="h-12 w-full rounded-2xl">{busy && <LoaderCircle className="animate-spin" />} {busy ? "جاري الإرسال…" : "إرسال للمراجعة"}</Button>
       </form>

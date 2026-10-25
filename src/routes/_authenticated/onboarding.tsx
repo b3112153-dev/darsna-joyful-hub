@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
@@ -71,10 +72,10 @@ function Onboarding() {
   return (
     <main className="mx-auto max-w-md px-4 py-10">
       <div className="rounded-3xl border bg-card p-6 shadow-soft">
-        <h1 className="mb-2 text-center text-2xl font-bold">أهلاً فيك في درسنا جو</h1>
-        <p className="mb-6 text-center text-sm text-muted-foreground">لازم نعرف جنسك وجيلك مرة وحدة بس، وما بتقدر تغيّرهم بعدين</p>
+        <h1 className="mb-2 text-center text-2xl font-bold">{t("أهلاً فيك في درسنا جو")}</h1>
+        <p className="mb-6 text-center text-sm text-muted-foreground">{t("لازم نعرف جنسك وجيلك مرة وحدة بس، وما بتقدر تغيّرهم بعدين")}</p>
 
-        <p className="mb-2 font-semibold">الجنس</p>
+        <p className="mb-2 font-semibold">{t("الجنس")}</p>
         <div className="mb-6 grid grid-cols-2 gap-3">
           {([["female", "بنت"], ["male", "ولد"]] as const).map(([v, l]) => (
             <button key={v} type="button" onClick={() => setGender(v)} aria-pressed={gender === v}
@@ -84,22 +85,22 @@ function Onboarding() {
           ))}
         </div>
 
-        <p className="mb-2 font-semibold">تاريخ الميلاد</p>
+        <p className="mb-2 font-semibold">{t("تاريخ الميلاد")}</p>
         <div className="mb-2 grid grid-cols-3 gap-2">
-          <select aria-label="اليوم" className={sel} value={day} onChange={(e) => setDay(e.target.value)}>
-            <option value="">اليوم</option>
+          <select aria-label={t("اليوم")} className={sel} value={day} onChange={(e) => setDay(e.target.value)}>
+            <option value="">{t("اليوم")}</option>
             {Array.from({ length: 31 }, (_, i) => <option key={i} value={String(i + 1)}>{i + 1}</option>)}
           </select>
-          <select aria-label="الشهر" className={sel} value={month} onChange={(e) => setMonth(e.target.value)}>
-            <option value="">الشهر</option>
+          <select aria-label={t("الشهر")} className={sel} value={month} onChange={(e) => setMonth(e.target.value)}>
+            <option value="">{t("الشهر")}</option>
             {MONTHS.map((m, i) => <option key={m} value={String(i + 1)}>{m}</option>)}
           </select>
-          <select aria-label="السنة" className={sel} value={year} onChange={(e) => setYear(e.target.value)}>
-            <option value="">السنة</option>
+          <select aria-label={t("السنة")} className={sel} value={year} onChange={(e) => setYear(e.target.value)}>
+            <option value="">{t("السنة")}</option>
             {YEARS.map((y) => <option key={y} value={String(y)}>{y}</option>)}
           </select>
         </div>
-        {day && month && year && !dateOk && <p className="mb-2 text-sm text-destructive">هذا التاريخ مش صحيح</p>}
+        {day && month && year && !dateOk && <p className="mb-2 text-sm text-destructive">{t("هذا التاريخ مش صحيح")}</p>}
 
         <label className="mb-6 mt-4 flex items-start gap-3 text-sm" dir="ltr">
           <input type="checkbox" className="mt-1 size-5" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
@@ -108,7 +109,7 @@ function Onboarding() {
 
         {error && <p className="mb-3 text-center text-sm text-destructive">{error}</p>}
         <Button disabled={!ready} onClick={submit} className="h-12 w-full text-base">{busy ? "لحظة…" : "تأكيد وبدء"}</Button>
-        <button type="button" onClick={logout} className="mt-4 w-full text-sm text-muted-foreground hover:underline">تسجيل الخروج</button>
+        <button type="button" onClick={logout} className="mt-4 w-full text-sm text-muted-foreground hover:underline">{t("تسجيل الخروج")}</button>
       </div>
     </main>
   );

@@ -6,6 +6,7 @@ import { branchLabel } from "@/lib/branches";
 import { readData, requestSignal } from "@/lib/requests";
 import { PageState } from "@/components/PageState";
 import { useMe } from "@/hooks/use-auth";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/rooms/")({
   head: () => ({
@@ -34,8 +35,8 @@ function Rooms() {
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-6 font-display">
-      <h1 className="mb-1 text-[28px] font-extrabold">الدردشات</h1>
-      <p className="mb-5 text-sm leading-7 text-muted-foreground">غرفتك والجولة المشتركة والدعم، كلها هون</p>
+      <h1 className="mb-1 text-[28px] font-extrabold">{t("الدردشات")}</h1>
+      <p className="mb-5 text-sm leading-7 text-muted-foreground">{t("غرفتك والجولة المشتركة والدعم، كلها هون")}</p>
       <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
       <div className="grid gap-3">
         {sorted.map((r) => (
@@ -51,9 +52,9 @@ function Rooms() {
             <div className="min-w-0"><h2 className="truncate text-[17px] font-extrabold">{r.name}</h2><p className="text-[13px] font-semibold leading-6 text-muted-foreground">{r.description}</p>{r.branch && <p className="truncate text-sm text-muted-foreground">{branchLabel(r.branch)}</p>}</div>
           </Link>
         ))}
-        <Link to="/study-rooms" className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3 rounded-[26px] bg-staff p-4 text-staff-foreground"><span className="grid size-14 shrink-0 place-items-center rounded-[18px] bg-card text-card-foreground"><Timer className="size-7" /></span><div className="min-w-0"><h2 className="text-[17px] font-extrabold">رومات الدراسة</h2><p className="text-[13px] font-semibold opacity-80">ادرس مع رفقاتك بنفس المشهد</p></div></Link>
-        <Link to="/support" className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3 rounded-[26px] bg-peach p-4 text-peach-foreground"><span className="grid size-14 shrink-0 place-items-center rounded-[18px] bg-card text-card-foreground"><CircleHelp className="size-7" /></span><div className="min-w-0"><h2 className="text-[17px] font-extrabold">الدعم</h2><p className="text-[13px] font-semibold text-muted-foreground">تواصل مع الإدارة</p></div></Link>
-        {!isLoading && !isError && !me?.isStaff && !me?.isOwner && rooms.length === 1 && rooms.every((r) => r.audience === me?.profile?.gender && r.generation === me?.profile?.generation) && <p className="rounded-[22px] border-2 border-dashed p-4 text-sm leading-7 text-muted-foreground">بتشوف بس غرفتك. غرف الجيل والجنس التانيين مخفية عنك.</p>}
+        <Link to="/study-rooms" className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3 rounded-[26px] bg-staff p-4 text-staff-foreground"><span className="grid size-14 shrink-0 place-items-center rounded-[18px] bg-card text-card-foreground"><Timer className="size-7" /></span><div className="min-w-0"><h2 className="text-[17px] font-extrabold">{t("رومات الدراسة")}</h2><p className="text-[13px] font-semibold opacity-80">{t("ادرس مع رفقاتك بنفس المشهد")}</p></div></Link>
+        <Link to="/support" className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3 rounded-[26px] bg-peach p-4 text-peach-foreground"><span className="grid size-14 shrink-0 place-items-center rounded-[18px] bg-card text-card-foreground"><CircleHelp className="size-7" /></span><div className="min-w-0"><h2 className="text-[17px] font-extrabold">{t("الدعم")}</h2><p className="text-[13px] font-semibold text-muted-foreground">{t("تواصل مع الإدارة")}</p></div></Link>
+        {!isLoading && !isError && !me?.isStaff && !me?.isOwner && rooms.length === 1 && rooms.every((r) => r.audience === me?.profile?.gender && r.generation === me?.profile?.generation) && <p className="rounded-[22px] border-2 border-dashed p-4 text-sm leading-7 text-muted-foreground">{t("بتشوف بس غرفتك. غرف الجيل والجنس التانيين مخفية عنك.")}</p>}
       </div>
     </main>
   );
