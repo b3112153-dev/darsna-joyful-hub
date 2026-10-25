@@ -6,6 +6,7 @@ import { OnboardingGate } from "@/components/OnboardingGate";
 import { PageState } from "@/components/PageState";
 import { readData, withTimeout } from "@/lib/requests";
 import { FocusModeProvider, FocusModeScreen, useFocusMode } from "@/components/FocusMode";
+import { FocusExtras } from "@/components/FocusExtras";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function Layout() {
-  return <><BanGuard /><FocusWatcher /><OnboardingGate><FocusModeProvider><LayoutContent /></FocusModeProvider></OnboardingGate></>;
+  return <><BanGuard /><FocusWatcher /><OnboardingGate><FocusModeProvider><LayoutContent /><FocusExtras /></FocusModeProvider></OnboardingGate></>;
 }
 
 function LayoutContent() {

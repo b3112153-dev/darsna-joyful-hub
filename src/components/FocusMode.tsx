@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { Minimize2, Pause, Play, Square } from "lucide-react";
+import { Minimize2, Music4, Pause, Play, Square } from "lucide-react";
 import { useSession } from "@/hooks/use-auth";
 import { useMyFocus } from "@/hooks/use-focus";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { EndFocusDialog } from "@/components/EndFocusDialog";
 import { fmtClock } from "@/components/StudyRounds";
 import { Progress } from "@/components/ui/progress";
 import { FOCUS_PREFERENCE_DEFAULT, focusPreferenceEnabled } from "@/lib/focus-preference";
+import { SoundsSheet } from "@/components/SoundsSheet";
 
 type Mode = { focus: ReturnType<typeof useMyFocus>; visible: boolean; enter: () => void; exit: () => void; enabled: boolean; setEnabled: (value: boolean) => void };
 const FocusModeContext = createContext<Mode | null>(null);
@@ -45,6 +46,7 @@ export function FocusModeScreen() {
         <Progress className="h-1.5" value={Math.max(0, Math.min(100, 100 - left / session.duration_seconds * 100))} aria-label="تقدم الجلسة" />
       </section>
       <TodoList userId={user.id} />
+      <SoundsSheet trigger={<Button variant="secondary" className="h-12 w-full rounded-[16px]"><Music4 className="size-4" /> أصوات الدراسة</Button>} />
       <div className="grid grid-cols-2 gap-3">
         <Button className="h-12 rounded-[16px]" variant="secondary" disabled={pending} onClick={session.status === "paused" ? focus.resume : focus.pause}>{session.status === "paused" ? <Play /> : <Pause />}{session.status === "paused" ? "استئناف" : "إيقاف مؤقت"}</Button>
         <Button className="h-12 rounded-[16px]" disabled={pending} variant="outline" onClick={() => setEndOpen(true)}><Square className="size-4" /> إنهاء الجلسة</Button>

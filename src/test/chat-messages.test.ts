@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MESSAGE_PAGE_SIZE, mergeMessage, removeMessage, orderedMessages, canDeleteMessage, canEditMessage, type Message, type MessageCache } from "@/lib/chat-messages";
 
 const message = (id: string, created_at = "2026-10-24T12:00:00Z"): Message => ({
-  id, created_at, content: id, deleted_at: null, deleted_by: null, from_admin: false,
+  id, created_at, content: id, deleted_at: null, deleted_by: null, edited_at: null, from_admin: false,
   image_path: null, reply_to: null, room_id: "room", sender_role: null, user_id: "student", profiles: null,
 });
 const cache = (): MessageCache => ({ pages: [

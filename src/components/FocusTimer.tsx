@@ -8,8 +8,12 @@ import type { useMyFocus } from "@/hooks/use-focus";
 import { PageState } from "@/components/PageState";
 import { EndFocusDialog } from "@/components/EndFocusDialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { toast } from "sonner";
+import { startStudyProgram } from "@/components/FocusExtras";
+import { MAX_PROGRAM_HOURS } from "@/lib/study-program";
 
 const PRESETS = [15, 25, 50, 90];
+const HOUR_PRESETS = [1, 2, 3, 4];
 
 export function FocusTimer({ focus, roomId, compact = false }: { focus: ReturnType<typeof useMyFocus>; roomId: string | null; compact?: boolean }) {
   const { session, left, start, pause, resume, reset } = focus;
@@ -75,6 +79,15 @@ export function FocusTimer({ focus, roomId, compact = false }: { focus: ReturnTy
         </div>
       </div>
       <Button disabled={focus.pending} onClick={() => start(minutes, subject, roomId)} className="w-full bg-brand">{focus.pending ? <LoaderCircle className="animate-spin" /> : <Play />} ابدأ الدراسة</Button>
+      <div className="space-y-1.5 border-t pt-3">
+        <Label>أو اختر عدد ساعات (بتتقسم لجلسات ٥٠ دقيقة مع استراحات)</Label>
+        <div className="flex flex-wrap gap-2">
+          {HOUR_PRESETS.map((h) => (
+            <Button key={h} type="button" size="sm" variant="outline" disabled={focus.pending}
+              onClick={() => { if (!startStudyProgram(h, subject, roomId, start)) toast.error("اختار عدد ساعات صحيح (١–" + MAX_PROGRAM_HOURS + ")"); }}>{h} ساعات</Button>
+          ))}
+        </div>
+      </div>
       <p className="text-center text-xs text-muted-foreground">خلال الجلسة الدردشة بتتقفل، وبتنفتح لحالها لما يخلص الوقت.</p>
     </div>
   );

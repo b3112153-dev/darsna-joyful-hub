@@ -17,6 +17,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedBoardRouteImport } from './routes/_authenticated/board'
+import { Route as AuthenticatedDhikrRouteImport } from './routes/_authenticated/dhikr'
 import { Route as AuthenticatedFocusRouteImport } from './routes/_authenticated/focus'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedMotivationRouteImport } from './routes/_authenticated/motivation'
@@ -27,9 +28,12 @@ import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
 import { Route as AuthenticatedAdminAvatarArtRouteImport } from './routes/_authenticated/admin_.avatar-art'
 import { Route as AuthenticatedAdminCurriculumRouteImport } from './routes/_authenticated/admin_.curriculum'
+import { Route as AuthenticatedAdminDhikrRouteImport } from './routes/_authenticated/admin_.dhikr'
 import { Route as AuthenticatedLibraryUploadRouteImport } from './routes/_authenticated/library_.upload'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms.index'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
+import { Route as AuthenticatedStudyRoomsIndexRouteImport } from './routes/_authenticated/study-rooms.index'
+import { Route as AuthenticatedStudyRoomsRoomIdRouteImport } from './routes/_authenticated/study-rooms.$roomId'
 import { Route as AuthenticatedTopicsIndexRouteImport } from './routes/_authenticated/topics.index'
 import { Route as AuthenticatedTopicsTopicIdRouteImport } from './routes/_authenticated/topics.$topicId'
 import { Route as AuthenticatedLibraryQuizQuizIdRouteImport } from './routes/_authenticated/library_.quiz.$quizId'
@@ -71,6 +75,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
 const AuthenticatedBoardRoute = AuthenticatedBoardRouteImport.update({
   id: '/board',
   path: '/board',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDhikrRoute = AuthenticatedDhikrRouteImport.update({
+  id: '/dhikr',
+  path: '/dhikr',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFocusRoute = AuthenticatedFocusRouteImport.update({
@@ -125,6 +134,11 @@ const AuthenticatedAdminCurriculumRoute =
     path: '/admin/curriculum',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminDhikrRoute = AuthenticatedAdminDhikrRouteImport.update({
+  id: '/admin_/dhikr',
+  path: '/admin/dhikr',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLibraryUploadRoute =
   AuthenticatedLibraryUploadRouteImport.update({
     id: '/library_/upload',
@@ -140,6 +154,18 @@ const AuthenticatedRoomsRoomIdRoute =
   AuthenticatedRoomsRoomIdRouteImport.update({
     id: '/rooms/$roomId',
     path: '/rooms/$roomId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudyRoomsIndexRoute =
+  AuthenticatedStudyRoomsIndexRouteImport.update({
+    id: '/study-rooms/',
+    path: '/study-rooms/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudyRoomsRoomIdRoute =
+  AuthenticatedStudyRoomsRoomIdRouteImport.update({
+    id: '/study-rooms/$roomId',
+    path: '/study-rooms/$roomId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedTopicsIndexRoute =
@@ -169,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/board': typeof AuthenticatedBoardRoute
+  '/dhikr': typeof AuthenticatedDhikrRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
@@ -179,10 +206,13 @@ export interface FileRoutesByFullPath {
   '/support': typeof AuthenticatedSupportRoute
   '/admin/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
   '/admin/curriculum': typeof AuthenticatedAdminCurriculumRoute
+  '/admin/dhikr': typeof AuthenticatedAdminDhikrRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/study-rooms/$roomId': typeof AuthenticatedStudyRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/study-rooms/': typeof AuthenticatedStudyRoomsIndexRoute
   '/topics/': typeof AuthenticatedTopicsIndexRoute
   '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -194,6 +224,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/board': typeof AuthenticatedBoardRoute
+  '/dhikr': typeof AuthenticatedDhikrRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
@@ -204,10 +235,13 @@ export interface FileRoutesByTo {
   '/support': typeof AuthenticatedSupportRoute
   '/admin/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
   '/admin/curriculum': typeof AuthenticatedAdminCurriculumRoute
+  '/admin/dhikr': typeof AuthenticatedAdminDhikrRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/study-rooms/$roomId': typeof AuthenticatedStudyRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
+  '/study-rooms': typeof AuthenticatedStudyRoomsIndexRoute
   '/topics': typeof AuthenticatedTopicsIndexRoute
   '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -221,6 +255,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/board': typeof AuthenticatedBoardRoute
+  '/_authenticated/dhikr': typeof AuthenticatedDhikrRoute
   '/_authenticated/focus': typeof AuthenticatedFocusRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/motivation': typeof AuthenticatedMotivationRoute
@@ -231,10 +266,13 @@ export interface FileRoutesById {
   '/_authenticated/support': typeof AuthenticatedSupportRoute
   '/_authenticated/admin_/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
   '/_authenticated/admin_/curriculum': typeof AuthenticatedAdminCurriculumRoute
+  '/_authenticated/admin_/dhikr': typeof AuthenticatedAdminDhikrRoute
   '/_authenticated/library_/upload': typeof AuthenticatedLibraryUploadRoute
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/_authenticated/study-rooms/$roomId': typeof AuthenticatedStudyRoomsRoomIdRoute
   '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/_authenticated/study-rooms/': typeof AuthenticatedStudyRoomsIndexRoute
   '/_authenticated/topics/': typeof AuthenticatedTopicsIndexRoute
   '/_authenticated/library_/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -248,6 +286,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin'
     | '/board'
+    | '/dhikr'
     | '/focus'
     | '/library'
     | '/motivation'
@@ -258,10 +297,13 @@ export interface FileRouteTypes {
     | '/support'
     | '/admin/avatar-art'
     | '/admin/curriculum'
+    | '/admin/dhikr'
     | '/library/upload'
     | '/rooms/$roomId'
+    | '/study-rooms/$roomId'
     | '/topics/$topicId'
     | '/rooms/'
+    | '/study-rooms/'
     | '/topics/'
     | '/library/quiz/$quizId'
   fileRoutesByTo: FileRoutesByTo
@@ -273,6 +315,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin'
     | '/board'
+    | '/dhikr'
     | '/focus'
     | '/library'
     | '/motivation'
@@ -283,10 +326,13 @@ export interface FileRouteTypes {
     | '/support'
     | '/admin/avatar-art'
     | '/admin/curriculum'
+    | '/admin/dhikr'
     | '/library/upload'
     | '/rooms/$roomId'
+    | '/study-rooms/$roomId'
     | '/topics/$topicId'
     | '/rooms'
+    | '/study-rooms'
     | '/topics'
     | '/library/quiz/$quizId'
   id:
@@ -299,6 +345,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/admin'
     | '/_authenticated/board'
+    | '/_authenticated/dhikr'
     | '/_authenticated/focus'
     | '/_authenticated/library'
     | '/_authenticated/motivation'
@@ -309,10 +356,13 @@ export interface FileRouteTypes {
     | '/_authenticated/support'
     | '/_authenticated/admin_/avatar-art'
     | '/_authenticated/admin_/curriculum'
+    | '/_authenticated/admin_/dhikr'
     | '/_authenticated/library_/upload'
     | '/_authenticated/rooms/$roomId'
+    | '/_authenticated/study-rooms/$roomId'
     | '/_authenticated/topics/$topicId'
     | '/_authenticated/rooms/'
+    | '/_authenticated/study-rooms/'
     | '/_authenticated/topics/'
     | '/_authenticated/library_/quiz/$quizId'
   fileRoutesById: FileRoutesById
@@ -382,6 +432,13 @@ declare module '@tanstack/react-router' {
       path: '/board'
       fullPath: '/board'
       preLoaderRoute: typeof AuthenticatedBoardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dhikr': {
+      id: '/_authenticated/dhikr'
+      path: '/dhikr'
+      fullPath: '/dhikr'
+      preLoaderRoute: typeof AuthenticatedDhikrRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/focus': {
@@ -454,6 +511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCurriculumRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/dhikr': {
+      id: '/_authenticated/admin_/dhikr'
+      path: '/admin/dhikr'
+      fullPath: '/admin/dhikr'
+      preLoaderRoute: typeof AuthenticatedAdminDhikrRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/library_/upload': {
       id: '/_authenticated/library_/upload'
       path: '/library/upload'
@@ -473,6 +537,20 @@ declare module '@tanstack/react-router' {
       path: '/rooms/$roomId'
       fullPath: '/rooms/$roomId'
       preLoaderRoute: typeof AuthenticatedRoomsRoomIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/study-rooms/': {
+      id: '/_authenticated/study-rooms/'
+      path: '/study-rooms'
+      fullPath: '/study-rooms/'
+      preLoaderRoute: typeof AuthenticatedStudyRoomsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/study-rooms/$roomId': {
+      id: '/_authenticated/study-rooms/$roomId'
+      path: '/study-rooms/$roomId'
+      fullPath: '/study-rooms/$roomId'
+      preLoaderRoute: typeof AuthenticatedStudyRoomsRoomIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/topics/': {
@@ -502,6 +580,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedBoardRoute: typeof AuthenticatedBoardRoute
+  AuthenticatedDhikrRoute: typeof AuthenticatedDhikrRoute
   AuthenticatedFocusRoute: typeof AuthenticatedFocusRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
   AuthenticatedMotivationRoute: typeof AuthenticatedMotivationRoute
@@ -512,10 +591,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
   AuthenticatedAdminAvatarArtRoute: typeof AuthenticatedAdminAvatarArtRoute
   AuthenticatedAdminCurriculumRoute: typeof AuthenticatedAdminCurriculumRoute
+  AuthenticatedAdminDhikrRoute: typeof AuthenticatedAdminDhikrRoute
   AuthenticatedLibraryUploadRoute: typeof AuthenticatedLibraryUploadRoute
   AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute
+  AuthenticatedStudyRoomsRoomIdRoute: typeof AuthenticatedStudyRoomsRoomIdRoute
   AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
   AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
+  AuthenticatedStudyRoomsIndexRoute: typeof AuthenticatedStudyRoomsIndexRoute
   AuthenticatedTopicsIndexRoute: typeof AuthenticatedTopicsIndexRoute
   AuthenticatedLibraryQuizQuizIdRoute: typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -523,6 +605,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedBoardRoute: AuthenticatedBoardRoute,
+  AuthenticatedDhikrRoute: AuthenticatedDhikrRoute,
   AuthenticatedFocusRoute: AuthenticatedFocusRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedMotivationRoute: AuthenticatedMotivationRoute,
@@ -533,10 +616,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
   AuthenticatedAdminAvatarArtRoute: AuthenticatedAdminAvatarArtRoute,
   AuthenticatedAdminCurriculumRoute: AuthenticatedAdminCurriculumRoute,
+  AuthenticatedAdminDhikrRoute: AuthenticatedAdminDhikrRoute,
   AuthenticatedLibraryUploadRoute: AuthenticatedLibraryUploadRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRoute,
+  AuthenticatedStudyRoomsRoomIdRoute: AuthenticatedStudyRoomsRoomIdRoute,
   AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,
   AuthenticatedRoomsIndexRoute: AuthenticatedRoomsIndexRoute,
+  AuthenticatedStudyRoomsIndexRoute: AuthenticatedStudyRoomsIndexRoute,
   AuthenticatedTopicsIndexRoute: AuthenticatedTopicsIndexRoute,
   AuthenticatedLibraryQuizQuizIdRoute: AuthenticatedLibraryQuizQuizIdRoute,
 }

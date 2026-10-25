@@ -9,6 +9,8 @@ import { fmtClock } from "@/components/StudyRounds";
 import { Switch } from "@/components/ui/switch";
 import { UserAvatar } from "@/components/UserAvatar";
 import { WalletChip } from "@/components/WalletChip";
+import { SoundsSheet } from "@/components/SoundsSheet";
+import { Music4 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/focus")({
   head: () => ({ meta: [
@@ -47,6 +49,7 @@ function Focus() {
       </section>
     </div>
     {focus.session && <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-[20px] border bg-card p-3 text-xs"><p className="min-w-0">جلسة شغّالة: <span dir="ltr" className="inline-block font-bold tabular-nums">{fmtClock(focus.left * 1000)}</span></p><Button size="sm" variant="ghost" className="text-xs" onClick={enter}>ارجع للتركيز</Button></div>}
+    <SoundsSheet trigger={<button className="flex w-full items-center gap-3 rounded-[20px] border bg-card p-3 text-start shadow-card transition hover:bg-secondary/50"><span className="grid size-9 place-items-center rounded-xl bg-secondary"><Music4 className="size-5" /></span><span className="min-w-0 flex-1"><span className="block text-sm font-extrabold">أصوات الدراسة</span><span className="block text-xs text-muted-foreground">مطر، نار، بحر وعصافير — ادمج اللي بيريّحك</span></span></button>} />
     {user && <TodoList userId={user.id} />}
   </main>;
 }

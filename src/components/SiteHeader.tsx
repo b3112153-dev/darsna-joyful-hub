@@ -17,7 +17,7 @@ export const MAIN_NAV = [
   { to: "/plan", label: "حلّها", icon: CalendarCheck },
   { to: "/rooms", label: "الدردشات", icon: MessagesSquare },
   { to: "/library", label: "المكتبة", icon: BookOpen },
-  { to: "/motivation", label: "ذكرى", icon: Sparkles },
+  { to: "/dhikr", label: "ذكرى", icon: Sparkles },
   { to: "/profile", label: "ملفي", icon: User },
 ] as const;
 
@@ -75,6 +75,7 @@ export function SiteHeader() {
                   <DropdownMenuContent align="end" className="w-52">
                     <DropdownMenuItem asChild><Link to="/progress"><BarChart3 /> تقدمي</Link></DropdownMenuItem>
                     <DropdownMenuItem asChild><Link to="/topics"><Newspaper /> مواضيع ونقاشات</Link></DropdownMenuItem>
+                    <DropdownMenuItem asChild><Link to="/motivation"><Sparkles /> التحفيز</Link></DropdownMenuItem>
                     <DropdownMenuItem asChild><Link to="/profile"><User /> ملفي الشخصي</Link></DropdownMenuItem>
                     {!me?.isAdmin && (
                       <DropdownMenuItem asChild><Link to="/support"><Headset /> تواصل مع الإدارة</Link></DropdownMenuItem>
