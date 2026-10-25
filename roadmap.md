@@ -1,5 +1,10 @@
 # Roadmap (current batch)
 
+- [ ] Simplify student chats to three entries and move Rooms to home.
+- [ ] Staff chats inbox, grouped rooms, review and scoped tools.
+- [ ] Unified composed avatars and nickname privacy; no private profile fields.
+- [ ] Latin numerals, English Rooms terminology, tests and direction checks.
+
 - [x] (1) Instagram-style message menu: ChatMessage + SupportThread — reactions (6 emojis, toggle, realtime), reply/edit(15min)/delete/copy, admin golden bubble + role badges
 - [x] (2) Study sounds: Web Audio API (rain/fire/sea/nature), bottom sheet on home+focus, mixing, volume, Quran "soon" card
 - [x] (3) Focus attendance check every 60min (10s countdown, auto-pause) + "choose hours" auto session splitting (50/10, 20 after 3)
