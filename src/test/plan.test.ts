@@ -58,7 +58,7 @@ describe("generatePlan", () => {
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       return items.filter((i) => i.day === key && ["watch", "review", "memorize"].includes(i.kind)).reduce((s, i) => s + i.minutes, 0);
     };
-    expect(dayMin(0)).toBeLessThanOrEqual(Math.round(4 * 60 * RAMP[0]) + 45);
+    expect(dayMin(0)).toBeLessThanOrEqual(Math.round(4 * 60 * RAMP[0]!) + 45);
     expect(dayMin(8)).toBeGreaterThan(dayMin(0) - 1);
   });
   it("يضيف امتحان منصة واحد على الأقل كل أسبوع", () => {

@@ -233,7 +233,7 @@ export function generatePlan(
     // امتحان المنصة الأسبوعي (مساءً) — نحجز وقته قبل توزيع الدراسة
     const weekNo = Math.floor(off / 7);
     if (names.length && weekNo !== platformWeek && (js === 4 || off % 7 === 5 || off === days - 1)) {
-      const subj = names[platformSubjIdx % names.length];
+      const subj = names[platformSubjIdx % names.length]!;
       const quiz =
         quizzes.find((q) => q.status === "approved" && q.subject === subj && (!generation || q.generation === generation)) ??
         quizzes.find((q) => q.status === "approved" && q.subject === subj);
@@ -245,7 +245,7 @@ export function generatePlan(
       });
       platformWeek = weekNo;
       platformSubjIdx++;
-      for (let i = 0; i < wins.length; i++) wins.splice(i, 1, ...subtract([wins[i]], [eve, eve + SESSION_MIN]));
+      for (let i = 0; i < wins.length; i++) { const w = wins[i]!; wins.splice(i, 1, ...subtract([w], [eve, eve + SESSION_MIN])); }
     }
 
     // هدف اليوم مع التدرّج الأسبوعي ويوم الراحة
