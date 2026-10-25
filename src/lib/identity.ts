@@ -1,6 +1,12 @@
 import type { AvatarState } from "@/hooks/use-wallet";
+import type { Json } from "@/integrations/supabase/types";
 
-export type PublicProfile = { id?: string; nickname?: string | null; avatar?: AvatarState | null; gender?: string | null; display_name?: string | null };
+export type PublicProfile = { id?: string; nickname?: string | null; avatar?: Json | AvatarState; gender?: string | null; display_name?: string | null };
+export function profileAvatar(profile: PublicProfile | null | undefined): AvatarState {
+  const raw = profile?.avatar;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  return Object.fromEntries(Object.entries(raw).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+}
 export const PROFILE_FIELDS = "id,display_name,nickname,avatar,avatar_url,branch,gender,generation,onboarded_v2,created_at,nickname_changed_at";
 export function profileName(profile: PublicProfile | null | undefined, staff = false) {
   return (staff ? profile?.display_name || profile?.nickname : profile?.nickname) || "Student";
