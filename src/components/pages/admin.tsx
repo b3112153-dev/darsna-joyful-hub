@@ -388,7 +388,7 @@ function MessagesAdmin() {
     queryFn: async () =>
       await readData(supabase
         .from("messages")
-        .select("id,content,created_at,profiles(display_name),rooms(name)").is("deleted_at", null)
+        .select("id,content,created_at,profiles(display_name,nickname,avatar,gender),rooms(name)").is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(100)) ?? [],
   });
@@ -405,6 +405,7 @@ function MessagesAdmin() {
         {data.length === 0 && !isLoading && <p className="p-6 text-center text-muted-foreground">لا يوجد رسائل</p>}
         {data.map((m) => (
           <div key={m.id} className="flex items-start gap-3 p-4">
+            <AvatarPic profile={m.profiles} className="size-8" />
             <div className="flex-1 min-w-0">
               <p className="text-xs text-muted-foreground">
                 {m.profiles?.display_name} · {m.rooms?.name} · {new Date(m.created_at).toLocaleString("ar-u-nu-latn")}

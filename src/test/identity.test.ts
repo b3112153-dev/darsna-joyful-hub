@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { chatAccess, latinDigits, profileName, studentChatRooms, PROFILE_FIELDS } from "@/lib/identity";
 import { fmtMin } from "@/lib/plan";
 import { inboxUnread } from "@/hooks/use-support-inbox";
+import { imageFor } from "@/hooks/use-avatar";
+import { profileAvatar } from "@/lib/identity";
 
 describe("student presentation rules", () => {
   it("never exposes a real name to students without a nickname", () => {
@@ -23,6 +25,11 @@ describe("student presentation rules", () => {
   it("support can open support and review but cannot mute", () => expect(chatAccess({ isSupport: true })).toEqual({ staff: true, support: true, review: true, mute: false }));
   it("converts both Arabic digit alphabets to Latin", () => expect(latinDigits("٠١٢٣٤٥٦٧٨٩ ۰۱۲۳۴۵۶۷۸۹")).toBe("0123456789 0123456789"));
   it("formats study-plan counters with Latin numbers", () => expect(fmtMin(9 * 60 + 5)).toBe("9:05"));
+  it("uses the sender's gender to resolve a chosen outfit", () => {
+    const profile = { nickname: "Moon", gender: "female", avatar: { outfit: "it00", hair: "it18" } };
+    expect(profileAvatar(profile)).toEqual({ outfit: "it00", hair: "it18" });
+    expect(imageFor({ "it00:female": "girl.png", "it00:male": "boy.png" }, "it00", "outfit", profile.gender)).toBe("girl.png");
+  });
   it("marks only new student messages unread after a local read", () => {
     const row = { id: "m", student_id: "s", sender_id: "s", content: "hello", created_at: "2026-10-25T10:00:00Z", profiles: null };
     expect(inboxUnread(row, {})).toBe(true);

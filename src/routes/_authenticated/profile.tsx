@@ -299,7 +299,7 @@ function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent dir={lang === "ar" ? "rtl" : "ltr"} className={mandatory ? "[&>button]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
+      <DialogContent dir={lang === "ar" ? "rtl" : "ltr"} className={mandatory ? "[&>button:last-child]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{t("سمّي أفتارك")}</DialogTitle>
           <DialogDescription>{t("هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل 40 يوم (حد أقصى 16 حرف).")}</DialogDescription>
