@@ -1,5 +1,4 @@
 import type { Tables } from "@/integrations/supabase/types";
-import { t } from "@/lib/i18n";
 
 export type Todo = Tables<"todos">;
 export const TODO_LIMIT = 100;

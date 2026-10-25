@@ -145,7 +145,7 @@ export function Plan() {
               aria-pressed={active}
               className={`flex w-[72px] shrink-0 flex-col items-center rounded-2xl border py-2 transition ${active ? "border-[#8c0610] bg-[#8c0610] text-primary-foreground" : "bg-card"}`}
             >
-              <span className="text-xs">{DAY_NAMES[d.getDay()]}</span>
+              <span className="text-xs">{t(DAY_NAMES[d.getDay()])}</span>
               <span className="text-lg font-extrabold tabular-nums">{arDigits(d.getDate())}</span>
             </button>
           );
@@ -505,16 +505,16 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
               const off = !sch || sch === "off";
               return (
                 <div key={d} className="flex items-center gap-2 rounded-2xl border p-2.5">
-                  <span className="w-16 shrink-0 text-sm font-bold">{DAY_NAMES[d]}</span>
+                  <span className="w-16 shrink-0 text-sm font-bold">{t(DAY_NAMES[d])}</span>
                   <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Checkbox checked={off} onCheckedChange={(v) => set({ school: { ...a.school, [String(d)]: v ? "off" : { go: 7 * 60 + 30, back: 14 * 60 } } })} aria-label={`إجازة ${DAY_NAMES[d]}`} />
+                    <Checkbox checked={off} onCheckedChange={(v) => set({ school: { ...a.school, [String(d)]: v ? "off" : { go: 7 * 60 + 30, back: 14 * 60 } } })} aria-label={`إجازة ${t(DAY_NAMES[d])}`} />
                     {t("إجازة")}
                   </label>
                   {!off && typeof sch === "object" && (
                     <div className="flex flex-1 items-center gap-1.5" dir="ltr">
-                      <Input type="time" className="h-9" value={toTime(sch.go)} onChange={(e) => set({ school: { ...a.school, [String(d)]: { ...sch, go: toMin(e.target.value || "07:30") } } })} aria-label={`ذهاب ${DAY_NAMES[d]}`} />
+                      <Input type="time" className="h-9" value={toTime(sch.go)} onChange={(e) => set({ school: { ...a.school, [String(d)]: { ...sch, go: toMin(e.target.value || "07:30") } } })} aria-label={`ذهاب ${t(DAY_NAMES[d])}`} />
                       <span className="text-xs">→</span>
-                      <Input type="time" className="h-9" value={toTime(sch.back)} onChange={(e) => set({ school: { ...a.school, [String(d)]: { ...sch, back: toMin(e.target.value || "14:00") } } })} aria-label={`عودة ${DAY_NAMES[d]}`} />
+                      <Input type="time" className="h-9" value={toTime(sch.back)} onChange={(e) => set({ school: { ...a.school, [String(d)]: { ...sch, back: toMin(e.target.value || "14:00") } } })} aria-label={`عودة ${t(DAY_NAMES[d])}`} />
                     </div>
                   )}
                 </div>
@@ -541,7 +541,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
               <div className="space-y-2">
                 {a.commitments.map((c, i) => (
                   <div key={i} className="flex items-center gap-2 rounded-2xl border p-2 text-xs">
-                    <span className="min-w-0 flex-1 truncate font-bold">{c.name} — {DAY_NAMES[c.day]} {fmtMin(c.from)}</span>
+                    <span className="min-w-0 flex-1 truncate font-bold">{c.name} — {t(DAY_NAMES[c.day])} {fmtMin(c.from)}</span>
                     <Button size="sm" variant="ghost" className="h-7" onClick={() => set({ commitments: a.commitments.filter((_, j) => j !== i) })}><Trash2 className="size-3.5" /></Button>
                   </div>
                 ))}
@@ -603,7 +603,7 @@ function CommitmentAdder({ onAdd }: { onAdd: (c: Commitment) => void }) {
       <div className="grid grid-cols-3 gap-2">
         <Select value={day} onValueChange={setDay}>
           <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-          <SelectContent>{[6, 0, 1, 2, 3, 4, 5].map((d) => <SelectItem key={d} value={String(d)}>{DAY_NAMES[d]}</SelectItem>)}</SelectContent>
+          <SelectContent>{[6, 0, 1, 2, 3, 4, 5].map((d) => <SelectItem key={d} value={String(d)}>{t(DAY_NAMES[d])}</SelectItem>)}</SelectContent>
         </Select>
         <Input type="time" dir="ltr" value={from} onChange={(e) => setFrom(e.target.value)} aria-label={t("من")} />
         <Input type="time" dir="ltr" value={to} onChange={(e) => setTo(e.target.value)} aria-label={t("إلى")} />
