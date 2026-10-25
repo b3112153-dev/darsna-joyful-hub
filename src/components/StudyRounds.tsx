@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AvatarPic } from "./AvatarPic";
 import type { PublicProfile } from "@/lib/identity";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 export function roundTimes(startsAt: string, minutes: number, now: number) {
   const start = new Date(startsAt).getTime();
@@ -171,6 +171,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
 }
 
 function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
+  const { lang } = useLang();
   const { user } = useMe();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -202,7 +203,7 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" className="h-7"><Plus /> {t("جولة جديدة")}</Button>
       </DialogTrigger>
-      <DialogContent dir="rtl">
+      <DialogContent dir={lang === "ar" ? "rtl" : "ltr"}>
         <DialogHeader><DialogTitle>{t("جولة دراسة جديدة")}</DialogTitle></DialogHeader>
         <form onSubmit={create} className="space-y-4">
           <div className="space-y-1.5">
@@ -212,7 +213,7 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>{t("مدة الجولة")}</Label>
-              <Select dir="rtl" value={duration} onValueChange={setDuration}>
+              <Select dir={lang === "ar" ? "rtl" : "ltr"} value={duration} onValueChange={setDuration}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {[15, 25, 30, 45, 60, 90, 120].map((m) => <SelectItem key={m} value={String(m)}>{m} دقيقة</SelectItem>)}
@@ -221,7 +222,7 @@ function NewRound({ roomId, onDone }: { roomId: string; onDone: () => void }) {
             </div>
             <div className="space-y-1.5">
               <Label>{t("تبدأ")}</Label>
-              <Select dir="rtl" value={startIn} onValueChange={setStartIn}>
+              <Select dir={lang === "ar" ? "rtl" : "ltr"} value={startIn} onValueChange={setStartIn}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="0">{t("هلأ")}</SelectItem>

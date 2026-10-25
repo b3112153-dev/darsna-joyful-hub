@@ -51,6 +51,7 @@ export function StaffChats() {
 }
 
 export function SupportInbox() {
+  const { lang } = useLang();
   const { user } = useMe(); const inbox = useSupportInbox(user?.id);
   const [active, setActive] = useState<string | null>(null); const [search, setSearch] = useState("");
   const [seen, setSeen] = useState<Record<string, string>>({});
@@ -66,7 +67,7 @@ export function SupportInbox() {
     <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("ابحث بالاسم أو الاسم المستعار…")} aria-label={t("بحث")} />
     <PageState loading={inbox.isPending} error={inbox.isError} retry={() => void inbox.refetch()} />
     <div className="divide-y border-y">{inbox.threads.filter((r) => !search || [r.profiles?.nickname, r.profiles?.display_name].some((n) => n?.toLowerCase().includes(search.toLowerCase()))).map((r) => <Button key={r.student_id} variant="ghost" className="h-auto w-full justify-start gap-3 rounded-none py-4 text-start" onClick={() => setActive(r.student_id)}>
-      <AvatarPic profile={r.profiles} /><span className="min-w-0 flex-1"><span className="flex items-center gap-2"><span className="truncate font-bold">{r.profiles?.nickname || profileName(r.profiles, true)}</span>{inboxUnread(r, seen) && <span className="size-2 shrink-0 rounded-full bg-primary" aria-label={t("غير مقروء")} />}</span><span className="block truncate text-xs text-muted-foreground">{r.content || t("صورة")}</span></span><time className="shrink-0 text-[10px] text-muted-foreground" dateTime={r.created_at}>{new Date(r.created_at).toLocaleString("ar-u-nu-latn", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</time>
+      <AvatarPic profile={r.profiles} /><span className="min-w-0 flex-1"><span className="flex items-center gap-2"><span className="truncate font-bold">{r.profiles?.nickname || profileName(r.profiles, true)}</span>{inboxUnread(r, seen) && <span className="size-2 shrink-0 rounded-full bg-primary" aria-label={t("غير مقروء")} />}</span><span className="block truncate text-xs text-muted-foreground">{r.content || t("صورة")}</span></span><time className="shrink-0 text-[10px] text-muted-foreground" dateTime={r.created_at}>{new Date(r.created_at).toLocaleString(lang === "en" ? "en-US" : "ar-u-nu-latn", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</time>
     </Button>)}</div>
     {inbox.isSuccess && !inbox.threads.length && <p className="py-8 text-center text-muted-foreground">{t("ما في محادثات بعد")}</p>}
     {inbox.hasNextPage && <Button variant="outline" disabled={inbox.isFetchingNextPage} onClick={() => void inbox.fetchNextPage()}>{t("تحميل المزيد")}</Button>}
@@ -75,6 +76,7 @@ export function SupportInbox() {
 }
 
 function StaffRooms() {
+  const { lang } = useLang();
   const { user } = useMe(); const qc = useQueryClient();
   const query = useQuery({ queryKey: ["staff-chat-rooms", user?.id], staleTime: 30_000, queryFn: async () => {
     const rooms = await readData(supabase.from("rooms").select("id,name,generation,audience").eq("kind", "chat").order("generation").limit(50)) ?? [];
@@ -88,7 +90,7 @@ function StaffRooms() {
   } });
   useEffect(() => { const channel = supabase.channel(`staff-rooms-${crypto.randomUUID()}`).on("postgres_changes", { event: "*", schema: "public", table: "messages" }, () => { void qc.invalidateQueries({ queryKey: ["staff-chat-rooms"] }); }).subscribe(); return () => { void supabase.removeChannel(channel); }; }, [qc]);
   const groups = [...new Set(query.data?.map((r) => r.generation) ?? [])];
-  return <div className="space-y-4"><PageState loading={query.isPending} error={query.isError} retry={() => void query.refetch()} />{groups.map((generation) => <section key={generation}><h2 className="mb-2 text-sm font-bold text-muted-foreground">{generation === "tawjihi" ? "2009" : latinDigits(generation.replace("gen", ""))}</h2><div className="divide-y border-y">{query.data?.filter((r) => r.generation === generation).map((room) => <Link key={room.id} to="/rooms/$roomId" params={{ roomId: room.id }} className="flex items-center gap-3 py-4"><span className="grid size-10 shrink-0 place-items-center rounded-full bg-secondary"><MessageCircle className="size-5" /></span><span className="min-w-0 flex-1"><span className="block truncate font-bold">{room.name}</span><span className="block truncate text-xs text-muted-foreground">{room.last?.content ?? t("لا يوجد رسائل")}</span></span><span className="shrink-0 text-center text-xs text-muted-foreground"><span className="flex items-center justify-center gap-1"><Users className="size-3" />{room.members ?? "—"}</span>{room.last && <time className="block text-[10px]">{new Date(room.last.created_at).toLocaleTimeString("ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}</time>}</span></Link>)}</div></section>)}</div>;
+  return <div className="space-y-4"><PageState loading={query.isPending} error={query.isError} retry={() => void query.refetch()} />{groups.map((generation) => <section key={generation}><h2 className="mb-2 text-sm font-bold text-muted-foreground">{generation === "tawjihi" ? "2009" : latinDigits(generation.replace("gen", ""))}</h2><div className="divide-y border-y">{query.data?.filter((r) => r.generation === generation).map((room) => <Link key={room.id} to="/rooms/$roomId" params={{ roomId: room.id }} className="flex items-center gap-3 py-4"><span className="grid size-10 shrink-0 place-items-center rounded-full bg-secondary"><MessageCircle className="size-5" /></span><span className="min-w-0 flex-1"><span className="block truncate font-bold">{room.name}</span><span className="block truncate text-xs text-muted-foreground">{room.last?.content ?? t("لا يوجد رسائل")}</span></span><span className="shrink-0 text-center text-xs text-muted-foreground"><span className="flex items-center justify-center gap-1"><Users className="size-3" />{room.members ?? "—"}</span>{room.last && <time className="block text-[10px]">{new Date(room.last.created_at).toLocaleTimeString(lang === "en" ? "en-US" : "ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}</time>}</span></Link>)}</div></section>)}</div>;
 }
 
 function usePendingReview(enabled = true) {

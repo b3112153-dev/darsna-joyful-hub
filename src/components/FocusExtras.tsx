@@ -9,7 +9,7 @@ import { soundEngine } from "@/lib/sounds";
 import { buildStudyProgram, type ProgramBlock } from "@/lib/study-program";
 import { getProgram, setProgram, subscribeProgram } from "@/lib/study-program-store";
 import { fmtClock } from "@/components/StudyRounds";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 export function useProgram() {
   return useSyncExternalStore(subscribeProgram, getProgram);
@@ -33,6 +33,7 @@ const ATTENDANCE_COUNTDOWN_S = 10;
  * multi-hour programs, and stopping sounds when the session ends.
  */
 export function FocusExtras() {
+  const { lang } = useLang();
   const { user } = useSession();
   const { focus } = useFocusMode();
   const { session, left } = focus;
@@ -137,7 +138,7 @@ export function FocusExtras() {
 
   if (attendanceDue) {
     return (
-      <div dir="rtl" className="fixed inset-0 z-[70] grid place-items-center bg-background/95 px-6 font-display backdrop-blur">
+      <div dir={lang === "ar" ? "rtl" : "ltr"} className="fixed inset-0 z-[70] grid place-items-center bg-background/95 px-6 font-display backdrop-blur">
         <div className="w-full max-w-sm space-y-5 rounded-[26px] border bg-card p-8 text-center shadow-card">
           <p className="text-2xl">👋</p>
           <h2 className="text-xl font-extrabold">{t("ما زلت معنا؟")}</h2>
@@ -153,7 +154,7 @@ export function FocusExtras() {
     const studyDone = program.blocks.slice(0, program.index + 1).filter((b) => b.kind === "study").length;
     const studyTotal = program.blocks.filter((b) => b.kind === "study").length;
     return (
-      <div dir="rtl" className="fixed inset-0 z-[60] grid place-items-center bg-background/95 px-6 font-display backdrop-blur">
+      <div dir={lang === "ar" ? "rtl" : "ltr"} className="fixed inset-0 z-[60] grid place-items-center bg-background/95 px-6 font-display backdrop-blur">
         <div className="w-full max-w-sm space-y-5 rounded-[26px] border bg-card p-8 text-center shadow-card">
           <p className="text-2xl">☕</p>
           <h2 className="text-xl font-extrabold">{t("استراحة")}</h2>

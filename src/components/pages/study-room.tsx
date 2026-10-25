@@ -75,7 +75,7 @@ export function StudyRoom() {
 
         {full ? (
           <section className="space-y-3 rounded-[26px] border bg-card p-6 text-center shadow-card">
-            <p className="font-extrabold">الروم ممتلئ ({max} طلاب)</p>
+            <p className="font-extrabold">Study Room ممتلئ ({max} طلاب)</p>
             <p className="text-sm text-muted-foreground">{t("جرّب روم ثاني أو ارجع بعد شوي.")}</p>
             <Button asChild variant="outline"><Link to="/study-rooms"><DoorOpen className="size-4" /> {t("رومات الدراسة")}</Link></Button>
           </section>

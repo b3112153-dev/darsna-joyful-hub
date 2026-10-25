@@ -22,7 +22,7 @@ import { AvatarPreview } from "@/components/AvatarPreview";
 import { WalletChip } from "@/components/WalletChip";
 import { PageState } from "@/components/PageState";
 import { cn } from "@/lib/utils";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -284,6 +284,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
 function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
   open: boolean; mandatory: boolean; onOpenChange: (o: boolean) => void; onSaved: (n: string) => void;
 }) {
+  const { lang } = useLang();
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   async function save() {
@@ -298,7 +299,7 @@ function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent dir="rtl" className={mandatory ? "[&>button]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
+      <DialogContent dir={lang === "ar" ? "rtl" : "ltr"} className={mandatory ? "[&>button]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{t("سمّي أفتارك")}</DialogTitle>
           <DialogDescription>{t("هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل 40 يوم (حد أقصى 16 حرف).")}</DialogDescription>
@@ -311,6 +312,7 @@ function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
 }
 
 function AccountCard() {
+  const { lang } = useLang();
   const { user, me } = useMe();
   const qc = useQueryClient();
   const [name, setName] = useState("");
@@ -364,7 +366,7 @@ function AccountCard() {
       </div>
       <div className="space-y-1.5">
         <Label>{t("الفرع")}</Label>
-        <Select dir="rtl" value={branch} onValueChange={(v) => setBranch(v as Branch)}>
+        <Select dir={lang === "ar" ? "rtl" : "ltr"} value={branch} onValueChange={(v) => setBranch(v as Branch)}>
           <SelectTrigger><SelectValue placeholder={t("اختر فرعك")} /></SelectTrigger>
           <SelectContent>
             {BRANCHES.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}

@@ -24,6 +24,7 @@ import { SupportAdmin } from "@/components/SupportAdmin";
 type Can = { owner: boolean; admin: boolean; mod: boolean; support: boolean };
 
 export function Admin() {
+  const { lang } = useLang();
   const { me } = useMe();
   const can: Can = {
     owner: !!me?.isOwner,
@@ -50,7 +51,7 @@ export function Admin() {
           <Button asChild variant="outline" size="sm"><Link to="/admin/avatar-art"><Image /> صور الأفتار</Link></Button>
         )}
       </div>
-      <Tabs defaultValue={defaultTab} dir="rtl">
+      <Tabs defaultValue={defaultTab} dir={lang === "ar" ? "rtl" : "ltr"}>
         <TabsList className="mb-6 flex w-full flex-nowrap justify-start gap-1 overflow-x-auto h-auto">
           {visible.map((t) => <TabsTrigger key={t.value} value={t.value} className="shrink-0">{t.label}</TabsTrigger>)}
         </TabsList>
@@ -107,6 +108,7 @@ function Stats() {
 }
 
 function RoomsAdmin() {
+  const { lang } = useLang();
   const qc = useQueryClient();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
@@ -136,7 +138,7 @@ function RoomsAdmin() {
       <form onSubmit={add} className="grid gap-3 rounded-2xl border bg-card p-4 shadow-card sm:grid-cols-[1fr_1fr_180px_auto]">
         <Input required minLength={2} maxLength={60} placeholder="اسم الغرفة" value={name} onChange={(e) => setName(e.target.value)} />
         <Input placeholder="الوصف" value={desc} onChange={(e) => setDesc(e.target.value)} />
-        <Select dir="rtl" value={branch} onValueChange={(v) => setBranch(v as Branch)}>
+        <Select dir={lang === "ar" ? "rtl" : "ltr"} value={branch} onValueChange={(v) => setBranch(v as Branch)}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="general">مشترك</SelectItem>
@@ -181,6 +183,7 @@ type StudentRow = {
 };
 
 function StudentsAdmin({ can }: { can: Can }) {
+  const { lang } = useLang();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [banTarget, setBanTarget] = useState<StudentRow | null>(null);
@@ -329,7 +332,7 @@ function StudentsAdmin({ can }: { can: Can }) {
       {can.owner && <OwnerEmails />}
 
       <Dialog open={!!banTarget} onOpenChange={(o) => !o && setBanTarget(null)}>
-        <DialogContent dir="rtl">
+        <DialogContent dir={lang === "ar" ? "rtl" : "ltr"}>
           <DialogHeader><DialogTitle>حظر {banTarget?.nickname || banTarget?.display_name}</DialogTitle></DialogHeader>
           <p className="text-sm text-muted-foreground">سيُحظر الحساب وأجهزته من المنصة.</p>
           <Input placeholder="سبب الحظر (اختياري)" value={banReason} onChange={(e) => setBanReason(e.target.value)} />
@@ -429,6 +432,7 @@ type ArchiveRow = {
 };
 
 function ArchiveAdmin() {
+  const { lang } = useLang();
   const [room, setRoom] = useState("all");
   const [student, setStudent] = useState("");
   const [text, setText] = useState("");
@@ -492,7 +496,7 @@ function ArchiveAdmin() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <Select dir="rtl" value={room} onValueChange={setRoom}>
+        <Select dir={lang === "ar" ? "rtl" : "ltr"} value={room} onValueChange={setRoom}>
           <SelectTrigger className="w-44 bg-card"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">كل الغرف</SelectItem>

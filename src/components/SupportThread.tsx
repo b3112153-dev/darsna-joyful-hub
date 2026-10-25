@@ -14,7 +14,7 @@ import { AvatarPic } from "@/components/AvatarPic";
 import { PageState } from "@/components/PageState";
 import { readData } from "@/lib/requests";
 import { profileName, type PublicProfile } from "@/lib/identity";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 type SupportMessage = {
   id: string;
@@ -44,6 +44,7 @@ const SupportBubble = memo(function SupportBubble({ m, own, fromAdmin, canDelete
   replyPreview: string | null;
   staff: boolean;
 }) {
+  const { lang } = useLang();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(m.content);
   const [saving, setSaving] = useState(false);
@@ -76,7 +77,7 @@ const SupportBubble = memo(function SupportBubble({ m, own, fromAdmin, canDelete
             <div className="flex gap-1"><Button size="sm" disabled={saving || !draft.trim()}>{t("حفظ")}</Button><Button size="sm" variant="ghost" type="button" disabled={saving} onClick={() => setEditing(false)}>{t("إلغاء")}</Button></div>
           </form> : <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>}
           <p className="mt-1 text-[10px] opacity-70">
-            {new Date(m.created_at).toLocaleString("ar-u-nu-latn", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}
+            {new Date(m.created_at).toLocaleString(lang === "en" ? "en-US" : "ar-u-nu-latn", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}
             {m.edited_at && t(" · معدّلة")}
           </p>
         </div>

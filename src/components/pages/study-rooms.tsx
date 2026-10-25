@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { AvatarState } from "@/hooks/use-wallet";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 export const SCENES = [
   { id: "library", label: "مكتبة", icon: BookOpen, card: "bg-secondary", page: "bg-secondary" },
@@ -74,6 +74,7 @@ export function AvatarChip({ presence, images, size = "size-10" }: { presence: P
 }
 
 export function StudyRooms() {
+  const { lang } = useLang();
   const { user } = useMe();
   const navigate = useNavigate();
   const images = useAvatarImages();
@@ -120,12 +121,12 @@ export function StudyRooms() {
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button className="rounded-[14px]"><Plus className="size-4" /> {t("روم جديد")}</Button></DialogTrigger>
-          <DialogContent dir="rtl" className="font-display">
+          <DialogContent dir={lang === "ar" ? "rtl" : "ltr"} className="font-display">
             <DialogHeader><DialogTitle>{t("روم دراسة جديد")}</DialogTitle></DialogHeader>
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="room-name">{t("الاسم (2–30 حرف)")}</Label>
-                <Input id="room-name" maxLength={30} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("مثلاً: روم الفجر")} />
+                <Input id="room-name" maxLength={30} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("مثلاً: Study Room الفجر")} />
               </div>
               <div className="space-y-1.5">
                 <Label>{t("المشهد")}</Label>

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { MessageActionsBar, copyMessage } from "@/components/MessageActions";
 import { canEditNow, groupReactions, type ReactionRow } from "@/lib/reactions";
 import type { Message } from "@/lib/chat-messages";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 import { AvatarPic } from "@/components/AvatarPic";
 import { profileName } from "@/lib/identity";
 import { useMe } from "@/hooks/use-auth";
@@ -23,6 +23,7 @@ export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelet
   replyPreview: string | null;
 }) {
   const { me } = useMe();
+  const { lang } = useLang();
   const admin = m.from_admin || m.sender_role === "admin";
   const moderator = !admin && m.sender_role === "moderator";
   const [editing, setEditing] = useState(false);
@@ -63,7 +64,7 @@ export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelet
               <div className="flex gap-1"><Button size="sm" disabled={saving || !draft.trim()}>{t("حفظ")}</Button><Button size="sm" variant="ghost" type="button" disabled={saving} onClick={() => setEditing(false)}>{t("إلغاء")}</Button></div>
             </form> : <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>}
             <p className="mt-1 text-[10px] opacity-70">
-              {new Date(m.created_at).toLocaleTimeString("ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}
+              {new Date(m.created_at).toLocaleTimeString(lang === "en" ? "en-US" : "ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}
               {m.edited_at && t(" · معدّلة")}
             </p>
           </div>

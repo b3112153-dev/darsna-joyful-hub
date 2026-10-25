@@ -22,7 +22,7 @@ import { StudyRounds } from "@/components/StudyRounds";
 import { useMyFocus } from "@/hooks/use-focus";
 import { isChatLocked } from "@/lib/focus";
 import { fmtClock } from "@/components/StudyRounds";
-import { t } from "@/lib/i18n";
+import { useLang, t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
   head: () => ({
@@ -40,6 +40,7 @@ export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
 });
 
 function ChatRoom() {
+  const { lang } = useLang();
   const { roomId } = Route.useParams();
   const { user, me } = useMe();
   const [text, setText] = useState("");
@@ -121,7 +122,7 @@ function ChatRoom() {
         </div>
       </div>
       <p className="bg-secondary px-4 pb-3 text-center text-[13px] font-semibold text-secondary-foreground">{t("نشر الروابط الخارجية ممنوع في الدردشة")}</p>
-      <Tabs value={tab} onValueChange={setTab} dir="rtl" className="flex min-h-0 flex-1 flex-col">
+      <Tabs value={tab} onValueChange={setTab} dir={lang === "ar" ? "rtl" : "ltr"} className="flex min-h-0 flex-1 flex-col">
       <TabsList className="my-2 grid w-full grid-cols-4">
         <TabsTrigger value="timer">{t("المؤقت")}</TabsTrigger>
         <TabsTrigger value="chat">الدردشة{locked ? " 🔒" : ""}</TabsTrigger>
