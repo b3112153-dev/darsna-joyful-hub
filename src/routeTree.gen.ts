@@ -16,6 +16,7 @@ import { Route as BannedRouteImport } from './routes/banned'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedBoardRouteImport } from './routes/_authenticated/board'
 import { Route as AuthenticatedFocusRouteImport } from './routes/_authenticated/focus'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedMotivationRouteImport } from './routes/_authenticated/motivation'
@@ -62,6 +63,11 @@ const TermsRoute = TermsRouteImport.update({
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBoardRoute = AuthenticatedBoardRouteImport.update({
+  id: '/board',
+  path: '/board',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFocusRoute = AuthenticatedFocusRouteImport.update({
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/board': typeof AuthenticatedBoardRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/board': typeof AuthenticatedBoardRoute
   '/focus': typeof AuthenticatedFocusRoute
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/board': typeof AuthenticatedBoardRoute
   '/_authenticated/focus': typeof AuthenticatedFocusRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/motivation': typeof AuthenticatedMotivationRoute
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/admin'
+    | '/board'
     | '/focus'
     | '/library'
     | '/motivation'
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/admin'
+    | '/board'
     | '/focus'
     | '/library'
     | '/motivation'
@@ -252,6 +263,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/_authenticated/admin'
+    | '/_authenticated/board'
     | '/_authenticated/focus'
     | '/_authenticated/library'
     | '/_authenticated/motivation'
@@ -325,6 +337,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/board': {
+      id: '/_authenticated/board'
+      path: '/board'
+      fullPath: '/board'
+      preLoaderRoute: typeof AuthenticatedBoardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/focus': {
@@ -423,6 +442,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedBoardRoute: typeof AuthenticatedBoardRoute
   AuthenticatedFocusRoute: typeof AuthenticatedFocusRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
   AuthenticatedMotivationRoute: typeof AuthenticatedMotivationRoute
@@ -440,6 +460,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedBoardRoute: AuthenticatedBoardRoute,
   AuthenticatedFocusRoute: AuthenticatedFocusRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedMotivationRoute: AuthenticatedMotivationRoute,
