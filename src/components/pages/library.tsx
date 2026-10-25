@@ -9,6 +9,8 @@ import { PageState } from "@/components/PageState";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BRANCHES } from "@/lib/branches";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { readData, withTimeout } from "@/lib/requests";
@@ -22,7 +24,7 @@ function SubjectChips({ subjects, selected, onSelect }: { subjects: string[]; se
 }
 export function Library() {
   const { user, loading: meLoading, isError: meError, refetch: refetchMe } = useMe(); const qc = useQueryClient();
-  const [q, setQ] = useState(""); const [fileSubject, setFileSubject] = useState("الكل"); const [quizSubject, setQuizSubject] = useState("الكل");
+  const [q, setQ] = useState(""); const [fileSubject, setFileSubject] = useState("الكل"); const [quizSubject, setQuizSubject] = useState("الكل"); const [branch, setBranch] = useState("all");
   const [downloadId, setDownloadId] = useState<string | null>(null); const [reviewBusy, setReviewBusy] = useState<string | null>(null);
   const [reject, setReject] = useState<ReviewTarget | null>(null); const [reason, setReason] = useState(""); const [reviewError, setReviewError] = useState(""); const [preview, setPreview] = useState<ReviewTarget | null>(null);
   const support = useQuery({ queryKey: ["library-support", user?.id], enabled: !!user, staleTime: 300_000, queryFn: async () => user ? await readData(supabase.rpc("can_support", { _user_id: user.id })) : false });
@@ -55,7 +57,7 @@ export function Library() {
   const myPending = files.filter((f) => f.uploaded_by === user?.id && f.status === "pending");
   const myRejected = files.filter((f) => f.uploaded_by === user?.id && f.status === "rejected");
   const approvedFiles = files.filter((f) => f.status === "approved");
-  const fileList = approvedFiles.filter((f) => (fileSubject === "الكل" || f.subject === fileSubject) && (!q.trim() || [f.title, f.subject, f.unit ?? ""].some((text) => text.includes(q.trim()))));
+  const fileList = approvedFiles.filter((f) => (branch === "all" || (branch === "shared" ? !f.branch : f.branch === branch)) && (fileSubject === "الكل" || f.subject === fileSubject) && (!q.trim() || [f.title, f.subject, f.unit ?? ""].some((text) => text.includes(q.trim()))));
   const approvedQuizzes = quizzes.filter((quiz) => quiz.status === "approved");
   function reviewActions(target: ReviewTarget) { return <div className="mt-3 flex flex-wrap gap-2"><Button disabled={!!reviewBusy} className="rounded-xl" onClick={() => void review(target, true)}>{reviewBusy === target.id && <LoaderCircle className="animate-spin" />}موافقة</Button><Button disabled={!!reviewBusy} variant="outline" className="rounded-xl" onClick={() => { setReject(target); setReason(""); setReviewError(""); }}>رفض</Button>{target.kind === "quiz" && <Button variant="ghost" onClick={() => setPreview(target)}><Eye /> معاينة الأسئلة</Button>}</div>; }
   return <main dir="rtl" className="mx-auto max-w-3xl px-4 py-6 pb-24 font-display">
@@ -63,6 +65,7 @@ export function Library() {
     <PageState loading={meLoading} error={meError} retry={() => void refetchMe()} />
     <Tabs defaultValue="files" dir="rtl"><TabsList className="h-14 w-full rounded-[20px] bg-library-tabs p-1"><TabsTrigger className="h-full flex-1 rounded-2xl text-base font-bold data-[state=active]:bg-card" value="files">ملفات</TabsTrigger><TabsTrigger className="h-full flex-1 rounded-2xl text-base font-bold data-[state=active]:bg-card" value="quizzes">اختبارات</TabsTrigger></TabsList>
       <TabsContent value="files" className="mt-5 space-y-4"><div className="relative"><Search className="absolute start-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" /><Input aria-label="دوّر على ملف أو مادة" placeholder="دوّر على ملف أو مادة" className="h-12 rounded-2xl bg-card ps-12" value={q} onChange={(e) => setQ(e.target.value)} /></div><SubjectChips subjects={[...new Set(approvedFiles.map((f) => f.subject))].sort()} selected={fileSubject} onSelect={setFileSubject} />
+        <Select dir="rtl" value={branch} onValueChange={setBranch}><SelectTrigger aria-label="الفرع" className="h-11 rounded-2xl bg-card"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">كل الفروع</SelectItem>{BRANCHES.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}<SelectItem value="shared">مشترك</SelectItem></SelectContent></Select>
         <PageState loading={filesQuery.isLoading} error={filesQuery.isError} retry={() => void filesQuery.refetch()} />
         {!!myPending.length && <div className="rounded-[20px] bg-peach p-5 text-peach-foreground"><h2 className="font-bold">ملفاتك بانتظار موافقة الدعم ({myPending.length})</h2><ul className="my-2 space-y-1">{myPending.map((f) => <li key={f.id} className="break-words">{f.title}</li>)}</ul><p className="text-sm">بتظهر للكل بعد المراجعة</p></div>}
         {!!myRejected.length && <div className="rounded-[20px] border bg-card p-5"><h2 className="font-bold">ملفات لم تتم الموافقة عليها</h2>{myRejected.map((f) => <div key={f.id} className="mt-3"><p className="break-words font-semibold">{f.title}</p><p className="break-words text-sm text-destructive">{f.reject_reason || "لم تتم الموافقة"}</p></div>)}</div>}
