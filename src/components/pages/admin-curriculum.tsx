@@ -38,7 +38,7 @@ export function AdminCurriculum() {
 
   if (loading || (user && unitsQ.isLoading)) return <PageState loading />;
   if (isError || unitsQ.isError) return <PageState error retry={() => { void refetch(); void unitsQ.refetch(); }} />;
-  if (!me || !(me.isStaff || me.isSupport || me.isOwner)) return <Unavailable kind="الصفحة" />;
+  if (!me || !(me.isStaff || me.isSupport || me.isOwner)) return <Unavailable kind=t("الصفحة") />;
 
   const units = unitsQ.data ?? [];
 
@@ -123,7 +123,7 @@ export function AdminCurriculum() {
             </SelectContent>
           </Select>
         </div>
-        <Textarea dir="rtl" rows={4} value={paste} onChange={(e) => setPaste(e.target.value)} placeholder={"رياضيات | 1 | 1 | الجبر | 6\nفيزياء | 1 | 2 | الحركة | 4"} aria-label={t("لصق الوحدات")} />
+        <Textarea dir="rtl" rows={4} value={paste} onChange={(e) => setPaste(e.target.value)} placeholder={t("رياضيات | 1 | 1 | الجبر | 6\nفيزياء | 1 | 2 | الحركة | 4")} aria-label={t("لصق الوحدات")} />
         <Button variant="outline" className="rounded-xl" disabled={busy} onClick={pasteAll}>{t("إدخال الدفعة")}</Button>
       </div>
 
@@ -134,7 +134,7 @@ export function AdminCurriculum() {
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-extrabold">{u.subject} — {u.title}</p>
               <p className="text-xs text-muted-foreground">
-                {GENERATIONS.find((g) => g.value === u.generation)?.label ?? u.generation} · {u.track === "all" ? "كل الفروع" : branchLabel(u.track)} · الفصل {arDigits(u.semester)} · وحدة {arDigits(u.unit_no)} · {arDigits(u.lessons)} دروس
+                {GENERATIONS.find((g) => g.value === u.generation)?.label ?? u.generation} · {u.track === "all" ? t("كل الفروع") : branchLabel(u.track)} · الفصل {arDigits(u.semester)} · وحدة {arDigits(u.unit_no)} · {arDigits(u.lessons)} دروس
               </p>
             </div>
             <Button size="sm" variant="ghost" className="h-8 shrink-0" onClick={() => setEdit({ id: u.id, generation: u.generation, track: u.track, subject: u.subject, semester: u.semester, unit_no: u.unit_no, title: u.title, lessons: u.lessons })} aria-label={t("تعديل")}>
@@ -149,7 +149,7 @@ export function AdminCurriculum() {
 
       <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
         <DialogContent className="max-w-sm font-display">
-          <DialogTitle>{edit?.id ? "تعديل وحدة" : "إضافة وحدة"}</DialogTitle>
+          <DialogTitle>{edit?.id ? t("تعديل وحدة") : "إضافة وحدة"}</DialogTitle>
           <DialogDescription>{t("حدد الجيل والفرع والمادة وتفاصيل الوحدة.")}</DialogDescription>
           {edit && (
             <div className="space-y-3">
@@ -179,7 +179,7 @@ export function AdminCurriculum() {
                 <Input type="number" min={1} value={edit.unit_no} onChange={(e) => setEdit({ ...edit, unit_no: Math.max(1, Number(e.target.value) || 1) })} aria-label={t("رقم الوحدة")} />
                 <Input type="number" min={1} value={edit.lessons} onChange={(e) => setEdit({ ...edit, lessons: Math.max(1, Number(e.target.value) || 1) })} aria-label={t("عدد الدروس")} />
               </div>
-              <Button className="w-full rounded-xl bg-brand" disabled={busy} onClick={save}>{busy ? "بنحفظ…" : "حفظ"}</Button>
+              <Button className="w-full rounded-xl bg-brand" disabled={busy} onClick={save}>{busy ? t("بنحفظ…") : "حفظ"}</Button>
             </div>
           )}
         </DialogContent>

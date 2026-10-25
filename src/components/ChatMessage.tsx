@@ -44,7 +44,7 @@ export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelet
       }}>
         <div className={`min-w-0 max-w-[85%] cursor-pointer select-none ${own ? "text-start" : "text-end"}`}>
           <div className="mb-1 flex min-w-0 flex-wrap items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-            <span>{admin ? "فريق درسنا جو" : m.profiles?.display_name}</span>
+            <span>{admin ? t("فريق درسنا جو") : m.profiles?.display_name}</span>
             {admin && <span className="rounded-full bg-role-badge px-2 py-0.5 text-role-badge-foreground">{t("الإدارة")}</span>}
             {moderator && <span className="rounded-full bg-role-badge px-2 py-0.5 text-role-badge-foreground">{t("مشرف")}</span>}
             {m.sender_role === "support" && <span className="rounded-full bg-role-badge px-2 py-0.5 text-role-badge-foreground">{t("دعم")}</span>}
@@ -59,7 +59,7 @@ export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelet
             </form> : <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>}
             <p className="mt-1 text-[10px] opacity-70">
               {new Date(m.created_at).toLocaleTimeString("ar-JO", { hour: "2-digit", minute: "2-digit" })}
-              {m.edited_at && " · معدّلة"}
+              {m.edited_at && t(" · معدّلة")}
             </p>
           </div>
         </div>

@@ -73,14 +73,14 @@ export function Motivation() {
               <ImagePlus className="size-5" /> {file ? file.name : "إضافة صورة"}
               <input type="file" accept="image/*" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
             </label>
-            <Button disabled={busy} className="bg-brand">{busy ? "جاري النشر…" : "نشر"}</Button>
+            <Button disabled={busy} className="bg-brand">{busy ? t("جاري النشر…") : "نشر"}</Button>
           </div>
         </form>
       )}
       <PageState loading={isPending} error={isError} retry={() => void refetch()} />
       {!isPending && !isError && posts.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("كن أول من ينشر!")}</p>}
       {posts.map((p) => {
-        const name = p.from_admin ? "الإدارة" : p.profiles?.display_name;
+        const name = p.from_admin ? t("الإدارة") : p.profiles?.display_name;
         return (
           <article key={p.id} className="space-y-3 rounded-2xl border bg-card p-4 shadow-card">
             <div className="flex items-center gap-3">

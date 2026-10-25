@@ -73,6 +73,6 @@ export function MoreButton({ onClick }: { onClick: () => void }) {
 export async function copyMessage(content: string) {
   try {
     await navigator.clipboard.writeText(content);
-    toast.success("انحفظت بالحافظة", { icon: <Check className="size-4" /> });
+    toast.success(t("انحفظت بالحافظة"), { icon: <Check className="size-4" /> });
   } catch { toast.error(t("تعذر النسخ")); }
 }

@@ -80,7 +80,7 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
     if (!userId || session || query.isLoading || query.isError) return;
     const dur = minutes * 60;
     await save(() => readData(supabase.from("focus_sessions").insert({
-      user_id: userId, room_id: roomId, subject: subject.trim() || "عام", duration_seconds: dur, remaining_seconds: dur,
+      user_id: userId, room_id: roomId, subject: subject.trim() || t("عام"), duration_seconds: dur, remaining_seconds: dur,
       status: "running", ends_at: new Date(Date.now() + dur * 1000).toISOString(),
     })));
   }

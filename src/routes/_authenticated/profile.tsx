@@ -159,7 +159,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
     if (error) { toast.error(error.message); setBusy(null); return; }
     setCache(parseWallet(data));
     await saveAvatar({ ...parseWallet(data).avatar, [it.category]: it.id }, false);
-    toast.success("مبروك! صار عندك " + it.name_ar);
+    toast.success(t("مبروك! صار عندك ") + it.name_ar);
     setBusy(null);
   }
 
@@ -249,7 +249,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
               <p className="text-xs text-muted-foreground">مستوى {it.level_req} · {it.price === 0 ? "مجاني" : `${it.price} JD`}</p>
               {isWorn ? (
                 <Button size="sm" variant="secondary" className="mt-2" disabled={busy === it.id || it.category === "outfit"} onClick={() => unwear(it)}>
-                  لابسته{it.category !== "outfit" && " — اخلعه"}
+                  لابسته{it.category !== "outfit" && t(" — اخلعه")}
                 </Button>
               ) : owned ? (
                 <Button size="sm" className="mt-2 bg-brand" disabled={busy === it.id} onClick={() => wear(it)}>{t("ألبس")}</Button>

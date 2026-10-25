@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 
 export function ThemeToggle() {
   const [dark, setDark] = useState(false);
@@ -16,7 +17,7 @@ export function ThemeToggle() {
     }
   }
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label={dark ? "الوضع الفاتح" : "الوضع الداكن"}>
+    <Button variant="ghost" size="icon" onClick={toggle} aria-label={dark ? t("الوضع الفاتح") : "الوضع الداكن"}>
       {dark ? <Sun /> : <Moon />}
     </Button>
   );

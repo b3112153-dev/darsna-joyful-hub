@@ -83,7 +83,7 @@ export function TopicPage() {
   const childrenOf = (id: string) => comments.filter((c) => c.parent_id === id);
 
   function Comment({ c, depth }: { c: C; depth: number }) {
-    const name = c.from_admin ? "الإدارة" : c.profiles?.display_name;
+    const name = c.from_admin ? t("الإدارة") : c.profiles?.display_name;
     return (
       <div className={depth ? "ms-6 border-s-2 border-silver ps-3" : ""}>
         <div className="flex gap-2 py-2">
@@ -107,14 +107,14 @@ export function TopicPage() {
 
   if (isPending) return <PageState loading />;
   if (isError) return <PageState error retry={() => void refetch()} />;
-  if (topic === null) return <Unavailable kind="الصفحة" />;
+  if (topic === null) return <Unavailable kind=t("الصفحة") />;
 
   return (
     <main className="mx-auto max-w-3xl space-y-4 px-4 py-8">
       <Link to="/topics" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"><ArrowRight className="size-4" /> {t("كل المواضيع")}</Link>
       {topic && (
         <article className="rounded-2xl border bg-card p-6 shadow-card">
-          <p className="mb-1 text-xs text-muted-foreground">الإدارة · {topic.subject ?? "عام"}</p>
+          <p className="mb-1 text-xs text-muted-foreground">الإدارة · {topic.subject ?? t("عام")}</p>
           <h1 className="mb-3 text-2xl font-bold">{topic.title}</h1>
           <p className="whitespace-pre-wrap leading-relaxed">{topic.body}</p>
           {me?.isAdmin && (
@@ -133,7 +133,7 @@ export function TopicPage() {
           <form onSubmit={send} className="mt-3 space-y-2">
             {replyTo && (
               <p className="flex justify-between rounded-lg bg-secondary px-3 py-1.5 text-xs">
-                رد على: {replyTo.from_admin ? "الإدارة" : replyTo.profiles?.display_name}
+                رد على: {replyTo.from_admin ? t("الإدارة") : replyTo.profiles?.display_name}
                 <button type="button" onClick={() => setReplyTo(null)}>✕</button>
               </p>
             )}

@@ -34,7 +34,7 @@ export function FocusTimer({ focus, roomId, compact = false }: { focus: ReturnTy
       </PopoverContent>
     </Popover>
     <div className="mt-3 grid grid-cols-[minmax(0,1fr)_44px] gap-2">
-      <Button className="h-11 min-w-0 rounded-[14px] px-2 font-bold" disabled={focus.pending} onClick={() => session ? session.status === "paused" ? resume() : pause() : start(minutes, subject, roomId)}>{focus.pending ? <LoaderCircle className="animate-spin" /> : session ? session.status === "paused" ? <Play /> : <Pause /> : null}{session ? session.status === "paused" ? "استئناف" : "إيقاف" : "ابدأ"}</Button>
+      <Button className="h-11 min-w-0 rounded-[14px] px-2 font-bold" disabled={focus.pending} onClick={() => session ? session.status === "paused" ? resume() : pause() : start(minutes, subject, roomId)}>{focus.pending ? <LoaderCircle className="animate-spin" /> : session ? session.status === "paused" ? <Play /> : <Pause /> : null}{session ? session.status === "paused" ? t("استئناف") : "إيقاف" : "ابدأ"}</Button>
       <Button className="size-11 rounded-[14px] bg-card text-card-foreground" variant="ghost" size="icon" aria-label={t("إعادة ضبط المؤقت")} disabled={focus.pending} onClick={() => session ? setEndOpen(true) : (setMinutes(25), setSubject(""))}><RotateCcw /></Button>
     </div>
     <EndFocusDialog open={endOpen} onOpenChange={setEndOpen} onEnd={reset} pending={focus.pending} />
@@ -85,7 +85,7 @@ export function FocusTimer({ focus, roomId, compact = false }: { focus: ReturnTy
         <div className="flex flex-wrap gap-2">
           {HOUR_PRESETS.map((h) => (
             <Button key={h} type="button" size="sm" variant="outline" disabled={focus.pending}
-              onClick={() => { if (!startStudyProgram(h, subject, roomId, start)) toast.error("اختار عدد ساعات صحيح (١–" + MAX_PROGRAM_HOURS + ")"); }}>{h} ساعات</Button>
+              onClick={() => { if (!startStudyProgram(h, subject, roomId, start)) toast.error(t("اختار عدد ساعات صحيح (١–") + MAX_PROGRAM_HOURS + ")"); }}>{h} ساعات</Button>
           ))}
         </div>
       </div>

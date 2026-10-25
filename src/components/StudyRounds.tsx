@@ -141,7 +141,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
                 {fmtClock(live ? rt.end - now : rt.start - now)}
               </p>
               <p className="mb-2 text-xs text-muted-foreground">
-                {live ? "متبقي على نهاية الجولة" : "باقي على البداية"} · {r.duration_minutes} دقيقة
+                {live ? t("متبقي على نهاية الجولة") : "باقي على البداية"} · {r.duration_minutes} دقيقة
               </p>
               {live && (
                 <div className="mb-2 h-1.5 overflow-hidden rounded-full bg-muted">

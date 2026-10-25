@@ -70,7 +70,7 @@ export function useRoomMessages(roomId: string, userId: string | undefined, enab
     if (!userId || !content.trim()) return false;
     try {
       const message = await readData(supabase.from("messages").update({ content: content.trim() }).eq("id", id).eq("user_id", userId).select(fields).single());
-      if (!message) throw new Error("تعذر تعديل الرسالة");
+      if (!message) throw new Error(t("تعذر تعديل الرسالة"));
       qc.setQueryData<MessageCache>(key, (cache) => mergeMessage(cache, message));
       return true;
     } catch (error) { toast.error(error instanceof Error && error.message ? error.message : "تعذر تعديل الرسالة؛ حاول مرة ثانية."); return false; }

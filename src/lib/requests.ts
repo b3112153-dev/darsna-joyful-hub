@@ -6,7 +6,7 @@ export async function withTimeout<T>(promise: PromiseLike<T>, ms = REQUEST_TIMEO
     return await Promise.race([
       Promise.resolve(promise),
       new Promise<never>((_, reject) => {
-        timer = setTimeout(() => reject(new Error("تعذر الاتصال؛ حاول مرة ثانية.")), ms);
+        timer = setTimeout(() => reject(new Error(t("تعذر الاتصال؛ حاول مرة ثانية."))), ms);
       }),
     ]);
   } finally {

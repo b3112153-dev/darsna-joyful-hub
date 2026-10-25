@@ -33,7 +33,7 @@ export function Topics() {
       <div className="space-y-3">
         {topics.map((t) => (
           <Link key={t.id} to="/topics/$topicId" params={{ topicId: t.id }} className="block rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-soft">
-            <p className="mb-1 text-xs text-muted-foreground">الإدارة · {t.subject ?? "عام"} · {new Date(t.created_at).toLocaleDateString("ar-JO")}</p>
+            <p className="mb-1 text-xs text-muted-foreground">الإدارة · {t.subject ?? t("عام")} · {new Date(t.created_at).toLocaleDateString("ar-JO")}</p>
             <h2 className="font-semibold">{t.title}</h2>
             <p className="line-clamp-2 text-sm text-muted-foreground">{t.body}</p>
             <p className="mt-2 flex items-center gap-1 text-xs text-primary"><MessageCircle className="size-3.5" /> {(t.topic_comments as unknown as { count: number }[])[0]?.count ?? 0} تعليق</p>

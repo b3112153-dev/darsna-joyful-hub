@@ -43,13 +43,13 @@ export function StudyRoom() {
 
   async function closeRoom() {
     const { error } = await supabase.rpc("close_study_room", { _id: roomId });
-    if (error) toast.error(error.message || "تعذر إغلاق الروم.");
+    if (error) toast.error(error.message || t("تعذر إغلاق الروم."));
     else { toast.success(t("انغلق الروم")); navigate({ to: "/study-rooms" }); }
   }
 
   if (roomQuery.isPending) return <PageState loading />;
   if (roomQuery.isError) return <PageState error retry={() => void roomQuery.refetch()} />;
-  if (roomQuery.isSuccess && room === null) return <Unavailable kind="الروم" />;
+  if (roomQuery.isSuccess && room === null) return <Unavailable kind=t("الروم") />;
 
   return (
     <main className={`min-h-[calc(100dvh-136px)] font-display lg:min-h-[calc(100dvh-4rem)] ${meta.page}`}>

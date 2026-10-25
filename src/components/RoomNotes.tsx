@@ -33,7 +33,7 @@ export function RoomNotes({ roomId, userId }: { roomId: string; userId: string }
     <div className="space-y-2 rounded-2xl border bg-card p-4 shadow-card">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold">{t("ملاحظاتي الخاصة")}</p>
-        <span className="text-xs text-muted-foreground">{state === "saving" ? "جاري الحفظ…" : state === "saved" ? "تم الحفظ ✓" : "بس إنت بتشوفها"}</span>
+        <span className="text-xs text-muted-foreground">{state === "saving" ? t("جاري الحفظ…") : state === "saved" ? t("تم الحفظ ✓") : "بس إنت بتشوفها"}</span>
       </div>
       <Textarea value={text} maxLength={10000} onChange={(e) => setText(e.target.value)} placeholder={t("اكتب ملخصك أو أسئلتك هون…")} className="min-h-56" />
     </div>

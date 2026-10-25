@@ -70,7 +70,7 @@ const SupportBubble = memo(function SupportBubble({ m, own, fromAdmin, canDelete
           </form> : <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>}
           <p className="mt-1 text-[10px] opacity-70">
             {new Date(m.created_at).toLocaleString("ar-JO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}
-            {m.edited_at && " · معدّلة"}
+            {m.edited_at && t(" · معدّلة")}
           </p>
         </div>
       </MessageActionsBar>
@@ -103,7 +103,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
       ((await supabase.from("support_messages").select("*").eq("student_id", studentId).is("deleted_at", null).order("created_at").limit(300)).data ?? []) as SupportMessage[],
   });
   const reactionsApi = useReactions("support_reactions", msgs.map((m) => m.id), user?.id, studentId);
-  const previewOf = (id: string | null) => id ? msgs.find((m) => m.id === id)?.content ?? "رسالة محذوفة" : null;
+  const previewOf = (id: string | null) => id ? msgs.find((m) => m.id === id)?.content ?? t("رسالة محذوفة") : null;
 
   useEffect(() => {
     const ch = supabase
@@ -140,7 +140,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
   async function edit(id: string, content: string) {
     if (!user || !content.trim()) return false;
     const { error } = await supabase.from("support_messages").update({ content: content.trim() } as never).eq("id", id).eq("sender_id", user.id);
-    if (error) { toast.error(error.message || "تعذر تعديل الرسالة؛ حاول مرة ثانية."); return false; }
+    if (error) { toast.error(error.message || t("تعذر تعديل الرسالة؛ حاول مرة ثانية.")); return false; }
     qc.invalidateQueries({ queryKey: key });
     return true;
   }

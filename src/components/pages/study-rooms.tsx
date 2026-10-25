@@ -65,9 +65,9 @@ export function AvatarChip({ presence, images, size = "size-10" }: { presence: P
   return (
     <div className="flex w-14 flex-col items-center gap-1">
       <AvatarPreview avatar={presence.profiles?.avatar} images={images} gender={presence.profiles?.gender} animate={presence.status === "running"} className={size} />
-      <span className="w-full truncate text-center text-[10px] font-bold">{presence.profiles?.nickname ?? "طالب"}</span>
+      <span className="w-full truncate text-center text-[10px] font-bold">{presence.profiles?.nickname ?? t("طالب")}</span>
       <span className={`rounded-full px-1.5 py-px text-[9px] font-semibold ${presence.status === "paused" ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
-        {presence.status === "paused" ? "استراحة" : "يدرس"}
+        {presence.status === "paused" ? t("استراحة") : "يدرس"}
       </span>
     </div>
   );
@@ -139,7 +139,7 @@ export function StudyRooms() {
                 </div>
               </div>
               <Button className="w-full" disabled={creating || name.trim().length < 2} onClick={() => void create()}>
-                {creating ? "جاري الإنشاء…" : "إنشاء ودخول"}
+                {creating ? t("جاري الإنشاء…") : "إنشاء ودخول"}
               </Button>
             </div>
           </DialogContent>

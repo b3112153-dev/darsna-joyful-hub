@@ -30,10 +30,10 @@ export function LibraryUpload() {
   async function submit(e: React.FormEvent) {
     e.preventDefault(); if (!user || lock.current) return;
     const texts = [title, subject, unit, ...(tab === "quiz" ? questions.flatMap((q) => [q.prompt, ...q.options]) : [file?.name ?? ""])];
-    if (texts.some(hasExternalLink)) { setError("ممنوع نشر الروابط"); return; }
-    if (!title.trim() || !subject.trim()) { setError("اكتب العنوان والمادة"); return; }
+    if (texts.some(hasExternalLink)) { setError(t("ممنوع نشر الروابط")); return; }
+    if (!title.trim() || !subject.trim()) { setError(t("اكتب العنوان والمادة")); return; }
     if (tab === "file" && (!file || fileValidation(file))) { setError(file ? fileValidation(file) ?? "" : "اختار ملف أولاً"); return; }
-    if (tab === "quiz" && (!questions.every(validDraftQuestion) || !Number.isInteger(minutes) || minutes < 1 || minutes > 180)) { setError("كمّل الأسئلة وخياراتها وحدد مدة بين ١ و١٨٠ دقيقة"); return; }
+    if (tab === "quiz" && (!questions.every(validDraftQuestion) || !Number.isInteger(minutes) || minutes < 1 || minutes > 180)) { setError(t("كمّل الأسئلة وخياراتها وحدد مدة بين ١ و١٨٠ دقيقة")); return; }
     lock.current = true; setBusy(true); setError(""); let uploadedPath: string | null = null;
     try {
       if (tab === "file" && file) {
@@ -50,7 +50,7 @@ export function LibraryUpload() {
       }
       await qc.invalidateQueries({ queryKey: ["library"] }); await qc.invalidateQueries({ queryKey: ["quizzes"] });
       toast.success(t("تم الإرسال للمراجعة")); navigate({ to: "/library" });
-    } catch { if (uploadedPath) await withTimeout(supabase.storage.from("library").remove([uploadedPath])).catch(() => undefined); setError("ما قدرنا نرسل، جرّب مرة ثانية"); }
+    } catch { if (uploadedPath) await withTimeout(supabase.storage.from("library").remove([uploadedPath])).catch(() => undefined); setError(t("ما قدرنا نرسل، جرّب مرة ثانية")); }
     finally { lock.current = false; setBusy(false); }
   }
   if (loading || isError) return <PageState loading={loading} error={isError} retry={() => void refetch()} />;
@@ -78,7 +78,7 @@ export function LibraryUpload() {
         </fieldset>
         <p className="rounded-[20px] bg-peach p-4 text-sm text-peach-foreground">{t("بعد ما ترسله، فريق الدعم بيراجعه وبعدين بينشر للكل. ما بيظهر لغيرك قبل الموافقة، وممنوع الروابط الخارجية.")}</p>
         {error && <p role="alert" className="text-destructive">{error}</p>}
-        <Button disabled={busy} className="h-12 w-full rounded-2xl">{busy && <LoaderCircle className="animate-spin" />} {busy ? "جاري الإرسال…" : "إرسال للمراجعة"}</Button>
+        <Button disabled={busy} className="h-12 w-full rounded-2xl">{busy && <LoaderCircle className="animate-spin" />} {busy ? t("جاري الإرسال…") : "إرسال للمراجعة"}</Button>
       </form>
     </Tabs>
   </main>;

@@ -13,7 +13,7 @@ export function Progress() {
     queryKey: ["progress", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      if (!user) throw new Error("سجّل دخولك أولاً");
+      if (!user) throw new Error(t("سجّل دخولك أولاً"));
       const since = new Date(Date.now() - 120 * 86400000).toISOString();
       const data = await readData(supabase
         .from("focus_sessions")
@@ -34,8 +34,8 @@ export function Progress() {
       <h1 className="text-3xl font-bold">{t("تقدمي")}</h1>
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat icon={Flame} label="أيام متتالية" value={`${data.streak} يوم`} />
-        <Stat icon={CalendarDays} label="هالأسبوع" value={hoursLabel(data.weekTotal)} />
-        <Stat icon={Clock} label="المجموع" value={hoursLabel(data.total)} />
+        <Stat icon={CalendarDays} label=t("هالأسبوع") value={hoursLabel(data.weekTotal)} />
+        <Stat icon={Clock} label=t("المجموع") value={hoursLabel(data.total)} />
       </div>
       <section className="rounded-2xl border bg-card p-5 shadow-card">
         <h2 className="mb-4 font-semibold">{t("آخر 7 أيام")}</h2>

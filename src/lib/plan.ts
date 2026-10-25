@@ -82,7 +82,7 @@ export const MAX_DAYS = 60;
 /** تدرّج الأسبوع الأول/الثاني ثم كامل الهدف. */
 export const RAMP = [0.7, 0.85, 1];
 
-const AR = "٠١٢٣٤٥٦٧٨٩";
+const AR = t("٠١٢٣٤٥٦٧٨٩");
 export const arDigits = (s: string | number) => String(s).replace(/\d/g, (d) => AR[Number(d)]!);
 
 export function fmtMin(min: number): string {
@@ -104,7 +104,7 @@ export const diffDays = (from: Date, to: Date) =>
   Math.round((stripTime(to).getTime() - stripTime(from).getTime()) / 86_400_000);
 export const todayStr = () => dateStr(new Date());
 
-export const DAY_NAMES = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+export const DAY_NAMES = [t("الأحد"), t("الاثنين"), t("الثلاثاء"), t("الأربعاء"), t("الخميس"), t("الجمعة"), t("السبت")];
 /** أيام المدرسة بالأردن: سبت→خميس. */
 export const SCHOOL_DAYS = [6, 0, 1, 2, 3, 4];
 

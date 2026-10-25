@@ -7,12 +7,12 @@ export function PageState({ loading, error, retry }: { loading?: boolean; error?
   if (!loading && !error) return null;
   return <div role={error ? "alert" : "status"} className="flex flex-col items-center gap-3 px-4 py-8 text-center">
     {error ? <AlertCircle className="size-7 text-destructive" /> : <LoaderCircle className="size-7 animate-spin text-primary" />}
-    <p className="text-sm text-muted-foreground">{error ? "ما قدرنا نحمّل البيانات. تأكد من اتصالك وجرب مرة ثانية." : "لحظة، بنجهّز الصفحة…"}</p>
+    <p className="text-sm text-muted-foreground">{error ? t("ما قدرنا نحمّل البيانات. تأكد من اتصالك وجرب مرة ثانية.") : "لحظة، بنجهّز الصفحة…"}</p>
     {error && retry && <Button variant="outline" onClick={retry}><RotateCcw /> {t("إعادة المحاولة")}</Button>}
   </div>;
 }
 
-export function Unavailable({ kind = "الصفحة" }: { kind?: string }) {
+export function Unavailable({ kind = t("الصفحة") }: { kind?: string }) {
   return <div className="mx-auto max-w-lg px-4 py-16 text-center"><h1 className="text-2xl font-bold">{kind} غير موجودة</h1><p className="my-4 text-muted-foreground">{t("ممكن الرابط قديم أو المحتوى انحذف. باقي المنصة متاحة.")}</p><Button asChild><Link to="/rooms">{t("العودة للغرف")}</Link></Button></div>;
 }
 

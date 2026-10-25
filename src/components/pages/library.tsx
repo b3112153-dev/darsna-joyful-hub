@@ -25,7 +25,7 @@ function SubjectChips({ subjects, selected, onSelect }: { subjects: string[]; se
 }
 export function Library() {
   const { user, loading: meLoading, isError: meError, refetch: refetchMe } = useMe(); const qc = useQueryClient();
-  const [q, setQ] = useState(""); const [fileSubject, setFileSubject] = useState("الكل"); const [quizSubject, setQuizSubject] = useState("الكل"); const [branch, setBranch] = useState("all");
+  const [q, setQ] = useState(""); const [fileSubject, setFileSubject] = useState(t("الكل")); const [quizSubject, setQuizSubject] = useState(t("الكل")); const [branch, setBranch] = useState("all");
   const [downloadId, setDownloadId] = useState<string | null>(null); const [reviewBusy, setReviewBusy] = useState<string | null>(null);
   const [reject, setReject] = useState<ReviewTarget | null>(null); const [reason, setReason] = useState(""); const [reviewError, setReviewError] = useState(""); const [preview, setPreview] = useState<ReviewTarget | null>(null);
   const support = useQuery({ queryKey: ["library-support", user?.id], enabled: !!user, staleTime: 300_000, queryFn: async () => user ? await readData(supabase.rpc("can_support", { _user_id: user.id })) : false });
@@ -45,15 +45,15 @@ export function Library() {
   }
   async function review(target: ReviewTarget, approved: boolean) {
     if (!user || reviewBusy || !support.data) return;
-    if (!approved && !reason.trim()) { setReviewError("اكتب سبب الرفض"); return; }
+    if (!approved && !reason.trim()) { setReviewError(t("اكتب سبب الرفض")); return; }
     setReviewBusy(target.id); setReviewError("");
     try {
       const values = { status: approved ? "approved" : "rejected", reviewed_by: user.id, reviewed_at: new Date().toISOString(), reject_reason: approved ? null : reason.trim() };
       const response = target.kind === "file" ? await withTimeout(supabase.from("library_files").update(values).eq("id", target.id).eq("status", "pending").select("id").single()) : await withTimeout(supabase.from("quizzes").update(values).eq("id", target.id).eq("status", "pending").select("id").single());
       if (response.error) throw response.error;
-      toast.success(approved ? "تمت الموافقة" : "تم رفض المشاركة"); setReject(null); setReason("");
+      toast.success(approved ? t("تمت الموافقة") : "تم رفض المشاركة"); setReject(null); setReason("");
       void qc.invalidateQueries({ queryKey: ["library"] }); void qc.invalidateQueries({ queryKey: ["quizzes"] });
-    } catch { setReviewError("ما قدرنا نحفظ المراجعة، جرّب مرة ثانية"); toast.error(t("تعذر حفظ المراجعة")); } finally { setReviewBusy(null); }
+    } catch { setReviewError(t("ما قدرنا نحفظ المراجعة، جرّب مرة ثانية")); toast.error(t("تعذر حفظ المراجعة")); } finally { setReviewBusy(null); }
   }
   const myPending = files.filter((f) => f.uploaded_by === user?.id && f.status === "pending");
   const myRejected = files.filter((f) => f.uploaded_by === user?.id && f.status === "rejected");
@@ -69,7 +69,7 @@ export function Library() {
         <Select dir="rtl" value={branch} onValueChange={setBranch}><SelectTrigger aria-label={t("الفرع")} className="h-11 rounded-2xl bg-card"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">{t("كل الفروع")}</SelectItem>{BRANCHES.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}<SelectItem value="shared">{t("مشترك")}</SelectItem></SelectContent></Select>
         <PageState loading={filesQuery.isLoading} error={filesQuery.isError} retry={() => void filesQuery.refetch()} />
         {!!myPending.length && <div className="rounded-[20px] bg-peach p-5 text-peach-foreground"><h2 className="font-bold">ملفاتك بانتظار موافقة الدعم ({myPending.length})</h2><ul className="my-2 space-y-1">{myPending.map((f) => <li key={f.id} className="break-words">{f.title}</li>)}</ul><p className="text-sm">{t("بتظهر للكل بعد المراجعة")}</p></div>}
-        {!!myRejected.length && <div className="rounded-[20px] border bg-card p-5"><h2 className="font-bold">{t("ملفات لم تتم الموافقة عليها")}</h2>{myRejected.map((f) => <div key={f.id} className="mt-3"><p className="break-words font-semibold">{f.title}</p><p className="break-words text-sm text-destructive">{f.reject_reason || "لم تتم الموافقة"}</p></div>)}</div>}
+        {!!myRejected.length && <div className="rounded-[20px] border bg-card p-5"><h2 className="font-bold">{t("ملفات لم تتم الموافقة عليها")}</h2>{myRejected.map((f) => <div key={f.id} className="mt-3"><p className="break-words font-semibold">{f.title}</p><p className="break-words text-sm text-destructive">{f.reject_reason || t("لم تتم الموافقة")}</p></div>)}</div>}
         <PageState error={support.isError} retry={() => void support.refetch()} />
         {support.data && files.some((f) => f.status === "pending") && <section className="space-y-3 border-b pb-5"><h2 className="text-xl font-extrabold">{t("بانتظار المراجعة")}</h2>{files.filter((f) => f.status === "pending").map((f) => <article key={f.id} className="rounded-[20px] border bg-card p-4"><h3 className="break-words font-bold">{f.title}</h3><p className="text-sm text-muted-foreground">{f.subject} · {f.unit} · {formatSize(f.file_size)}</p><Button variant="secondary" className="mt-3 rounded-xl" disabled={!!downloadId} onClick={() => void download(f)}><Download /> {t("عرض الملف")}</Button>{reviewActions({ id: f.id, title: f.title, kind: "file" })}</article>)}</section>}
         <PageState error={profiles.isError} retry={() => void profiles.refetch()} />

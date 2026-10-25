@@ -82,7 +82,7 @@ export function Dhikr() {
           <section className="space-y-2 rounded-[20px] border bg-card p-4 shadow-card">
             <div className="flex items-center justify-between text-sm font-bold">
               <span>إنجاز اليوم: {doneCount} من {DHIKR_ITEMS.length}</span>
-              <span className="flex items-center gap-1 text-primary"><Flame className="size-4" /> {streak} {streak === 1 ? "يوم" : "أيام"} متتالية</span>
+              <span className="flex items-center gap-1 text-primary"><Flame className="size-4" /> {streak} {streak === 1 ? t("يوم") : "أيام"} متتالية</span>
             </div>
             <Progress value={(doneCount / DHIKR_ITEMS.length) * 100} className="h-2" aria-label={t("شريط إنجاز اليوم")} />
             {complete && <p className="rounded-[14px] bg-secondary px-3 py-2 text-center text-sm font-bold">{encouragement}</p>}
@@ -110,7 +110,7 @@ export function Dhikr() {
             )}
             {storiesQuery.isSuccess && story && unlocked && (
               <article className="space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground">{story.kind === "muwashshah" ? "موشح أندلسي" : "قصة نبي"}</p>
+                <p className="text-xs font-semibold text-muted-foreground">{story.kind === "muwashshah" ? t("موشح أندلسي") : "قصة نبي"}</p>
                 <h3 className="text-base font-extrabold">{story.title}</h3>
                 <p className="whitespace-pre-wrap text-sm leading-7">{story.body}</p>
                 {story.source && <p className="text-xs text-muted-foreground">المصدر: {story.source}</p>}

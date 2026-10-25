@@ -131,7 +131,7 @@ export function Plan() {
         disabled={mut.regenerate.isPending}
         onClick={() => runGenerate(answers)}
       >
-        <Sparkles /> {mut.regenerate.isPending ? "بنحلّها…" : "حلّها"}
+        <Sparkles /> {mut.regenerate.isPending ? t("بنحلّها…") : "حلّها"}
       </Button>
 
       <div className="flex gap-2 overflow-x-auto pb-1" aria-label={t("أيام الجدول")}>
@@ -231,7 +231,7 @@ export function Plan() {
 function PlanCard({ item, manual, onToggle, onEdit }: { item: Tables<"plan_items">; manual: boolean; onToggle: () => void; onEdit: () => void }) {
   const isSchoolExam = item.kind === "school_exam";
   const isPlatform = item.kind === "platform_exam";
-  const badge = isSchoolExam && item.importance === 3 ? "مهم كتير" : isSchoolExam && item.importance === 2 ? "مهم" : null;
+  const badge = isSchoolExam && item.importance === 3 ? t("مهم كتير") : isSchoolExam && item.importance === 2 ? t("مهم") : null;
   return (
     <div className="flex items-start gap-3">
       <span className="w-12 shrink-0 pt-4 text-center text-sm font-extrabold tabular-nums text-muted-foreground">{fmtMin(item.start_min)}</span>
@@ -255,7 +255,7 @@ function PlanCard({ item, manual, onToggle, onEdit }: { item: Tables<"plan_items
         )}
         <div className="mt-2 flex items-center gap-1">
           <Button size="sm" variant={item.done ? "secondary" : "outline"} className="h-8 rounded-xl text-xs" onClick={onToggle}>
-            <Check /> {item.done ? "منجزة" : "صح"}
+            <Check /> {item.done ? t("منجزة") : "صح"}
           </Button>
           <Button size="sm" variant="ghost" className="h-8 rounded-xl text-xs" onClick={onEdit}>
             <Pencil /> {t("تعديل")}
@@ -326,7 +326,7 @@ function AddItemDialog({ open, day, onClose, onAdd }: {
           <Button
             className="w-full rounded-xl bg-brand"
             disabled={!title.trim()}
-            onClick={() => onAdd({ day, start_min: toMin(time), minutes, kind: "custom", subject: subject.trim() || "عام", title: title.trim(), unit_id: null, quiz_id: null, importance: null })}
+            onClick={() => onAdd({ day, start_min: toMin(time), minutes, kind: "custom", subject: subject.trim() || t("عام"), title: title.trim(), unit_id: null, quiz_id: null, importance: null })}
           >
             {t("إضافة")}
           </Button>
@@ -356,7 +356,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
     return [...new Set(names)].sort();
   }, [units, generation]);
 
-  const steps = ["الفرع", "المواد", "النوم", "المدرسة", "الوجبات والالتزامات", "ساعات الدراسة", "امتحانات المدرسة"];
+  const steps = [t("الفرع"), t("المواد"), t("النوم"), t("المدرسة"), t("الوجبات والالتزامات"), t("ساعات الدراسة"), t("امتحانات المدرسة")];
 
   const toggleSubject = (name: string, on: boolean) => {
     setA((prev) => {
@@ -415,7 +415,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
               <div className="grid grid-cols-2 gap-2">
                 {(["new", "repeat"] as const).map((s) => (
                   <Button key={s} variant={a.status === s ? "default" : "outline"} className={`rounded-xl ${a.status === s ? "bg-brand" : ""}`} onClick={() => set({ status: s })}>
-                    {s === "new" ? "مستجد" : "معيد"}
+                    {s === "new" ? t("مستجد") : "معيد"}
                   </Button>
                 ))}
               </div>
@@ -448,7 +448,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
                 <p className="text-sm font-extrabold">{s.name}</p>
                 {s.semesters.map((sm) => {
                   const dbCount = units.filter((u) => u.subject === s.name && u.semester === sm.semester && (u.generation === "all" || !generation || u.generation === generation)).length;
-                  const semLabel = sm.semester === 1 ? "الفصل الأول" : "الفصل الثاني";
+                  const semLabel = sm.semester === 1 ? t("الفصل الأول") : "الفصل الثاني";
                   return (
                     <div key={sm.semester} className="space-y-1.5">
                       <p className="text-xs font-bold text-muted-foreground">{semLabel}</p>
@@ -530,7 +530,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
               <p className="mb-2 text-sm font-bold">{t("أوقات الوجبات")}</p>
               <div className="grid grid-cols-3 gap-2">
                 {(["breakfast", "lunch", "dinner"] as const).map((m) => (
-                  <label key={m} className="text-xs font-bold">{m === "breakfast" ? "فطور" : m === "lunch" ? "غدا" : "عشا"}
+                  <label key={m} className="text-xs font-bold">{m === "breakfast" ? t("فطور") : m === "lunch" ? t("غدا") : "عشا"}
                     <Input type="time" dir="ltr" value={toTime(a.meals[m])} onChange={(e) => set({ meals: { ...a.meals, [m]: toMin(e.target.value || "12:00") } })} />
                   </label>
                 ))}
@@ -566,7 +566,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
               {a.schoolExams.map((ex, i) => (
                 <div key={i} className="flex items-center gap-2 rounded-2xl border p-2 text-xs">
                   <span className="min-w-0 flex-1 truncate font-bold">
-                    {ex.subject} — {ex.date} — {ex.importance === 3 ? "مهم كتير" : ex.importance === 2 ? "مهم" : "عادي"}
+                    {ex.subject} — {ex.date} — {ex.importance === 3 ? t("مهم كتير") : ex.importance === 2 ? t("مهم") : "عادي"}
                   </span>
                   <Button size="sm" variant="ghost" className="h-7" onClick={() => set({ schoolExams: a.schoolExams.filter((_, j) => j !== i) })}><Trash2 className="size-3.5" /></Button>
                 </div>
@@ -584,7 +584,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
           <Button className="flex-1 rounded-xl bg-brand" disabled={!canNext} onClick={() => setStep(step + 1)}>{t("التالي")}</Button>
         ) : (
           <Button className="flex-1 rounded-xl bg-brand" disabled={busy || !a.subjects.length} onClick={() => onSave(a)}>
-            <CalendarCheck /> {busy ? "بنجهّز جدولك…" : "احفظ وجهّز الجدول"}
+            <CalendarCheck /> {busy ? t("بنجهّز جدولك…") : "احفظ وجهّز الجدول"}
           </Button>
         )}
       </div>

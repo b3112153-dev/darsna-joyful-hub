@@ -65,7 +65,7 @@ function ChatRoom() {
   const messageIds = messages.map((m) => m.id);
   const reactionsApi = useReactions("message_reactions", messageIds, user?.id, roomId);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
-  const previewOf = (id: string | null) => id ? messages.find((m) => m.id === id)?.content ?? "رسالة محذوفة" : null;
+  const previewOf = (id: string | null) => id ? messages.find((m) => m.id === id)?.content ?? t("رسالة محذوفة") : null;
 
   useEffect(() => {
     if (tab !== "chat" || loadingOlder.current || lastId === previousLast.current) return;
@@ -98,18 +98,18 @@ function ChatRoom() {
     setSending(true);
     try {
       const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,avatar_url)").single());
-      if (!message) throw new Error("تعذر الإرسال");
+      if (!message) throw new Error(t("تعذر الإرسال"));
       chat.append(message);
       setReplyTo(null);
       setText((current) => current.trim() === content ? "" : current);
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "nearest" }));
-    } catch { toast.error(me?.isBanned ? "حسابك محظور من الإرسال" : "تعذر إرسال الرسالة؛ حاول مرة ثانية."); }
+    } catch { toast.error(me?.isBanned ? t("حسابك محظور من الإرسال") : "تعذر إرسال الرسالة؛ حاول مرة ثانية."); }
     finally { setSending(false); }
   }
 
   if (roomQuery.isPending) return <PageState loading />;
   if (roomQuery.isError) return <PageState error retry={() => void roomQuery.refetch()} />;
-  if (roomQuery.isSuccess && room === null) return <Unavailable kind="الغرفة" />;
+  if (roomQuery.isSuccess && room === null) return <Unavailable kind=t("الغرفة") />;
 
   return (
     <main className="mx-auto flex h-[calc(100dvh-136px)] max-w-3xl flex-col font-display lg:h-[calc(100dvh-4rem)]">
@@ -136,7 +136,7 @@ function ChatRoom() {
       <TabsContent value="rounds" className="overflow-y-auto rounded-2xl border bg-card p-4"><StudyRounds roomId={roomId} /></TabsContent>
       <TabsContent value="chat" className="flex min-h-0 flex-1 flex-col">
       <div ref={listRef} className="flex-1 space-y-4 overflow-y-auto bg-background p-3 sm:p-4">
-        {chat.hasNextPage && <div className="text-center"><Button variant="outline" size="sm" disabled={chat.isFetchingNextPage} onClick={() => void loadOlder()}>{chat.isFetchingNextPage ? "جاري التحميل…" : "تحميل الأقدم"}</Button></div>}
+        {chat.hasNextPage && <div className="text-center"><Button variant="outline" size="sm" disabled={chat.isFetchingNextPage} onClick={() => void loadOlder()}>{chat.isFetchingNextPage ? t("جاري التحميل…") : "تحميل الأقدم"}</Button></div>}
         <PageState loading={chat.isPending} error={chat.isError} retry={() => void (chat.isFetchNextPageError ? chat.fetchNextPage() : chat.refetch())} />
         {chat.isSuccess && messages.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("لا يوجد رسائل بعد — كن أول من يكتب!")}</p>}
         {messages.map((m) => <ChatMessage key={m.id} message={m} own={m.user_id === user?.id} canDelete={canDeleteMessage(m, user?.id, !!me?.isStaff)} reactions={reactionsApi.reactions} userId={user?.id} now={now} onDelete={chat.remove} onEdit={chat.edit} onReact={(id, emoji) => void reactionsApi.toggle(id, emoji)} onReply={setReplyTo} replyPreview={previewOf(m.reply_to)} />)}

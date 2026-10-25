@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
 });
 
-const MONTHS = ["كانون الثاني", "شباط", "آذار", "نيسان", "أيار", "حزيران", "تموز", "آب", "أيلول", "تشرين الأول", "تشرين الثاني", "كانون الأول"];
+const MONTHS = [t("كانون الثاني"), t("شباط"), t("آذار"), t("نيسان"), t("أيار"), t("حزيران"), t("تموز"), t("آب"), t("أيلول"), t("تشرين الأول"), t("تشرين الثاني"), t("كانون الأول")];
 const YEARS = [2009, 2010];
 
 export function isValidDate(y: number, m: number, d: number) {
@@ -56,7 +56,7 @@ function Onboarding() {
       return;
     }
     setBusy(false);
-    const text = msg.includes("unsupported birth year") ? "الموقع حالياً لطلاب جيل ٢٠٠٩ و٢٠١٠ فقط" : "صار خطأ، جرّب مرة ثانية";
+    const text = msg.includes("unsupported birth year") ? t("الموقع حالياً لطلاب جيل ٢٠٠٩ و٢٠١٠ فقط") : "صار خطأ، جرّب مرة ثانية";
     setError(text);
     toast.error(text);
   }
@@ -77,7 +77,7 @@ function Onboarding() {
 
         <p className="mb-2 font-semibold">{t("الجنس")}</p>
         <div className="mb-6 grid grid-cols-2 gap-3">
-          {([["female", "بنت"], ["male", "ولد"]] as const).map(([v, l]) => (
+          {([["female", t("بنت")], ["male", t("ولد")]] as const).map(([v, l]) => (
             <button key={v} type="button" onClick={() => setGender(v)} aria-pressed={gender === v}
               className={`h-16 rounded-2xl border-2 text-lg font-bold transition ${gender === v ? "border-primary bg-primary/10 text-primary" : "border-border"}`}>
               {l}
@@ -108,7 +108,7 @@ function Onboarding() {
         </label>
 
         {error && <p className="mb-3 text-center text-sm text-destructive">{error}</p>}
-        <Button disabled={!ready} onClick={submit} className="h-12 w-full text-base">{busy ? "لحظة…" : "تأكيد وبدء"}</Button>
+        <Button disabled={!ready} onClick={submit} className="h-12 w-full text-base">{busy ? t("لحظة…") : "تأكيد وبدء"}</Button>
         <button type="button" onClick={logout} className="mt-4 w-full text-sm text-muted-foreground hover:underline">{t("تسجيل الخروج")}</button>
       </div>
     </main>

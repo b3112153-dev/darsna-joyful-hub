@@ -47,7 +47,7 @@ function Rooms() {
             className="group grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3 rounded-[26px] bg-secondary p-4 text-secondary-foreground transition hover:shadow-soft"
           >
               <span className="grid size-14 shrink-0 place-items-center rounded-[18px] bg-card text-lg font-extrabold text-card-foreground">
-                {r.generation === "gen2009" ? "٢٠٠٩" : r.generation === "gen2010" ? "٢٠١٠" : <MessagesSquare className="size-6" />}
+                {r.generation === "gen2009" ? t("٢٠٠٩") : r.generation === "gen2010" ? t("٢٠١٠") : <MessagesSquare className="size-6" />}
               </span>
             <div className="min-w-0"><h2 className="truncate text-[17px] font-extrabold">{r.name}</h2><p className="text-[13px] font-semibold leading-6 text-muted-foreground">{r.description}</p>{r.branch && <p className="truncate text-sm text-muted-foreground">{branchLabel(r.branch)}</p>}</div>
           </Link>

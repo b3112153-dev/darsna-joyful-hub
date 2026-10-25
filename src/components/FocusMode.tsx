@@ -49,7 +49,7 @@ export function FocusModeScreen() {
       <TodoList userId={user.id} />
       <SoundsSheet trigger={<Button variant="secondary" className="h-12 w-full rounded-[16px]"><Music4 className="size-4" /> {t("أصوات الدراسة")}</Button>} />
       <div className="grid grid-cols-2 gap-3">
-        <Button className="h-12 rounded-[16px]" variant="secondary" disabled={pending} onClick={session.status === "paused" ? focus.resume : focus.pause}>{session.status === "paused" ? <Play /> : <Pause />}{session.status === "paused" ? "استئناف" : "إيقاف مؤقت"}</Button>
+        <Button className="h-12 rounded-[16px]" variant="secondary" disabled={pending} onClick={session.status === "paused" ? focus.resume : focus.pause}>{session.status === "paused" ? <Play /> : <Pause />}{session.status === "paused" ? t("استئناف") : "إيقاف مؤقت"}</Button>
         <Button className="h-12 rounded-[16px]" disabled={pending} variant="outline" onClick={() => setEndOpen(true)}><Square className="size-4" /> {t("إنهاء الجلسة")}</Button>
       </div>
       <EndFocusDialog open={endOpen} onOpenChange={setEndOpen} pending={pending} onEnd={focus.reset} />

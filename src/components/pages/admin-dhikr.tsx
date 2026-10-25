@@ -34,7 +34,7 @@ export function AdminDhikr() {
     },
   });
 
-  if (me && !allowed) return <Unavailable kind="الصفحة" />;
+  if (me && !allowed) return <Unavailable kind=t("الصفحة") />;
 
   async function save() {
     if (!form.title.trim() || !form.body.trim() || saving) return;
@@ -45,7 +45,7 @@ export function AdminDhikr() {
         ? await supabase.from("dhikr_stories").update(payload as never).eq("id", editingId)
         : await supabase.from("dhikr_stories").insert(payload as never);
       if (error) throw error;
-      toast.success(editingId ? "تم التعديل" : "تمت الإضافة");
+      toast.success(editingId ? t("تم التعديل") : "تمت الإضافة");
       setForm(empty);
       setEditingId(null);
       await qc.invalidateQueries({ queryKey: ["dhikr-stories"] });
@@ -67,7 +67,7 @@ export function AdminDhikr() {
       </div>
 
       <section className="space-y-3 rounded-[20px] border bg-card p-4 shadow-card">
-        <h2 className="text-sm font-extrabold">{editingId ? "تعديل سجل" : "سجل جديد"}</h2>
+        <h2 className="text-sm font-extrabold">{editingId ? t("تعديل سجل") : "سجل جديد"}</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label>{t("النوع")}</Label>
@@ -88,7 +88,7 @@ export function AdminDhikr() {
         <div className="space-y-1.5"><Label>{t("النص")}</Label><Textarea rows={5} maxLength={5000} value={form.body} onChange={(e) => setForm((f) => ({ ...f, body: e.target.value }))} /></div>
         <div className="space-y-1.5"><Label>{t("المصدر (اختياري)")}</Label><Input maxLength={200} value={form.source} onChange={(e) => setForm((f) => ({ ...f, source: e.target.value }))} /></div>
         <div className="flex gap-2">
-          <Button disabled={saving || !form.title.trim() || !form.body.trim()} onClick={() => void save()}><Plus className="size-4" /> {editingId ? "حفظ التعديل" : "إضافة"}</Button>
+          <Button disabled={saving || !form.title.trim() || !form.body.trim()} onClick={() => void save()}><Plus className="size-4" /> {editingId ? t("حفظ التعديل") : "إضافة"}</Button>
           {editingId && <Button variant="ghost" onClick={() => { setEditingId(null); setForm(empty); }}>{t("إلغاء")}</Button>}
         </div>
       </section>
@@ -98,7 +98,7 @@ export function AdminDhikr() {
         {(query.data ?? []).map((story) => (
           <div key={story.id} className="flex items-start gap-3 rounded-[18px] border bg-card p-3.5">
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-muted-foreground">{story.kind === "muwashshah" ? "موشح" : "قصة نبي"} · ترتيب {story.sort}</p>
+              <p className="text-xs font-semibold text-muted-foreground">{story.kind === "muwashshah" ? t("موشح") : "قصة نبي"} · ترتيب {story.sort}</p>
               <h3 className="truncate text-sm font-extrabold">{story.title}</h3>
               <p className="line-clamp-2 text-xs leading-6 text-muted-foreground">{story.body}</p>
             </div>
