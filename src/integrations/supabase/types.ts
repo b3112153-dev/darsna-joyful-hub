@@ -86,6 +86,45 @@ export type Database = {
         }
         Relationships: []
       }
+      curriculum_units: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          generation: string
+          id: string
+          lessons: number
+          semester: number
+          subject: string
+          title: string
+          track: string
+          unit_no: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          generation: string
+          id?: string
+          lessons?: number
+          semester: number
+          subject: string
+          title: string
+          track?: string
+          unit_no?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          generation?: string
+          id?: string
+          lessons?: number
+          semester?: number
+          subject?: string
+          title?: string
+          track?: string
+          unit_no?: number
+        }
+        Relationships: []
+      }
       dhikra_posts: {
         Row: {
           created_at: string
@@ -399,6 +438,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      plan_items: {
+        Row: {
+          created_at: string
+          day: string
+          done: boolean
+          id: string
+          importance: number | null
+          kind: string
+          minutes: number
+          quiz_id: string | null
+          start_min: number
+          subject: string
+          title: string
+          unit_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          done?: boolean
+          id?: string
+          importance?: number | null
+          kind: string
+          minutes: number
+          quiz_id?: string | null
+          start_min?: number
+          subject: string
+          title: string
+          unit_id?: string | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          done?: boolean
+          id?: string
+          importance?: number | null
+          kind?: string
+          minutes?: number
+          quiz_id?: string | null
+          start_min?: number
+          subject?: string
+          title?: string
+          unit_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -715,6 +802,27 @@ export type Database = {
           launch_date?: string
           owner_id?: string | null
           owner_name?: string
+        }
+        Relationships: []
+      }
+      study_plans: {
+        Row: {
+          answers: Json
+          created_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1142,6 +1250,7 @@ export type Database = {
           id: string
         }[]
       }
+      penalize_missed_exams: { Args: never; Returns: number }
       register_device: {
         Args: { _device_id: string; _fingerprint: string }
         Returns: boolean
