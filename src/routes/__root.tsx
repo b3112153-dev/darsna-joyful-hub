@@ -54,10 +54,10 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          ما قدرنا نفتح الصفحة
+          {t("ما قدرنا نفتح الصفحة")}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          صار خطأ مؤقت، جرّب مرة ثانية أو ارجع للرئيسية.
+          {t("صار خطأ مؤقت، جرّب مرة ثانية أو ارجع للرئيسية.")}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Button
