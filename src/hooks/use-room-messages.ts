@@ -6,7 +6,7 @@ import { requestSignal, readData } from "@/lib/requests";
 import { MESSAGE_PAGE_SIZE, mergeMessage, orderedMessages, removeMessage, type Message, type MessageCache, type MessageCursor } from "@/lib/chat-messages";
 import { t } from "@/lib/i18n";
 
-const fields = "*,profiles(display_name,avatar_url)";
+const fields = "*,profiles(display_name,nickname,avatar,gender)";
 
 export function useRoomMessages(roomId: string, userId: string | undefined, enabled: boolean) {
   const qc = useQueryClient();

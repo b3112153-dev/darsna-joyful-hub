@@ -5,6 +5,9 @@ import { MessageActionsBar, copyMessage } from "@/components/MessageActions";
 import { canEditNow, groupReactions, type ReactionRow } from "@/lib/reactions";
 import type { Message } from "@/lib/chat-messages";
 import { t } from "@/lib/i18n";
+import { AvatarPic } from "@/components/AvatarPic";
+import { profileName } from "@/lib/identity";
+import { useMe } from "@/hooks/use-auth";
 
 export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelete, reactions, userId, now, onDelete, onEdit, onReact, onReply, replyPreview }: {
   message: Message;
@@ -19,6 +22,7 @@ export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelet
   onReply: (message: Message) => void;
   replyPreview: string | null;
 }) {
+  const { me } = useMe();
   const admin = m.from_admin || m.sender_role === "admin";
   const moderator = !admin && m.sender_role === "moderator";
   const [editing, setEditing] = useState(false);
@@ -44,21 +48,22 @@ export const ChatMessage = memo(function ChatMessage({ message: m, own, canDelet
       }}>
         <div className={`min-w-0 max-w-[85%] cursor-pointer select-none ${own ? "text-start" : "text-end"}`}>
           <div className="mb-1 flex min-w-0 flex-wrap items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-            <span>{admin ? t("فريق درسنا جو") : m.profiles?.display_name}</span>
+            <AvatarPic profile={m.profiles} className="size-7" />
+            <span className="break-words">{admin ? t("فريق درسنا جو") : profileName(m.profiles, !!(me?.isStaff || me?.isSupport || me?.isOwner))}</span>
             {admin && <span className="rounded-full bg-role-badge px-2 py-0.5 text-role-badge-foreground">{t("الإدارة")}</span>}
             {moderator && <span className="rounded-full bg-role-badge px-2 py-0.5 text-role-badge-foreground">{t("مشرف")}</span>}
             {m.sender_role === "support" && <span className="rounded-full bg-role-badge px-2 py-0.5 text-role-badge-foreground">{t("دعم")}</span>}
           </div>
           <div className={`min-w-0 rounded-[20px] px-3 py-2 ${admin ? "border-2 border-staff-border bg-staff text-staff-foreground" : own ? "rounded-bl-[6px] bg-bubble-own text-bubble-own-foreground" : "rounded-br-[6px] border border-border bg-bubble text-card-foreground"}`}>
             {replyPreview !== null && (
-              <p className="mb-1.5 truncate rounded-[12px] border-r-4 border-primary/60 bg-background/50 px-2 py-1 text-xs text-muted-foreground">{replyPreview}</p>
+              <p className="mb-1.5 truncate rounded-[12px] border-s-4 border-primary/60 bg-background/50 px-2 py-1 text-xs text-muted-foreground">{replyPreview}</p>
             )}
             {editing ? <form onSubmit={(event) => { event.preventDefault(); void save(); }} className="space-y-2">
               <Input aria-label={t("تعديل الرسالة")} value={draft} maxLength={2000} onChange={(event) => setDraft(event.target.value)} />
               <div className="flex gap-1"><Button size="sm" disabled={saving || !draft.trim()}>{t("حفظ")}</Button><Button size="sm" variant="ghost" type="button" disabled={saving} onClick={() => setEditing(false)}>{t("إلغاء")}</Button></div>
             </form> : <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>}
             <p className="mt-1 text-[10px] opacity-70">
-              {new Date(m.created_at).toLocaleTimeString("ar-JO", { hour: "2-digit", minute: "2-digit" })}
+              {new Date(m.created_at).toLocaleTimeString("ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}
               {m.edited_at && t(" · معدّلة")}
             </p>
           </div>

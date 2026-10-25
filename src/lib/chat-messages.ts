@@ -1,9 +1,10 @@
 import type { InfiniteData } from "@tanstack/react-query";
 import type { Database } from "@/integrations/supabase/types";
+import type { PublicProfile } from "@/lib/identity";
 
 export const MESSAGE_PAGE_SIZE = 50;
 export type Message = Database["public"]["Tables"]["messages"]["Row"] & {
-  profiles: { display_name: string; avatar_url: string | null } | null;
+  profiles: PublicProfile | null;
 };
 export type MessageCursor = { created_at: string; id: string } | null;
 export type MessagePage = { messages: Message[]; next: MessageCursor };
