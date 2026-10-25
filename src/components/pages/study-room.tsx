@@ -49,7 +49,7 @@ export function StudyRoom() {
 
   if (roomQuery.isPending) return <PageState loading />;
   if (roomQuery.isError) return <PageState error retry={() => void roomQuery.refetch()} />;
-  if (roomQuery.isSuccess && room === null) return <Unavailable kind=t("الروم") />;
+  if (roomQuery.isSuccess && room === null) return <Unavailable kind={t("الروم")} />;
 
   return (
     <main className={`min-h-[calc(100dvh-136px)] font-display lg:min-h-[calc(100dvh-4rem)] ${meta.page}`}>

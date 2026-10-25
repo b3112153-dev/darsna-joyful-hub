@@ -109,7 +109,7 @@ function ChatRoom() {
 
   if (roomQuery.isPending) return <PageState loading />;
   if (roomQuery.isError) return <PageState error retry={() => void roomQuery.refetch()} />;
-  if (roomQuery.isSuccess && room === null) return <Unavailable kind=t("الغرفة") />;
+  if (roomQuery.isSuccess && room === null) return <Unavailable kind={t("الغرفة")} />;
 
   return (
     <main className="mx-auto flex h-[calc(100dvh-136px)] max-w-3xl flex-col font-display lg:h-[calc(100dvh-4rem)]">

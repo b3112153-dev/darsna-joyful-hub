@@ -34,7 +34,7 @@ export function AdminDhikr() {
     },
   });
 
-  if (me && !allowed) return <Unavailable kind=t("الصفحة") />;
+  if (me && !allowed) return <Unavailable kind={t("الصفحة")} />;
 
   async function save() {
     if (!form.title.trim() || !form.body.trim() || saving) return;

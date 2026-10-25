@@ -38,7 +38,7 @@ export function AdminCurriculum() {
 
   if (loading || (user && unitsQ.isLoading)) return <PageState loading />;
   if (isError || unitsQ.isError) return <PageState error retry={() => { void refetch(); void unitsQ.refetch(); }} />;
-  if (!me || !(me.isStaff || me.isSupport || me.isOwner)) return <Unavailable kind=t("الصفحة") />;
+  if (!me || !(me.isStaff || me.isSupport || me.isOwner)) return <Unavailable kind={t("الصفحة")} />;
 
   const units = unitsQ.data ?? [];
 

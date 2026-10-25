@@ -107,7 +107,7 @@ export function TopicPage() {
 
   if (isPending) return <PageState loading />;
   if (isError) return <PageState error retry={() => void refetch()} />;
-  if (topic === null) return <Unavailable kind=t("الصفحة") />;
+  if (topic === null) return <Unavailable kind={t("الصفحة")} />;
 
   return (
     <main className="mx-auto max-w-3xl space-y-4 px-4 py-8">

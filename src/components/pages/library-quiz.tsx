@@ -21,7 +21,7 @@ export function LibraryQuiz() {
     return { quiz, questions: (questions ?? []).map((q) => ({ ...q, options: questionOptions(q.options) })) };
   } });
   if (query.isLoading || query.isError) return <PageState loading={query.isLoading} error={query.isError} retry={() => void query.refetch()} />;
-  if (!query.data) return <Unavailable kind=t("الاختبار") />;
+  if (!query.data) return <Unavailable kind={t("الاختبار")} />;
   if (!query.data.questions.length) return <div className="py-12 text-center"><p>{t("ما في أسئلة متاحة لهذا الاختبار حالياً.")}</p><Button asChild variant="outline" className="mt-4"><Link to="/library">{t("المكتبة")}</Link></Button></div>;
   return <QuizSession key={quizId} quizId={quizId} data={query.data} onSubmitted={() => { void qc.invalidateQueries({ queryKey: ["quizzes"] }); void qc.invalidateQueries({ queryKey: ["quiz-attempts"] }); }} />;
 }
