@@ -196,14 +196,14 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
                 aria-label={c}
                 onClick={() => setHairColor(c)}
                 disabled={busy === "hairColor"}
-                className={cn("size-8 rounded-full border-2 transition", worn.hairColor === c ? "border-primary scale-110" : "border-card")}
+                className={cn("size-8 rounded-full border-2 transition", worn["hairColor"] === c ? "border-primary scale-110" : "border-card")}
                 style={{ backgroundColor: c }}
               />
             ))}
             <input
               type="color"
               aria-label="لون مخصص"
-              value={worn.hairColor ?? "#aa5533"}
+              value={worn["hairColor"] ?? "#aa5533"}
               onChange={(e) => setHairColor(e.target.value)}
               className="size-8 cursor-pointer rounded-full border-2 border-card bg-transparent"
             />

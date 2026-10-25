@@ -14,7 +14,11 @@ export type Wallet = {
 };
 
 export function parseWallet(raw: unknown): Wallet {
-  const w = (raw ?? {}) as Record<string, unknown>;
+  const w = (raw ?? {}) as {
+    balance?: unknown; hours?: unknown; level?: unknown;
+    nickname?: unknown; nickname_changed_at?: unknown;
+    avatar?: unknown; owned?: unknown;
+  };
   return {
     balance: Number(w.balance ?? 0),
     hours: Number(w.hours ?? 0),

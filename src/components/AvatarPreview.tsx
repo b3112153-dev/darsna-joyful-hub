@@ -30,7 +30,7 @@ export function AvatarPreview({
   avatar: AvatarState | null | undefined;
   images: Record<string, string>;
   gender?: string | null;
-  nickname?: string | null;
+  nickname?: string | null | undefined;
   className?: string;
   animate?: boolean;
 }) {
