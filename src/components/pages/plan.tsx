@@ -55,9 +55,12 @@ export function Plan() {
   // خصم نقاط الامتحانات الفائتة بصمت عند فتح الصفحة
   useEffect(() => {
     if (!user) return;
-    supabase.rpc("penalize_missed_exams").then(({ data }) => {
-      if (typeof data === "number" && data > 0) toast(`انخصم ${arDigits(data)} نقاط لأنك ما حليت الامتحان خلال ٢٤ ساعة`);
-    }).catch(() => {});
+    void (async () => {
+      try {
+        const { data } = await supabase.rpc("penalize_missed_exams");
+        if (typeof data === "number" && data > 0) toast(`انخصم ${arDigits(data)} نقاط لأنك ما حليت الامتحان خلال ٢٤ ساعة`);
+      } catch { /* بصمت */ }
+    })();
   }, [user?.id]);
 
   const answers = planQ.data ?? null;
@@ -92,7 +95,7 @@ export function Plan() {
     return (
       <main className="mx-auto max-w-[480px] px-5 py-5 font-display">
         <PlanWizard
-          initial={answers ?? defaultAnswers(me?.profile?.branch ?? BRANCHES[0].value)}
+          initial={answers ?? defaultAnswers(me?.profile?.branch ?? BRANCHES[0]!.value)}
           units={units}
           generation={gen}
           busy={mut.saveAnswers.isPending || mut.regenerate.isPending}
@@ -340,7 +343,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
   generation: string | null;
   busy: boolean;
   onSave: (a: PlanAnswers) => void;
-  onCancel?: () => void;
+  onCancel?: (() => void) | undefined;
 }) {
   const [step, setStep] = useState(0);
   const [a, setA] = useState<PlanAnswers>(initial);
@@ -506,7 +509,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
                     <Checkbox checked={off} onCheckedChange={(v) => set({ school: { ...a.school, [String(d)]: v ? "off" : { go: 7 * 60 + 30, back: 14 * 60 } } })} aria-label={`إجازة ${DAY_NAMES[d]}`} />
                     إجازة
                   </label>
-                  {!off && sch !== "off" && (
+                  {!off && sch && sch !== "off" && (
                     <div className="flex flex-1 items-center gap-1.5" dir="ltr">
                       <Input type="time" className="h-9" value={toTime(sch.go)} onChange={(e) => set({ school: { ...a.school, [String(d)]: { ...sch, go: toMin(e.target.value || "07:30") } } })} aria-label={`ذهاب ${DAY_NAMES[d]}`} />
                       <span className="text-xs">→</span>

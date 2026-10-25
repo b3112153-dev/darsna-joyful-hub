@@ -83,7 +83,7 @@ export const MAX_DAYS = 60;
 export const RAMP = [0.7, 0.85, 1];
 
 const AR = "٠١٢٣٤٥٦٧٨٩";
-export const arDigits = (s: string | number) => String(s).replace(/\d/g, (d) => AR[Number(d)]);
+export const arDigits = (s: string | number) => String(s).replace(/\d/g, (d) => AR[Number(d)]!);
 
 export function fmtMin(min: number): string {
   const m = ((min % 1440) + 1440) % 1440;
