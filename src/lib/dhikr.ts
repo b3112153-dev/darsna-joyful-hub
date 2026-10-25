@@ -6,7 +6,7 @@ export const DHIKR_ITEMS: DhikrItem[] = [
   { id: "asr", label: "صلاة العصر", fard: true },
   { id: "maghrib", label: "صلاة المغرب", fard: true },
   { id: "isha", label: "صلاة العشاء", fard: true },
-  { id: "rawatib", label: "السنن الرواتب (٢ قبل الفجر، ٤ قبل الظهر و٢ بعده، ٢ بعد المغرب، ٢ بعد العشاء)", fard: false },
+  { id: "rawatib", label: "السنن الرواتب (2 قبل الفجر، 4 قبل الظهر و2 بعده، 2 بعد المغرب، 2 بعد العشاء)", fard: false },
   { id: "duha", label: "صلاة الضحى", fard: false },
   { id: "witr", label: "صلاة الوتر", fard: false },
   { id: "morning", label: "أذكار الصباح", fard: false },

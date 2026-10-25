@@ -6,7 +6,7 @@ import { profileAvatar, type PublicProfile } from "@/lib/identity";
 
 /** Shared cached art, no per-person requests. The profile comes from its parent's joined/batched query. */
 export const AvatarPic = memo(function AvatarPic({ profile, className, images, animate = false }: {
-  profile?: PublicProfile | null; className?: string; images?: Record<string, string>; animate?: boolean;
+  profile?: PublicProfile | null | undefined; className?: string; images?: Record<string, string>; animate?: boolean;
 }) {
   const art = useAvatarImages(!images);
   const resolved = images ?? art.data ?? {};

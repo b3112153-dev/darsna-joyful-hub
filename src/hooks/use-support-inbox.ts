@@ -29,5 +29,6 @@ export function readInboxSeen(userId: string | undefined): Record<string, string
   try { const value: unknown = JSON.parse(localStorage.getItem(`support-seen:${userId}`) ?? "{}"); return value && typeof value === "object" && !Array.isArray(value) ? Object.fromEntries(Object.entries(value).filter((entry) => typeof entry[1] === "string")) : {}; } catch { return {}; }
 }
 export function inboxUnread(row: InboxRow, seen: Record<string, string>) {
-  return row.sender_id === row.student_id && (!seen[row.student_id] || row.created_at > seen[row.student_id]);
+  const lastSeen = seen[row.student_id];
+  return row.sender_id === row.student_id && (!lastSeen || row.created_at > lastSeen);
 }
