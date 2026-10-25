@@ -233,19 +233,23 @@ export function generatePlan(
     // امتحان المنصة الأسبوعي (مساءً) — نحجز وقته قبل توزيع الدراسة
     const weekNo = Math.floor(off / 7);
     if (names.length && weekNo !== platformWeek && (js === 4 || off % 7 === 5 || off === days - 1)) {
-      const subj = names[platformSubjIdx % names.length]!;
-      const quiz =
+      // نختار أول مادة (بالتناوب) إلها اختبار منصة معتمد؛ بدون اختبار ما منضيف البطاقة (سياسة الحماية تشترط quiz_id)
+      const quizFor = (subj: string) =>
         quizzes.find((q) => q.status === "approved" && q.subject === subj && (!generation || q.generation === generation)) ??
         quizzes.find((q) => q.status === "approved" && q.subject === subj);
-      let eve = Math.min(19 * 60, a.sleepMin - 60);
-      if (eve <= 0) eve = 19 * 60;
-      items.push({
-        day, start_min: eve, minutes: SESSION_MIN, kind: "platform_exam", subject: subj,
-        title: `امتحان المنصة: ${subj}`, unit_id: null, quiz_id: quiz?.id ?? null, importance: null,
-      });
-      platformWeek = weekNo;
-      platformSubjIdx++;
-      for (let i = 0; i < wins.length; i++) { const w = wins[i]!; wins.splice(i, 1, ...subtract([w], [eve, eve + SESSION_MIN])); }
+      const picked = names.map((_, i) => names[(platformSubjIdx + i) % names.length]!).find((s) => quizFor(s));
+      const quiz = picked ? quizFor(picked) : undefined;
+      if (picked && quiz) {
+        let eve = Math.min(19 * 60, a.sleepMin - 60);
+        if (eve <= 0) eve = 19 * 60;
+        items.push({
+          day, start_min: eve, minutes: SESSION_MIN, kind: "platform_exam", subject: picked,
+          title: `امتحان المنصة: ${picked}`, unit_id: null, quiz_id: quiz.id, importance: null,
+        });
+        platformWeek = weekNo;
+        platformSubjIdx++;
+        for (let i = 0; i < wins.length; i++) { const w = wins[i]!; wins.splice(i, 1, ...subtract([w], [eve, eve + SESSION_MIN])); }
+      }
     }
 
     // هدف اليوم مع التدرّج الأسبوعي ويوم الراحة
