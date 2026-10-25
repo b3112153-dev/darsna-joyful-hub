@@ -93,17 +93,17 @@ function AuthPage() {
             </TabsList>
             <TabsContent value="in">
               <form onSubmit={signIn} className="space-y-4">
-                <Field label=t("الإيميل")><Input name="email" autoComplete="username" type="email" dir="ltr" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
-                <Field label=t("كلمة السر")><Input name="password" autoComplete="current-password" type="password" dir="ltr" required value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
+                <Field label={t("الإيميل")}><Input name="email" autoComplete="username" type="email" dir="ltr" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
+                <Field label={t("كلمة السر")}><Input name="password" autoComplete="current-password" type="password" dir="ltr" required value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
                 <Button disabled={busy} className="w-full bg-brand">{t("دخول")}</Button>
                 <button type="button" onClick={forgot} className="w-full text-sm text-primary hover:underline">{t("نسيت كلمة السر؟")}</button>
               </form>
             </TabsContent>
             <TabsContent value="up">
               <form onSubmit={signUp} className="space-y-4">
-                <Field label=t("الاسم")><Input required maxLength={40} value={name} onChange={(e) => setName(e.target.value)} /></Field>
-                <Field label=t("الإيميل")><Input name="email" autoComplete="username" type="email" dir="ltr" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
-                <Field label=t("كلمة السر")><Input name="password" autoComplete="new-password" type="password" dir="ltr" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
+                <Field label={t("الاسم")}><Input required maxLength={40} value={name} onChange={(e) => setName(e.target.value)} /></Field>
+                <Field label={t("الإيميل")}><Input name="email" autoComplete="username" type="email" dir="ltr" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
+                <Field label={t("كلمة السر")}><Input name="password" autoComplete="new-password" type="password" dir="ltr" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
                 <Button disabled={busy} className="w-full bg-brand">{t("إنشاء حساب")}</Button>
               </form>
             </TabsContent>
