@@ -46,7 +46,12 @@ export function LangProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  return <LangContext.Provider value={{ lang, setLang }}>{children}</LangContext.Provider>;
+  return (
+    <LangContext.Provider value={{ lang, setLang }}>
+      {/* Remount on language change so plain t() calls re-render */}
+      <div key={lang} className="contents">{children}</div>
+    </LangContext.Provider>
+  );
 }
 
 export function useLang() {
