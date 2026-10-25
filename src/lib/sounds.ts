@@ -47,7 +47,7 @@ function makeBuffer(ctx: AudioContext, id: SoundId): AudioBuffer {
       const p = i / chirpLen;
       const freq = f0 + (f1 - f0) * p;
       const env = Math.sin(p * Math.PI);
-      data[start + i] += Math.sin((2 * Math.PI * freq * i) / ctx.sampleRate) * env * 0.35;
+      data[start + i] = (data[start + i] ?? 0) + Math.sin((2 * Math.PI * freq * i) / ctx.sampleRate) * env * 0.35;
     }
     t += 0.5 + Math.random() * 1.4;
   }
