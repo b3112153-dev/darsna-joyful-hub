@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/board")({
   component: Board,
 });
 
-const PRIZES: Record<number, number> = { 1: 100, 2: 80, 3: 65, 4: 50, 5: 40, 6: 30, 7: 25, 8: 20, 9: 15, 10: 10 };
+import { BOARD_PRIZES as PRIZES, weekDaysLeft } from "@/lib/avatar-shop";
 
 type Row = { rank: number; user_id: string; nickname: string; avatar: AvatarState; hours: number; is_me: boolean };
 
@@ -37,9 +37,7 @@ function ammanNow() {
 
 /** Week runs Saturday..Friday (Amman). Days left until the week ends. */
 function daysLeft() {
-  const day = ammanNow().getDay(); // 0=Sun..6=Sat
-  const sinceSaturday = (day - 6 + 7) % 7;
-  return Math.max(0, 6 - sinceSaturday);
+  return weekDaysLeft(ammanNow().getDay());
 }
 
 function Board() {
