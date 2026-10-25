@@ -38,7 +38,7 @@ export function LibraryUpload() {
       if (tab === "file" && file) {
         const ext = file.name.split(".").pop()?.toLowerCase() ?? "txt";
         const path = `students/${user.id}/${crypto.randomUUID()}.${ext}`;
-        const up = await withTimeout(supabase.storage.from("library").upload(path, file, { contentType: file.type || undefined }));
+        const up = await withTimeout(supabase.storage.from("library").upload(path, file, file.type ? { contentType: file.type } : {}));
         if (up.error) throw up.error; uploadedPath = path;
         const result = await withTimeout(supabase.from("library_files").insert({ title: title.trim(), subject: subject.trim(), unit: unit.trim() || null, file_path: path, file_name: file.name, file_size: file.size, uploaded_by: user.id }));
         if (result.error) throw result.error;
@@ -56,7 +56,7 @@ export function LibraryUpload() {
   return <main dir="rtl" className="mx-auto max-w-2xl px-4 py-6 pb-24 font-display">
     <Button variant="ghost" onClick={() => navigate({ to: "/library" })}><ArrowRight /> المكتبة</Button>
     <h1 className="my-5 text-3xl font-extrabold">ارفع للمكتبة</h1>
-    <Tabs value={tab} onValueChange={(v) => !busy && setTab(v)} dir="rtl">
+    <Tabs value={tab} onValueChange={(v) => { if (!busy && (v === "file" || v === "quiz")) setTab(v); }} dir="rtl">
       <TabsList className="h-14 w-full rounded-[20px] bg-library-tabs p-1"><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="file">ملف أو صورة</TabsTrigger><TabsTrigger className="h-full flex-1 rounded-2xl data-[state=active]:bg-card" value="quiz">أسئلة اختبار</TabsTrigger></TabsList>
       <form onSubmit={submit} className="mt-6 space-y-5">
         <fieldset disabled={busy} className="space-y-5">

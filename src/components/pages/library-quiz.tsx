@@ -17,7 +17,7 @@ export function LibraryQuiz() {
     const quiz = await readData(supabase.from("quizzes").select("*").eq("id", quizId).eq("status", "approved").is("deleted_at", null).maybeSingle());
     if (!quiz) return null;
     const questions = await readData(supabase.from("quiz_questions").select("id,position,prompt,options").eq("quiz_id", quizId).order("position"));
-    return { quiz, questions: questions.map((q) => ({ ...q, options: questionOptions(q.options) })) };
+    return { quiz, questions: (questions ?? []).map((q) => ({ ...q, options: questionOptions(q.options) })) };
   } });
   if (query.isLoading || query.isError) return <PageState loading={query.isLoading} error={query.isError} retry={() => void query.refetch()} />;
   if (!query.data) return <Unavailable kind="الاختبار" />;

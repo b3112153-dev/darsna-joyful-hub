@@ -19,9 +19,9 @@ export function questionOptions(options: Json): string[] {
 }
 export type QuizResult = { score: number; total: number; answers: { id: string; correct: number }[] };
 export function parseQuizResult(value: Json): QuizResult {
-  if (!value || typeof value !== "object" || Array.isArray(value) || typeof value.score !== "number" || typeof value.total !== "number" || !Array.isArray(value.answers)) throw new Error("invalid quiz result");
-  const answers = value.answers.flatMap((answer) => answer && typeof answer === "object" && !Array.isArray(answer) && typeof answer.id === "string" && typeof answer.correct === "number" ? [{ id: answer.id, correct: answer.correct }] : []);
-  return { score: value.score, total: value.total, answers };
+  if (!value || typeof value !== "object" || Array.isArray(value) || typeof value['score'] !== "number" || typeof value['total'] !== "number" || !Array.isArray(value['answers'])) throw new Error("invalid quiz result");
+  const answers = value['answers'].flatMap((answer) => answer && typeof answer === "object" && !Array.isArray(answer) && typeof answer['id'] === "string" && typeof answer['correct'] === "number" ? [{ id: answer['id'], correct: answer['correct'] }] : []);
+  return { score: value['score'], total: value['total'], answers };
 }
 export type DraftQuestion = { prompt: string; options: string[]; correct: number };
 export function validDraftQuestion(q: DraftQuestion) {
