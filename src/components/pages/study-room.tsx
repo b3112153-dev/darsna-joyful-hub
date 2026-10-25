@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { ArrowRight, DoorOpen, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +12,8 @@ import { Button } from "@/components/ui/button";
 import { FocusTimer } from "@/components/FocusTimer";
 import { AvatarChip, sceneOf, useRoomPresence, type StudyRoom } from "@/components/pages/study-rooms";
 
-export function StudyRoom({ roomId }: { roomId: string }) {
+export function StudyRoom() {
+  const { roomId } = useParams({ from: "/_authenticated/study-rooms/$roomId" });
   const { user } = useMe();
   const navigate = useNavigate();
   const focus = useMyFocus(user?.id);
