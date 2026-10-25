@@ -2,7 +2,9 @@ import { readData } from "@/lib/requests";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Ban, MessagesSquare, Trash2, Users, DoorOpen, ShieldCheck } from "lucide-react";
+import { Ban, Image, MessagesSquare, Trash2, Users, DoorOpen, ShieldCheck } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { useMe } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { BRANCHES, branchLabel, type Branch } from "@/lib/branches";
 import { Button } from "@/components/ui/button";
@@ -14,9 +16,15 @@ import { LibraryAdmin } from "@/components/LibraryAdmin";
 import { SupportAdmin } from "@/components/SupportAdmin";
 
 export function Admin() {
+  const { me } = useMe();
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold">لوحة التحكم</h1>
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <h1 className="text-3xl font-bold">لوحة التحكم</h1>
+        {me?.isOwner && (
+          <Button asChild variant="outline" size="sm"><Link to="/admin/avatar-art"><Image /> صور الأفتار</Link></Button>
+        )}
+      </div>
       <Tabs defaultValue="stats" dir="rtl">
         <TabsList className="mb-6 flex w-full flex-wrap justify-start gap-1 h-auto">
           <TabsTrigger value="stats">الإحصائيات</TabsTrigger>
