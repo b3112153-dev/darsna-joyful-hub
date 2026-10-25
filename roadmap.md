@@ -1,4 +1,5 @@
 # Current batch
-- [x] Match home/timer/tasks/focus screen and bottom navigation to mobile reference
-- [x] Restyle room list and existing chat controls without adding missing features or invented counters
-- [x] Tests and authenticated checks at 375, 390, 768 and 1280 in both themes
+- [x] Library file/quiz tabs, personal submissions and support review
+- [x] File and quiz submission page
+- [x] Timed quiz page and results
+- [x] Existing tests, rule tests and mobile/desktop verification (30 tests; real quiz submission, scoring and read-back; support review not exercised with a support account)

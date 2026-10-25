@@ -140,10 +140,16 @@ export type Database = {
           file_name: string
           file_path: string
           file_size: number | null
+          generation: string | null
           id: string
+          reject_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           round_id: string | null
+          status: string
           subject: string
           title: string
+          unit: string | null
           uploaded_by: string | null
         }
         Insert: {
@@ -154,10 +160,16 @@ export type Database = {
           file_name: string
           file_path: string
           file_size?: number | null
+          generation?: string | null
           id?: string
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           round_id?: string | null
+          status?: string
           subject: string
           title: string
+          unit?: string | null
           uploaded_by?: string | null
         }
         Update: {
@@ -168,10 +180,16 @@ export type Database = {
           file_name?: string
           file_path?: string
           file_size?: number | null
+          generation?: string | null
           id?: string
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           round_id?: string | null
+          status?: string
           subject?: string
           title?: string
+          unit?: string | null
           uploaded_by?: string | null
         }
         Relationships: []
@@ -343,6 +361,150 @@ export type Database = {
           onboarded_v2?: boolean
           terms_accepted_at?: string | null
           terms_version?: string | null
+        }
+        Relationships: []
+      }
+      quiz_answers: {
+        Row: {
+          correct_index: number
+          question_id: string
+        }
+        Insert: {
+          correct_index: number
+          question_id: string
+        }
+        Update: {
+          correct_index?: number
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: true
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_attempts: {
+        Row: {
+          created_at: string
+          id: string
+          quiz_id: string
+          score: number
+          total: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          quiz_id: string
+          score: number
+          total: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          quiz_id?: string
+          score?: number
+          total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          id: string
+          options: Json
+          position: number
+          prompt: string
+          quiz_id: string
+        }
+        Insert: {
+          id?: string
+          options: Json
+          position?: number
+          prompt: string
+          quiz_id: string
+        }
+        Update: {
+          id?: string
+          options?: Json
+          position?: number
+          prompt?: string
+          quiz_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          generation: string | null
+          id: string
+          minutes: number
+          reject_reason: string | null
+          required_from: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          subject: string
+          title: string
+          unit: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          generation?: string | null
+          id?: string
+          minutes?: number
+          reject_reason?: string | null
+          required_from?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subject: string
+          title: string
+          unit?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          generation?: string | null
+          id?: string
+          minutes?: number
+          reject_reason?: string | null
+          required_from?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subject?: string
+          title?: string
+          unit?: string | null
         }
         Relationships: []
       }
@@ -833,6 +995,7 @@ export type Database = {
         Args: { _room_id: string; _user_id: string }
         Returns: boolean
       }
+      can_see_quiz: { Args: { _qid: string; _uid: string }; Returns: boolean }
       can_support: { Args: { _user_id: string }; Returns: boolean }
       complete_onboarding: {
         Args: { _birth: string; _gender: string; _terms_version: string }
@@ -869,6 +1032,17 @@ export type Database = {
       restore_deleted: {
         Args: { _id: string; _table: string }
         Returns: undefined
+      }
+      submit_quiz: { Args: { _answers: Json; _quiz: string }; Returns: Json }
+      submit_quiz_draft: {
+        Args: {
+          _minutes: number
+          _questions: Json
+          _subject: string
+          _title: string
+          _unit: string
+        }
+        Returns: string
       }
     }
     Enums: {

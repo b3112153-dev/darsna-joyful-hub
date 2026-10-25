@@ -23,10 +23,12 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated/progress'
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
+import { Route as AuthenticatedLibraryUploadRouteImport } from './routes/_authenticated/library_.upload'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms.index'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
 import { Route as AuthenticatedTopicsIndexRouteImport } from './routes/_authenticated/topics.index'
 import { Route as AuthenticatedTopicsTopicIdRouteImport } from './routes/_authenticated/topics.$topicId'
+import { Route as AuthenticatedLibraryQuizQuizIdRouteImport } from './routes/_authenticated/library_.quiz.$quizId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -97,6 +99,12 @@ const AuthenticatedSupportRoute = AuthenticatedSupportRouteImport.update({
   path: '/support',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLibraryUploadRoute =
+  AuthenticatedLibraryUploadRouteImport.update({
+    id: '/library_/upload',
+    path: '/library/upload',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedRoomsIndexRoute = AuthenticatedRoomsIndexRouteImport.update({
   id: '/rooms/',
   path: '/rooms/',
@@ -120,6 +128,12 @@ const AuthenticatedTopicsTopicIdRoute =
     path: '/topics/$topicId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedLibraryQuizQuizIdRoute =
+  AuthenticatedLibraryQuizQuizIdRouteImport.update({
+    id: '/library_/quiz/$quizId',
+    path: '/library/quiz/$quizId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -135,10 +149,12 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
+  '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/topics/': typeof AuthenticatedTopicsIndexRoute
+  '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -154,10 +170,12 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
+  '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/topics': typeof AuthenticatedTopicsIndexRoute
+  '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -175,10 +193,12 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/support': typeof AuthenticatedSupportRoute
+  '/_authenticated/library_/upload': typeof AuthenticatedLibraryUploadRoute
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/_authenticated/topics/': typeof AuthenticatedTopicsIndexRoute
+  '/_authenticated/library_/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -196,10 +216,12 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/support'
+    | '/library/upload'
     | '/rooms/$roomId'
     | '/topics/$topicId'
     | '/rooms/'
     | '/topics/'
+    | '/library/quiz/$quizId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -215,10 +237,12 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/support'
+    | '/library/upload'
     | '/rooms/$roomId'
     | '/topics/$topicId'
     | '/rooms'
     | '/topics'
+    | '/library/quiz/$quizId'
   id:
     | '__root__'
     | '/'
@@ -235,10 +259,12 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/progress'
     | '/_authenticated/support'
+    | '/_authenticated/library_/upload'
     | '/_authenticated/rooms/$roomId'
     | '/_authenticated/topics/$topicId'
     | '/_authenticated/rooms/'
     | '/_authenticated/topics/'
+    | '/_authenticated/library_/quiz/$quizId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -350,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSupportRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/library_/upload': {
+      id: '/_authenticated/library_/upload'
+      path: '/library/upload'
+      fullPath: '/library/upload'
+      preLoaderRoute: typeof AuthenticatedLibraryUploadRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/rooms/': {
       id: '/_authenticated/rooms/'
       path: '/rooms'
@@ -378,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTopicsTopicIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/library_/quiz/$quizId': {
+      id: '/_authenticated/library_/quiz/$quizId'
+      path: '/library/quiz/$quizId'
+      fullPath: '/library/quiz/$quizId'
+      preLoaderRoute: typeof AuthenticatedLibraryQuizQuizIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -390,10 +430,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
+  AuthenticatedLibraryUploadRoute: typeof AuthenticatedLibraryUploadRoute
   AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute
   AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
   AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
   AuthenticatedTopicsIndexRoute: typeof AuthenticatedTopicsIndexRoute
+  AuthenticatedLibraryQuizQuizIdRoute: typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -405,10 +447,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
+  AuthenticatedLibraryUploadRoute: AuthenticatedLibraryUploadRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRoute,
   AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,
   AuthenticatedRoomsIndexRoute: AuthenticatedRoomsIndexRoute,
   AuthenticatedTopicsIndexRoute: AuthenticatedTopicsIndexRoute,
+  AuthenticatedLibraryQuizQuizIdRoute: AuthenticatedLibraryQuizQuizIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -1,0 +1,10 @@
+import { describe, expect, it } from "vitest";
+import { fileValidation, hasExternalLink, quizRequired, validDraftQuestion, parseQuizResult } from "@/lib/library";
+describe("library submission rules", () => {
+  it("accepts files up to 10 MiB and rejects larger files", () => { expect(fileValidation({ name: "lesson.pdf", size: 10 * 1024 * 1024 })).toBeNull(); expect(fileValidation({ name: "lesson.pdf", size: 10 * 1024 * 1024 + 1 })).not.toBeNull(); });
+  it("allows document/image extensions and rejects executables", () => { for (const extension of ["pdf", "png", "docx", "pptx", "xlsx", "txt"]) expect(fileValidation({ name: `lesson.${extension}`, size: 1 })).toBeNull(); expect(fileValidation({ name: "lesson.exe", size: 1 })).not.toBeNull(); });
+  it("blocks external http and www links", () => { expect(hasExternalLink("http://example.test")).toBe(true); expect(hasExternalLink("WWW.example.test")).toBe(true); expect(hasExternalLink("درس الوحدة الأولى")).toBe(false); });
+  it("requires two to six choices and a valid correct index", () => { expect(validDraftQuestion({ prompt: "Question", options: ["a", "b"], correct: 1 })).toBe(true); expect(validDraftQuestion({ prompt: "Question", options: ["a"], correct: 0 })).toBe(false); expect(validDraftQuestion({ prompt: "Question", options: Array(7).fill("a"), correct: 0 })).toBe(false); expect(validDraftQuestion({ prompt: "Question", options: ["a", "b"], correct: 2 })).toBe(false); });
+  it("marks unattempted quizzes required only within 24 hours", () => { const start = "2026-10-25T00:00:00Z"; const now = Date.parse(start); expect(quizRequired(start, false, now)).toBe(true); expect(quizRequired(start, false, now + 24 * 3600000)).toBe(false); expect(quizRequired(start, true, now)).toBe(false); expect(quizRequired(start, false, now - 1)).toBe(false); });
+  it("reads scores and correct answers only from RPC results", () => { expect(parseQuizResult({ score: 1, total: 2, answers: [{ id: "q1", correct: 0 }] })).toEqual({ score: 1, total: 2, answers: [{ id: "q1", correct: 0 }] }); expect(() => parseQuizResult(null)).toThrow(); });
+});
