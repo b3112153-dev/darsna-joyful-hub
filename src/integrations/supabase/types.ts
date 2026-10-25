@@ -538,6 +538,27 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_private: {
+        Row: {
+          birth_date: string | null
+          id: string
+          terms_accepted_at: string | null
+          terms_version: string | null
+        }
+        Insert: {
+          birth_date?: string | null
+          id: string
+          terms_accepted_at?: string | null
+          terms_version?: string | null
+        }
+        Update: {
+          birth_date?: string | null
+          id?: string
+          terms_accepted_at?: string | null
+          terms_version?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar: Json
