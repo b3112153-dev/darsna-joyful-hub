@@ -32,6 +32,8 @@ import { Route as AuthenticatedAdminDhikrRouteImport } from './routes/_authentic
 import { Route as AuthenticatedLibraryUploadRouteImport } from './routes/_authenticated/library_.upload'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms.index'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
+import { Route as AuthenticatedStudyRoomsIndexRouteImport } from './routes/_authenticated/study-rooms.index'
+import { Route as AuthenticatedStudyRoomsRoomIdRouteImport } from './routes/_authenticated/study-rooms.$roomId'
 import { Route as AuthenticatedTopicsIndexRouteImport } from './routes/_authenticated/topics.index'
 import { Route as AuthenticatedTopicsTopicIdRouteImport } from './routes/_authenticated/topics.$topicId'
 import { Route as AuthenticatedLibraryQuizQuizIdRouteImport } from './routes/_authenticated/library_.quiz.$quizId'
@@ -154,6 +156,18 @@ const AuthenticatedRoomsRoomIdRoute =
     path: '/rooms/$roomId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStudyRoomsIndexRoute =
+  AuthenticatedStudyRoomsIndexRouteImport.update({
+    id: '/study-rooms/',
+    path: '/study-rooms/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudyRoomsRoomIdRoute =
+  AuthenticatedStudyRoomsRoomIdRouteImport.update({
+    id: '/study-rooms/$roomId',
+    path: '/study-rooms/$roomId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedTopicsIndexRoute =
   AuthenticatedTopicsIndexRouteImport.update({
     id: '/topics/',
@@ -195,8 +209,10 @@ export interface FileRoutesByFullPath {
   '/admin/dhikr': typeof AuthenticatedAdminDhikrRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/study-rooms/$roomId': typeof AuthenticatedStudyRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/study-rooms/': typeof AuthenticatedStudyRoomsIndexRoute
   '/topics/': typeof AuthenticatedTopicsIndexRoute
   '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -222,8 +238,10 @@ export interface FileRoutesByTo {
   '/admin/dhikr': typeof AuthenticatedAdminDhikrRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/study-rooms/$roomId': typeof AuthenticatedStudyRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
+  '/study-rooms': typeof AuthenticatedStudyRoomsIndexRoute
   '/topics': typeof AuthenticatedTopicsIndexRoute
   '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -251,8 +269,10 @@ export interface FileRoutesById {
   '/_authenticated/admin_/dhikr': typeof AuthenticatedAdminDhikrRoute
   '/_authenticated/library_/upload': typeof AuthenticatedLibraryUploadRoute
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
+  '/_authenticated/study-rooms/$roomId': typeof AuthenticatedStudyRoomsRoomIdRoute
   '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/_authenticated/study-rooms/': typeof AuthenticatedStudyRoomsIndexRoute
   '/_authenticated/topics/': typeof AuthenticatedTopicsIndexRoute
   '/_authenticated/library_/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -280,8 +300,10 @@ export interface FileRouteTypes {
     | '/admin/dhikr'
     | '/library/upload'
     | '/rooms/$roomId'
+    | '/study-rooms/$roomId'
     | '/topics/$topicId'
     | '/rooms/'
+    | '/study-rooms/'
     | '/topics/'
     | '/library/quiz/$quizId'
   fileRoutesByTo: FileRoutesByTo
@@ -307,8 +329,10 @@ export interface FileRouteTypes {
     | '/admin/dhikr'
     | '/library/upload'
     | '/rooms/$roomId'
+    | '/study-rooms/$roomId'
     | '/topics/$topicId'
     | '/rooms'
+    | '/study-rooms'
     | '/topics'
     | '/library/quiz/$quizId'
   id:
@@ -335,8 +359,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin_/dhikr'
     | '/_authenticated/library_/upload'
     | '/_authenticated/rooms/$roomId'
+    | '/_authenticated/study-rooms/$roomId'
     | '/_authenticated/topics/$topicId'
     | '/_authenticated/rooms/'
+    | '/_authenticated/study-rooms/'
     | '/_authenticated/topics/'
     | '/_authenticated/library_/quiz/$quizId'
   fileRoutesById: FileRoutesById
@@ -513,6 +539,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRoomsRoomIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/study-rooms/': {
+      id: '/_authenticated/study-rooms/'
+      path: '/study-rooms'
+      fullPath: '/study-rooms/'
+      preLoaderRoute: typeof AuthenticatedStudyRoomsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/study-rooms/$roomId': {
+      id: '/_authenticated/study-rooms/$roomId'
+      path: '/study-rooms/$roomId'
+      fullPath: '/study-rooms/$roomId'
+      preLoaderRoute: typeof AuthenticatedStudyRoomsRoomIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/topics/': {
       id: '/_authenticated/topics/'
       path: '/topics'
@@ -554,8 +594,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminDhikrRoute: typeof AuthenticatedAdminDhikrRoute
   AuthenticatedLibraryUploadRoute: typeof AuthenticatedLibraryUploadRoute
   AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute
+  AuthenticatedStudyRoomsRoomIdRoute: typeof AuthenticatedStudyRoomsRoomIdRoute
   AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
   AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
+  AuthenticatedStudyRoomsIndexRoute: typeof AuthenticatedStudyRoomsIndexRoute
   AuthenticatedTopicsIndexRoute: typeof AuthenticatedTopicsIndexRoute
   AuthenticatedLibraryQuizQuizIdRoute: typeof AuthenticatedLibraryQuizQuizIdRoute
 }
@@ -577,8 +619,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminDhikrRoute: AuthenticatedAdminDhikrRoute,
   AuthenticatedLibraryUploadRoute: AuthenticatedLibraryUploadRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRoute,
+  AuthenticatedStudyRoomsRoomIdRoute: AuthenticatedStudyRoomsRoomIdRoute,
   AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,
   AuthenticatedRoomsIndexRoute: AuthenticatedRoomsIndexRoute,
+  AuthenticatedStudyRoomsIndexRoute: AuthenticatedStudyRoomsIndexRoute,
   AuthenticatedTopicsIndexRoute: AuthenticatedTopicsIndexRoute,
   AuthenticatedLibraryQuizQuizIdRoute: AuthenticatedLibraryQuizQuizIdRoute,
 }
