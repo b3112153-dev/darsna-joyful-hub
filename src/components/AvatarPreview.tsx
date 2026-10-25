@@ -40,7 +40,8 @@ export function AvatarPreview({
     if (!itemId) return null;
     const url = imageFor(images, itemId, l.key, gender);
     if (!url) return null;
-    const tint = l.key === "hair" && gender === "female" && state.hairColor ? state.hairColor : null;
+    const hairColor = state["hairColor"];
+    const tint = l.key === "hair" && gender === "female" && hairColor ? hairColor : null;
     return { ...l, url, tint };
   }).filter((x): x is Layer & { url: string; tint: string | null } => !!x);
 
