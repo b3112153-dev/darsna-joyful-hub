@@ -5,8 +5,8 @@ const base: PlanAnswers = {
   branch: "health_engineering",
   status: "new",
   subjects: [
-    { name: "فيزياء", manual: true, semesters: [{ semester: 1, totalUnits: 3, totalLessons: 2, doneUnits: 0, doneLessons: 0 }] },
-    { name: "رياضيات", manual: true, semesters: [{ semester: 1, totalUnits: 2, totalLessons: 2, doneUnits: 0, doneLessons: 0 }] },
+    { name: "فيزياء", manual: true, semesters: [{ semester: 1, totalUnits: 12, totalLessons: 2, doneUnits: 0, doneLessons: 0 }] },
+    { name: "رياضيات", manual: true, semesters: [{ semester: 1, totalUnits: 12, totalLessons: 2, doneUnits: 0, doneLessons: 0 }] },
   ],
   sleepMin: 23 * 60,
   wakeMin: 6 * 60 + 30,
