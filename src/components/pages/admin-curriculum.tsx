@@ -17,8 +17,8 @@ import { arDigits, type UnitRow } from "@/lib/plan";
 import { t } from "@/lib/i18n";
 
 const GENERATIONS = [
-  { value: "gen2009", label: "جيل ٢٠٠٩" },
-  { value: "gen2010", label: "جيل ٢٠١٠" },
+  { value: "gen2009", label: "جيل 2009" },
+  { value: "gen2010", label: "جيل 2010" },
   { value: "all", label: "الكل" },
 ];
 
@@ -172,8 +172,8 @@ export function AdminCurriculum() {
                 <Select value={String(edit.semester)} onValueChange={(v) => setEdit({ ...edit, semester: Number(v) })}>
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">{t("الفصل ١")}</SelectItem>
-                    <SelectItem value="2">{t("الفصل ٢")}</SelectItem>
+                    <SelectItem value="1">{t("الفصل 1")}</SelectItem>
+                    <SelectItem value="2">{t("الفصل 2")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Input type="number" min={1} value={edit.unit_no} onChange={(e) => setEdit({ ...edit, unit_no: Math.max(1, Number(e.target.value) || 1) })} aria-label={t("رقم الوحدة")} />

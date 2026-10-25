@@ -181,7 +181,7 @@ export function Plan() {
       )}
 
       <div className="rounded-[20px] border bg-card p-4 text-center shadow-card">
-        <p className="text-sm font-bold">{t("خلصت جدول اليوم؟ حل الامتحان خلال ٢٤ ساعة وإلا بتخسر ٥ نقاط")}</p>
+        <p className="text-sm font-bold">{t("خلصت جدول اليوم؟ حل الامتحان خلال 24 ساعة وإلا بتخسر 5 نقاط")}</p>
         {dueExam?.quiz_id ? (
           <Button asChild className="mt-3 rounded-2xl bg-brand shadow-soft">
             <Link to="/library/quiz/$quizId" params={{ quizId: dueExam.quiz_id }}>{t("حلّ الامتحان")}</Link>

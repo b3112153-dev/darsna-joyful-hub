@@ -106,7 +106,7 @@ export function Dhikr() {
             <PageState loading={storiesQuery.isPending} error={storiesQuery.isError} retry={() => void storiesQuery.refetch()} />
             {storiesQuery.isSuccess && stories.length === 0 && <p className="py-4 text-center text-sm text-muted-foreground">{t("قريباً 🤍")}</p>}
             {storiesQuery.isSuccess && story && !unlocked && (
-              <p className="py-4 text-center text-sm leading-7 text-muted-foreground">{t("🔒 بتنفتح قصة اليوم بعد ما تكمل الفروض الخمسة، أو بعد الساعة ٨ مساءً.")}</p>
+              <p className="py-4 text-center text-sm leading-7 text-muted-foreground">{t("🔒 بتنفتح قصة اليوم بعد ما تكمل الفروض الخمسة، أو بعد الساعة 8 مساءً.")}</p>
             )}
             {storiesQuery.isSuccess && story && unlocked && (
               <article className="space-y-2">

@@ -56,7 +56,7 @@ function Onboarding() {
       return;
     }
     setBusy(false);
-    const text = msg.includes("unsupported birth year") ? t("الموقع حالياً لطلاب جيل ٢٠٠٩ و٢٠١٠ فقط") : "صار خطأ، جرّب مرة ثانية";
+    const text = msg.includes("unsupported birth year") ? t("الموقع حالياً لطلاب جيل 2009 و2010 فقط") : "صار خطأ، جرّب مرة ثانية";
     setError(text);
     toast.error(text);
   }

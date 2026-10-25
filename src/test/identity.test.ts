@@ -23,7 +23,7 @@ describe("student presentation rules", () => {
   });
   it("moderators cannot open support or review", () => expect(chatAccess({ isStaff: true })).toEqual({ staff: true, support: false, review: false, mute: true }));
   it("support can open support and review but cannot mute", () => expect(chatAccess({ isSupport: true })).toEqual({ staff: true, support: true, review: true, mute: false }));
-  it("converts both Arabic digit alphabets to Latin", () => expect(latinDigits("٠١٢٣٤٥٦٧٨٩ ۰۱۲۳۴۵۶۷۸۹")).toBe("0123456789 0123456789"));
+  it("converts both Arabic digit alphabets to Latin", () => expect(latinDigits(String.fromCharCode(...Array.from({ length: 10 }, (_, i) => 0x660 + i)) + " " + String.fromCharCode(...Array.from({ length: 10 }, (_, i) => 0x6f0 + i)))).toBe("0123456789 0123456789"));
   it("formats study-plan counters with Latin numbers", () => expect(fmtMin(9 * 60 + 5)).toBe("9:05"));
   it("uses the sender's gender to resolve a chosen outfit", () => {
     const profile = { nickname: "Moon", gender: "female", avatar: { outfit: "it00", hair: "it18" } };

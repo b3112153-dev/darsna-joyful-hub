@@ -66,7 +66,7 @@ function AvatarArtAdmin() {
 
   async function upload(key: string, file: File) {
     if (!OK_TYPES.includes(file.type)) { toast.error(t("الصيغ المسموحة: png / jpg / webp")); return; }
-    if (file.size > MAX_BYTES) { toast.error(t("الحد الأقصى ٢MB")); return; }
+    if (file.size > MAX_BYTES) { toast.error(t("الحد الأقصى 2MB")); return; }
     setBusy(key);
     const ext = file.name.split(".").pop() ?? "png";
     const path = `${key.replace(":", "-")}-${Date.now()}.${ext}`;

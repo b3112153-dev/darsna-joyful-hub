@@ -34,7 +34,7 @@ export function LibraryUpload() {
     if (texts.some(hasExternalLink)) { setError(t("ممنوع نشر الروابط")); return; }
     if (!title.trim() || !subject.trim()) { setError(t("اكتب العنوان والمادة")); return; }
     if (tab === "file" && (!file || fileValidation(file))) { setError(file ? fileValidation(file) ?? "" : "اختار ملف أولاً"); return; }
-    if (tab === "quiz" && (!questions.every(validDraftQuestion) || !Number.isInteger(minutes) || minutes < 1 || minutes > 180)) { setError(t("كمّل الأسئلة وخياراتها وحدد مدة بين ١ و١٨٠ دقيقة")); return; }
+    if (tab === "quiz" && (!questions.every(validDraftQuestion) || !Number.isInteger(minutes) || minutes < 1 || minutes > 180)) { setError(t("كمّل الأسئلة وخياراتها وحدد مدة بين 1 و180 دقيقة")); return; }
     lock.current = true; setBusy(true); setError(""); let uploadedPath: string | null = null;
     try {
       if (tab === "file" && file) {
@@ -64,7 +64,7 @@ export function LibraryUpload() {
         <fieldset disabled={busy} className="space-y-5">
           <TabsContent value="file">
             <input ref={input} type="file" className="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.avif,.heic,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" onChange={(e) => choose(e.target.files?.[0])} />
-            {file ? <div className="flex items-center gap-3 rounded-[20px] border bg-card p-4"><Upload className="shrink-0" /><div className="min-w-0 flex-1"><p className="break-all font-bold">{file.name}</p><p className="text-sm text-muted-foreground">{formatSize(file.size)}</p></div><Button type="button" size="icon" variant="ghost" aria-label={t("إزالة الملف")} onClick={() => { setFile(null); if (input.current) input.current.value = ""; }}><X /></Button></div> : <Button type="button" variant="outline" className="h-36 w-full flex-col rounded-[20px] border-2 border-dashed bg-card whitespace-normal" onClick={() => input.current?.click()}><Upload className="size-8" /><span>{t("اضغط لاختيار ملف")}</span><span className="text-xs text-muted-foreground">{t("PDF، صور، Word، PowerPoint، Excel، نص — حتى ١٠ ميغا")}</span></Button>}
+            {file ? <div className="flex items-center gap-3 rounded-[20px] border bg-card p-4"><Upload className="shrink-0" /><div className="min-w-0 flex-1"><p className="break-all font-bold">{file.name}</p><p className="text-sm text-muted-foreground">{formatSize(file.size)}</p></div><Button type="button" size="icon" variant="ghost" aria-label={t("إزالة الملف")} onClick={() => { setFile(null); if (input.current) input.current.value = ""; }}><X /></Button></div> : <Button type="button" variant="outline" className="h-36 w-full flex-col rounded-[20px] border-2 border-dashed bg-card whitespace-normal" onClick={() => input.current?.click()}><Upload className="size-8" /><span>{t("اضغط لاختيار ملف")}</span><span className="text-xs text-muted-foreground">{t("PDF، صور، Word، PowerPoint، Excel، نص — حتى 10 ميغا")}</span></Button>}
           </TabsContent>
           <label className="block space-y-2"><span>{t("العنوان")}</span><Input required maxLength={120} value={title} onChange={(e) => setTitle(e.target.value)} /></label>
           <div className="grid gap-4 sm:grid-cols-2"><label className="space-y-2"><span>{t("المادة")}</span><Input required maxLength={60} value={subject} onChange={(e) => setSubject(e.target.value)} /></label><label className="space-y-2"><span>{t("الوحدة")}</span><Input maxLength={60} value={unit} onChange={(e) => setUnit(e.target.value)} /></label></div>
