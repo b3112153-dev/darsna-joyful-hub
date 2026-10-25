@@ -125,10 +125,10 @@ export function StudyRounds({ roomId }: { roomId: string }) {
       {visible.length === 0 && <p className="text-xs text-muted-foreground">{t("ما في جولات حالياً — ابدأ وحدة وخلّي زملاءك ينضموا!")}</p>}
       <div className="flex gap-2 overflow-x-auto pb-1">
         {visible.map((r) => {
-          const t = roundTimes(r.starts_at, r.duration_minutes, now);
+          const rt = roundTimes(r.starts_at, r.duration_minutes, now);
           const joined = r.session_participants.some((p) => p.user_id === user?.id);
-          const live = t.status === "live";
-          const progress = live ? ((now - t.start) / (t.end - t.start)) * 100 : 0;
+          const live = rt.status === "live";
+          const progress = live ? ((now - rt.start) / (rt.end - rt.start)) * 100 : 0;
           return (
             <div key={r.id} className={`min-w-60 shrink-0 rounded-xl border p-3 ${live ? "border-primary bg-secondary" : "bg-card"}`}>
               <div className="mb-1 flex items-start justify-between gap-2">
@@ -138,7 +138,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
                 )}
               </div>
               <p className="font-display text-2xl font-bold tabular-nums text-primary" dir="ltr">
-                {fmtClock(live ? t.end - now : t.start - now)}
+                {fmtClock(live ? rt.end - now : rt.start - now)}
               </p>
               <p className="mb-2 text-xs text-muted-foreground">
                 {live ? "متبقي على نهاية الجولة" : "باقي على البداية"} · {r.duration_minutes} دقيقة

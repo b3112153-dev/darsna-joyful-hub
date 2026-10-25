@@ -309,7 +309,7 @@ function StudentsAdmin({ can }: { can: Can }) {
                       />
                       <Button
                         size="sm" variant="outline" disabled={!customMute[u.id]}
-                        onClick={() => mute(u, new Date(customMute[u.id]))}
+                        onClick={() => mute(u, new Date(customMute[u.id] ?? ""))}
                       >كتم مخصص</Button>
                     </>
                   )}
