@@ -5,7 +5,7 @@ export const MAX_LIBRARY_BYTES = 10 * 1024 * 1024;
 export const LIBRARY_EXTENSIONS = ["pdf", "png", "jpg", "jpeg", "webp", "gif", "bmp", "avif", "heic", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "txt"];
 export const hasExternalLink = (text: string) => /https?:|www\./i.test(text);
 export function fileValidation(file: { name: string; size: number }) {
-  if (file.size > MAX_LIBRARY_BYTES) return t("حجم الملف لازم يكون ١٠ ميغا أو أقل");
+  if (file.size > MAX_LIBRARY_BYTES) return t("حجم الملف لازم يكون 10 ميغا أو أقل");
   if (!LIBRARY_EXTENSIONS.includes(file.name.split(".").pop()?.toLowerCase() ?? "")) return t("نوع الملف غير مسموح");
   return null;
 }

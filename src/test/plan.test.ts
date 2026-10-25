@@ -42,7 +42,7 @@ describe("windowsForDay", () => {
 });
 
 describe("generatePlan", () => {
-  it("يوزع جلسات ٤٥–١٢٠ دقيقة داخل النوافذ فقط", () => {
+  it("يوزع جلسات 45–120 دقيقة داخل النوافذ فقط", () => {
     const items = generatePlan(base, noUnits, noQuizzes, monday, null);
     expect(items.length).toBeGreaterThan(0);
     for (const it of items.filter((i) => i.kind !== "school_exam" && i.kind !== "platform_exam")) {
@@ -51,7 +51,7 @@ describe("generatePlan", () => {
       expect(it.start_min).toBeLessThan(23 * 60);
     }
   });
-  it("الأسبوع الأول ٧٠٪ والثاني ٨٥٪ من الهدف", () => {
+  it("الأسبوع الأول 70٪ والثاني 85٪ من الهدف", () => {
     const items = generatePlan(base, noUnits, noQuizzes, monday, null);
     const dayMin = (offset: number) => {
       const d = new Date(2026, 9, 26 + offset);

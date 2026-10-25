@@ -12,7 +12,7 @@ export function profileName(profile: PublicProfile | null | undefined, staff = f
   return (staff ? profile?.display_name || profile?.nickname : profile?.nickname) || "Student";
 }
 export function latinDigits(text: string) {
-  return text.replace(/[٠-٩۰-۹]/g, (digit) => String(digit.charCodeAt(0) - (digit >= "۰" ? 0x6f0 : 0x660)));
+  return text.replace(/[\u0660-\u0669\u06f0-\u06f9]/g, (digit) => String(digit.charCodeAt(0) - (digit.charCodeAt(0) >= 0x6f0 ? 0x6f0 : 0x660)));
 }
 type RoomIdentity = { id: string; generation: string; audience: string; kind: string };
 export function studentChatRooms<T extends RoomIdentity>(rooms: T[], generation: string | null | undefined, gender: string | null | undefined) {

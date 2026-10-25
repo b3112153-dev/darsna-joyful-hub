@@ -82,11 +82,11 @@ export function FocusTimer({ focus, roomId, compact = false }: { focus: ReturnTy
       </div>
       <Button disabled={focus.pending} onClick={() => start(minutes, subject, roomId)} className="w-full bg-brand">{focus.pending ? <LoaderCircle className="animate-spin" /> : <Play />} ابدأ الدراسة</Button>
       <div className="space-y-1.5 border-t pt-3">
-        <Label>{t("أو اختر عدد ساعات (بتتقسم لجلسات ٥٠ دقيقة مع استراحات)")}</Label>
+        <Label>{t("أو اختر عدد ساعات (بتتقسم لجلسات 50 دقيقة مع استراحات)")}</Label>
         <div className="flex flex-wrap gap-2">
           {HOUR_PRESETS.map((h) => (
             <Button key={h} type="button" size="sm" variant="outline" disabled={focus.pending}
-              onClick={() => { if (!startStudyProgram(h, subject, roomId, start)) toast.error(t("اختار عدد ساعات صحيح (١–") + MAX_PROGRAM_HOURS + ")"); }}>{h} ساعات</Button>
+              onClick={() => { if (!startStudyProgram(h, subject, roomId, start)) toast.error(t("اختار عدد ساعات صحيح (1–") + MAX_PROGRAM_HOURS + ")"); }}>{h} ساعات</Button>
           ))}
         </div>
       </div>

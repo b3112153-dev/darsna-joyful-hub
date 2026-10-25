@@ -189,7 +189,7 @@ function subjectTasks(s: SubjectPlan, units: UnitRow[], generation: string | nul
   return tasks;
 }
 
-/** توليد الجدول كاملاً من اليوم لحد آخر امتحان (بحد أقصى ٦٠ يوم). */
+/** توليد الجدول كاملاً من اليوم لحد آخر امتحان (بحد أقصى 60 يوم). */
 export function generatePlan(
   a: PlanAnswers,
   units: UnitRow[],
