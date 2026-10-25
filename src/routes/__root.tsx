@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { SessionProvider } from "@/hooks/use-auth";
+import { LangProvider } from "@/lib/i18n";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
 import { Button } from "@/components/ui/button";
 
@@ -117,7 +118,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark")}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark");if(localStorage.getItem("lang")==="en"){document.documentElement.lang="en";document.documentElement.dir="ltr"}}catch(e){}`,
           }}
         />
         <HeadContent />
@@ -145,10 +146,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <AppErrorBoundary><SessionProvider>
+      <AppErrorBoundary><SessionProvider><LangProvider>
         <Outlet />
         <Toaster position="top-center" richColors />
-      </SessionProvider></AppErrorBoundary>
+      </LangProvider></SessionProvider></AppErrorBoundary>
     </QueryClientProvider>
   );
 }
