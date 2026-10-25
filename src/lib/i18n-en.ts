@@ -385,4 +385,9 @@ export const EN: Record<string, string> = {
   "🔒 الدردشة مقفلة — باقي": "🔒 Chat is locked — remaining",
   "🔒 بتنفتح قصة اليوم بعد ما تكمل الفروض الخمسة، أو بعد الساعة ٨ مساءً.": "🔒 The story of the day unlocks after you complete the five prayers, or after 8 PM.",
   "🕌 القرآن — قريباً": "🕌 Quran — coming soon",
+  "الدعم": "Support",
+  "دعم": "Support",
+  "صور الأفتار": "Avatar art",
+  "مشرف": "Moderator",
+  "ممكن الرابط قديم أو المحتوى انحذف. باقي المنصة متاحة.": "The link may be old or the content was removed. The rest of the platform is available.",
 };
