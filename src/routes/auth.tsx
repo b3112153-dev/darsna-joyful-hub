@@ -96,7 +96,7 @@ function AuthPage() {
                 <Field label={t("الإيميل")}><Input name="email" autoComplete="username" type="email" dir="ltr" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
                 <Field label={t("كلمة السر")}><Input name="password" autoComplete="current-password" type="password" dir="ltr" required value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
                 <Button disabled={busy} className="w-full bg-brand">{t("دخول")}</Button>
-                <button type="button" onClick={forgot} className="w-full text-sm text-primary hover:underline">{t("نسيت كلمة السر؟")}</button>
+                <button type="button" dir="auto" onClick={forgot} className="w-full text-sm text-primary hover:underline">{t("نسيت كلمة السر؟")}</button>
               </form>
             </TabsContent>
             <TabsContent value="up">
