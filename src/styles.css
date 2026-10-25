@@ -55,10 +55,12 @@
   --color-decoration: var(--decoration);
   --color-task-border: var(--task-border);
   --color-task-completed: var(--task-completed);
+  --color-library-tabs: var(--library-tabs);
 
 }
 
 :root {
+  --library-tabs: #F0E0C4;
   --radius: 1.1rem;
   --task-border: #B08A80;
   --task-completed: #9A6A62;
@@ -107,6 +109,7 @@
 }
 
 .dark {
+  --library-tabs: var(--secondary);
   --task-border: var(--muted-foreground);
   --task-completed: var(--muted-foreground);
   --background: oklch(0.2056009 0.0495219 29.93885);
