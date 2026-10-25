@@ -293,7 +293,7 @@ export function generatePlan(
       const ci = cursor.get(pick) ?? 0;
       const q = queues.get(pick) ?? [];
       if (ci >= q.length) { remaining.set(pick, 0); continue; }
-      const task = q[ci];
+      const task = q[ci]!;
       const mins = Math.min(task.minutes, budget, SESSION_MAX);
       if (mins < SESSION_MIN) break;
       placed.push({ ...task, minutes: Math.max(SESSION_MIN, mins) });
@@ -308,7 +308,7 @@ export function generatePlan(
     for (const task of placed) {
       let put = false;
       for (; wi < wins.length; wi++) {
-        const [ws, we] = wins[wi];
+        const [ws, we] = wins[wi]!;
         if (we - ws >= task.minutes) {
           items.push({
             day, start_min: ws, minutes: task.minutes, kind: task.kind, subject: task.subject,
