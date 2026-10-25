@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input";
 import { ChatMessage } from "@/components/ChatMessage";
 import { PageState, Unavailable } from "@/components/PageState";
 import { useRoomMessages } from "@/hooks/use-room-messages";
-import { canDeleteMessage } from "@/lib/chat-messages";
+import { useReactions } from "@/hooks/use-reactions";
+import { useNow } from "@/hooks/use-focus";
+import { canDeleteMessage, type Message } from "@/lib/chat-messages";
 import { readData, requestSignal } from "@/lib/requests";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FocusTimer } from "@/components/FocusTimer";
@@ -58,6 +60,11 @@ function ChatRoom() {
   const chat = useRoomMessages(roomId, user?.id, roomQuery.isSuccess && !!room);
   const { messages } = chat;
   const lastId = messages.at(-1)?.id;
+  const now = useNow();
+  const messageIds = messages.map((m) => m.id);
+  const reactionsApi = useReactions("message_reactions", messageIds, user?.id, roomId);
+  const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const previewOf = (id: string | null) => id ? messages.find((m) => m.id === id)?.content ?? "رسالة محذوفة" : null;
 
   useEffect(() => {
     if (tab !== "chat" || loadingOlder.current || lastId === previousLast.current) return;
@@ -89,9 +96,10 @@ function ChatRoom() {
     if (!content || !user || sending || locked) return;
     setSending(true);
     try {
-      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content }).select("*,profiles(display_name,avatar_url)").single());
+      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,avatar_url)").single());
       if (!message) throw new Error("تعذر الإرسال");
       chat.append(message);
+      setReplyTo(null);
       setText((current) => current.trim() === content ? "" : current);
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "nearest" }));
     } catch { toast.error(me?.isBanned ? "حسابك محظور من الإرسال" : "تعذر إرسال الرسالة؛ حاول مرة ثانية."); }
@@ -130,7 +138,7 @@ function ChatRoom() {
         {chat.hasNextPage && <div className="text-center"><Button variant="outline" size="sm" disabled={chat.isFetchingNextPage} onClick={() => void loadOlder()}>{chat.isFetchingNextPage ? "جاري التحميل…" : "تحميل الأقدم"}</Button></div>}
         <PageState loading={chat.isPending} error={chat.isError} retry={() => void (chat.isFetchNextPageError ? chat.fetchNextPage() : chat.refetch())} />
         {chat.isSuccess && messages.length === 0 && <p className="py-10 text-center text-muted-foreground">لا يوجد رسائل بعد — كن أول من يكتب!</p>}
-        {messages.map((m) => <ChatMessage key={m.id} message={m} own={m.user_id === user?.id} canDelete={canDeleteMessage(m, user?.id, !!me?.isStaff)} onDelete={chat.remove} onEdit={chat.edit} />)}
+        {messages.map((m) => <ChatMessage key={m.id} message={m} own={m.user_id === user?.id} canDelete={canDeleteMessage(m, user?.id, !!me?.isStaff)} reactions={reactionsApi.reactions} userId={user?.id} now={now} onDelete={chat.remove} onEdit={chat.edit} onReact={(id, emoji) => void reactionsApi.toggle(id, emoji)} onReply={setReplyTo} replyPreview={previewOf(m.reply_to)} />)}
         <div ref={endRef} />
       </div>
       {me?.isBanned ? (
@@ -141,6 +149,12 @@ function ChatRoom() {
         </button>
       ) : (
         <form onSubmit={send} className="grid grid-cols-[minmax(0,1fr)_48px] gap-2 border-t bg-card px-3 pb-3.5 pt-2.5">
+          {replyTo && (
+            <div className="col-span-2 flex items-center gap-2 rounded-[14px] border-r-4 border-primary bg-secondary px-3 py-2 text-xs">
+              <span className="min-w-0 flex-1 truncate">رد على: {replyTo.content}</span>
+              <button type="button" aria-label="إلغاء الرد" className="shrink-0 font-bold text-muted-foreground" onClick={() => setReplyTo(null)}>✕</button>
+            </div>
+          )}
           <Input value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder="اكتب رسالتك…" className="h-12 min-w-0 rounded-[16px] border-border bg-background" />
           <Button size="icon" disabled={sending || !text.trim() || !chat.isSuccess} className="size-12 shrink-0 rounded-[16px] bg-primary" aria-label="إرسال"><Send className="size-5 -scale-x-100" /></Button>
         </form>
