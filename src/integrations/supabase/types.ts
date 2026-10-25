@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      avatar_catalog: {
+        Row: {
+          active: boolean
+          category: string
+          gender: string
+          id: string
+          level_req: number
+          name_ar: string
+          name_en: string
+          price: number
+          sort: number
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          gender?: string
+          id: string
+          level_req?: number
+          name_ar: string
+          name_en: string
+          price: number
+          sort?: number
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          gender?: string
+          id?: string
+          level_req?: number
+          name_ar?: string
+          name_en?: string
+          price?: number
+          sort?: number
+        }
+        Relationships: []
+      }
+      avatar_images: {
+        Row: {
+          key: string
+          url: string
+        }
+        Insert: {
+          key: string
+          url: string
+        }
+        Update: {
+          key?: string
+          url?: string
+        }
+        Relationships: []
+      }
       banned_devices: {
         Row: {
           created_at: string
@@ -130,6 +181,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      jd_ledger: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          reason: string
+          ref: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          reason: string
+          ref?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          reason?: string
+          ref?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       library_files: {
         Row: {
@@ -324,6 +402,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar: Json
           avatar_url: string | null
           birth_date: string | null
           branch: Database["public"]["Enums"]["study_branch"] | null
@@ -332,11 +411,14 @@ export type Database = {
           gender: string | null
           generation: string | null
           id: string
+          nickname: string | null
+          nickname_changed_at: string | null
           onboarded_v2: boolean
           terms_accepted_at: string | null
           terms_version: string | null
         }
         Insert: {
+          avatar?: Json
           avatar_url?: string | null
           birth_date?: string | null
           branch?: Database["public"]["Enums"]["study_branch"] | null
@@ -345,11 +427,14 @@ export type Database = {
           gender?: string | null
           generation?: string | null
           id: string
+          nickname?: string | null
+          nickname_changed_at?: string | null
           onboarded_v2?: boolean
           terms_accepted_at?: string | null
           terms_version?: string | null
         }
         Update: {
+          avatar?: Json
           avatar_url?: string | null
           birth_date?: string | null
           branch?: Database["public"]["Enums"]["study_branch"] | null
@@ -358,6 +443,8 @@ export type Database = {
           gender?: string | null
           generation?: string | null
           id?: string
+          nickname?: string | null
+          nickname_changed_at?: string | null
           onboarded_v2?: boolean
           terms_accepted_at?: string | null
           terms_version?: string | null
@@ -947,6 +1034,32 @@ export type Database = {
         }
         Relationships: []
       }
+      user_items: {
+        Row: {
+          created_at: string
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "avatar_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_mutes: {
         Row: {
           created_at: string
@@ -991,12 +1104,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      buy_item: { Args: { _item: string }; Returns: Json }
       can_access_room: {
         Args: { _room_id: string; _user_id: string }
         Returns: boolean
       }
       can_see_quiz: { Args: { _qid: string; _uid: string }; Returns: boolean }
       can_support: { Args: { _user_id: string }; Returns: boolean }
+      claim_last_week_prizes: { Args: never; Returns: undefined }
       complete_onboarding: {
         Args: { _birth: string; _gender: string; _terms_version: string }
         Returns: undefined
@@ -1017,6 +1132,8 @@ export type Database = {
       is_muted: { Args: { _user_id: string }; Returns: boolean }
       is_owner: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      level_of: { Args: { _uid: string }; Returns: number }
+      my_wallet: { Args: never; Returns: Json }
       owner_list_emails: {
         Args: never
         Returns: {
@@ -1033,6 +1150,9 @@ export type Database = {
         Args: { _id: string; _table: string }
         Returns: undefined
       }
+      set_avatar: { Args: { _a: Json }; Returns: Json }
+      set_nickname: { Args: { _n: string }; Returns: undefined }
+      study_hours: { Args: { _uid: string }; Returns: number }
       submit_quiz: { Args: { _answers: Json; _quiz: string }; Returns: Json }
       submit_quiz_draft: {
         Args: {
@@ -1043,6 +1163,17 @@ export type Database = {
           _unit: string
         }
         Returns: string
+      }
+      weekly_board: {
+        Args: { _offset?: number }
+        Returns: {
+          avatar: Json
+          hours: number
+          is_me: boolean
+          nickname: string
+          rank: number
+          user_id: string
+        }[]
       }
     }
     Enums: {

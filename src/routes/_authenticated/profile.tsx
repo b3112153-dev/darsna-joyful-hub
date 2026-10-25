@@ -1,15 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  Crown, Footprints, Gem, Glasses, Layers, PawPrint, Scissors, Shirt, Sparkles, Trophy, Watch, Wand2,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
+import { parseWallet, useWallet, type AvatarState, type Wallet } from "@/hooks/use-wallet";
+import { imageFor, useAvatarCatalog, useAvatarImages, type CatalogItem } from "@/hooks/use-avatar";
+import { itemState } from "@/lib/avatar-shop";
 import { BRANCHES, type Branch } from "@/lib/branches";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { UserAvatar } from "@/components/UserAvatar";
+import { AvatarPreview } from "@/components/AvatarPreview";
+import { WalletChip } from "@/components/WalletChip";
+import { PageState } from "@/components/PageState";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -17,16 +29,282 @@ export const Route = createFileRoute("/_authenticated/profile")({
       { name: "robots", content: "noindex" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { title: "ملفي الشخصي | Darsna Jo" },
-      { name: "description", content: "عدّل اسمك وصورتك وفرعك." },
-      { property: "og:title", content: "ملفي الشخصي | Darsna Jo" },
-      { property: "og:description", content: "عدّل اسمك وصورتك وفرعك." },
+      { title: "ملفي | Darsna Jo" },
+      { name: "description", content: "أفتارك ومصاريكك ومستواك وإعداداتك." },
+      { property: "og:title", content: "ملفي | Darsna Jo" },
+      { property: "og:description", content: "أفتارك ومصاريكك ومستواك وإعداداتك." },
     ],
   }),
   component: Profile,
 });
 
+const HAIR_COLORS = ["#2b1b12", "#4a2c1a", "#7a4a2b", "#aa5533", "#c98a4b", "#8c0610", "#5b3a8e", "#1f3a5f"];
+
+const CATEGORY_ICON: Record<string, typeof Shirt> = {
+  outfit: Shirt, hair: Scissors, clothes: Layers, traditional: Crown, shoes: Footprints,
+  accessory: Gem, glasses: Glasses, watch: Watch, pet: PawPrint, royal_pet: Crown, effect: Wand2,
+};
+
+const TABS: { id: string; label: string; cats: string[] }[] = [
+  { id: "outfit", label: "الأزياء", cats: ["outfit"] },
+  { id: "hair", label: "الشعر", cats: ["hair"] },
+  { id: "clothes", label: "الملابس", cats: ["clothes", "traditional"] },
+  { id: "shoes", label: "الأحذية", cats: ["shoes"] },
+  { id: "accessory", label: "الإكسسوار", cats: ["accessory", "glasses", "watch"] },
+  { id: "pets", label: "الحيوانات", cats: ["pet", "royal_pet"] },
+  { id: "effects", label: "التأثيرات", cats: ["effect"] },
+];
+
 function Profile() {
+  const { user, me } = useMe();
+  const wallet = useWallet(user?.id);
+  const gender = me?.profile?.gender ?? null;
+
+  return (
+    <main className="mx-auto max-w-lg space-y-4 px-4 py-6">
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="text-2xl font-bold">ملفي</h1>
+        <WalletChip userId={user?.id} />
+      </div>
+      {wallet.isLoading && <PageState loading />}
+      {wallet.isError && <PageState error retry={() => wallet.refetch()} />}
+      {wallet.data && (
+        <>
+          <LevelCard wallet={wallet.data} />
+          <AvatarCard wallet={wallet.data} gender={gender} userId={user!.id} />
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/board"><Trophy /> لوحة الأسبوع</Link>
+          </Button>
+          <AccountCard />
+        </>
+      )}
+    </main>
+  );
+}
+
+function LevelCard({ wallet }: { wallet: Wallet }) {
+  const into = Math.max(0, wallet.hours - (wallet.level - 1) * 5);
+  const remaining = Math.max(0, 5 - into);
+  return (
+    <section className="rounded-[20px] border bg-card p-4 shadow-card">
+      <div className="flex items-center justify-between">
+        <p className="font-display text-lg font-extrabold">المستوى {wallet.level}</p>
+        <p className="text-sm text-muted-foreground">{wallet.hours} ساعة دراسة</p>
+      </div>
+      <Progress dir="ltr" value={Math.min(100, (into / 5) * 100)} className="mt-3 h-2.5" />
+      <p className="mt-2 text-xs text-muted-foreground">{remaining.toFixed(1)} ساعات للمستوى التالي</p>
+    </section>
+  );
+}
+
+function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string | null; userId: string }) {
+  const qc = useQueryClient();
+  const images = useAvatarImages();
+  const catalog = useAvatarCatalog();
+  const [tab, setTab] = useState("outfit");
+  const [nickOpen, setNickOpen] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const key = ["wallet", userId];
+
+  // Mandatory nickname on first visit.
+  useEffect(() => {
+    if (!wallet.nickname) setNickOpen(true);
+  }, [wallet.nickname]);
+
+  const items = useMemo(() => {
+    const cats = TABS.find((t) => t.id === tab)?.cats ?? [];
+    return (catalog.data ?? []).filter(
+      (it) => cats.includes(it.category) && (it.gender === "all" || it.gender === gender),
+    );
+  }, [catalog.data, tab, gender]);
+
+  function setCache(next: Partial<Wallet>) {
+    qc.setQueryData<Wallet>(key, (old) => (old ? { ...old, ...next } : old));
+  }
+
+  async function saveAvatar(next: AvatarState, optimistic = true) {
+    const prev = wallet.avatar;
+    if (optimistic) setCache({ avatar: next });
+    const { data, error } = await supabase.rpc("set_avatar", { _a: next });
+    if (error) {
+      if (optimistic) setCache({ avatar: prev });
+      toast.error(error.message);
+      return false;
+    }
+    setCache({ avatar: (data as AvatarState) ?? next });
+    return true;
+  }
+
+  async function wear(it: CatalogItem) {
+    if (busy) return;
+    setBusy(it.id);
+    await saveAvatar({ ...wallet.avatar, [it.category]: it.id });
+    setBusy(null);
+  }
+
+  async function unwear(it: CatalogItem) {
+    if (busy || it.category === "outfit") return;
+    setBusy(it.id);
+    const next = { ...wallet.avatar };
+    delete next[it.category];
+    await saveAvatar(next);
+    setBusy(null);
+  }
+
+  async function buy(it: CatalogItem) {
+    if (busy) return;
+    setBusy(it.id);
+    const { data, error } = await supabase.rpc("buy_item", { _item: it.id });
+    if (error) { toast.error(error.message); setBusy(null); return; }
+    setCache(parseWallet(data));
+    await saveAvatar({ ...parseWallet(data).avatar, [it.category]: it.id }, false);
+    toast.success("مبروك! صار عندك " + it.name_ar);
+    setBusy(null);
+  }
+
+  async function setHairColor(color: string) {
+    if (busy) return;
+    setBusy("hairColor");
+    await saveAvatar({ ...wallet.avatar, hairColor: color });
+    setBusy(null);
+  }
+
+  const worn = wallet.avatar;
+  return (
+    <section className="rounded-[20px] border bg-card p-4 shadow-card">
+      <div className="mx-auto max-w-[240px] rounded-[20px] bg-secondary/60 p-4">
+        <AvatarPreview
+          avatar={worn}
+          images={images.data ?? {}}
+          gender={gender}
+          nickname={wallet.nickname ?? undefined}
+          className="mx-auto aspect-square w-full max-w-[200px]"
+        />
+      </div>
+      <div className="mt-3 text-center">
+        <Button variant="outline" size="sm" onClick={() => setNickOpen(true)}>سمّي أفتارك</Button>
+        <p className="mt-1.5 text-xs text-muted-foreground">تقدر تغيّره مرة كل ٤٠ يوم</p>
+      </div>
+
+      {gender === "female" && (
+        <div className="mt-4 rounded-2xl bg-secondary/50 p-3">
+          <p className="mb-2 text-sm font-bold">لون الشعر</p>
+          <div className="flex flex-wrap items-center gap-2">
+            {HAIR_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                aria-label={c}
+                onClick={() => setHairColor(c)}
+                disabled={busy === "hairColor"}
+                className={cn("size-8 rounded-full border-2 transition", worn["hairColor"] === c ? "border-primary scale-110" : "border-card")}
+                style={{ backgroundColor: c }}
+              />
+            ))}
+            <input
+              type="color"
+              aria-label="لون مخصص"
+              value={worn["hairColor"] ?? "#aa5533"}
+              onChange={(e) => setHairColor(e.target.value)}
+              className="size-8 cursor-pointer rounded-full border-2 border-card bg-transparent"
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="mt-4 flex gap-1.5 overflow-x-auto rounded-2xl bg-library-tabs p-1.5">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setTab(t.id)}
+            className={cn(
+              "shrink-0 rounded-xl px-3 py-1.5 text-sm font-semibold transition",
+              tab === t.id ? "bg-card font-extrabold shadow-card" : "text-muted-foreground",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {catalog.isLoading && <PageState loading />}
+      {catalog.isError && <PageState error retry={() => catalog.refetch()} />}
+      <div className="mt-3 grid grid-cols-2 gap-2.5">
+        {items.map((it) => {
+          const state = itemState(it, wallet);
+          const isWorn = state === "worn";
+          const owned = state === "wear";
+          const levelOk = state !== "locked";
+          const canAfford = state === "buy" || owned;
+          const url = imageFor(images.data ?? {}, it.id, it.category, gender);
+          const Icon = CATEGORY_ICON[it.category] ?? Sparkles;
+          return (
+            <div key={it.id} className="flex flex-col rounded-2xl border bg-card p-2.5">
+              <div className="grid aspect-square place-items-center overflow-hidden rounded-xl bg-tint">
+                {url ? <img src={url} alt={it.name_ar} loading="lazy" className="h-full w-full object-contain" /> : <Icon className="size-10 text-primary" />}
+              </div>
+              <p className="mt-2 truncate text-sm font-bold">{it.name_ar}</p>
+              <p className="text-xs text-muted-foreground">مستوى {it.level_req} · {it.price === 0 ? "مجاني" : `${it.price} JD`}</p>
+              {isWorn ? (
+                <Button size="sm" variant="secondary" className="mt-2" disabled={busy === it.id || it.category === "outfit"} onClick={() => unwear(it)}>
+                  لابسته{it.category !== "outfit" && " — اخلعه"}
+                </Button>
+              ) : owned ? (
+                <Button size="sm" className="mt-2 bg-brand" disabled={busy === it.id} onClick={() => wear(it)}>ألبس</Button>
+              ) : !levelOk ? (
+                <Button size="sm" variant="outline" className="mt-2" disabled>مفتوح بالمستوى {it.level_req}</Button>
+              ) : !canAfford ? (
+                <Button size="sm" variant="outline" className="mt-2" disabled>رصيدك ما يكفي</Button>
+              ) : (
+                <Button size="sm" className="mt-2 bg-brand" disabled={busy === it.id} onClick={() => buy(it)}>اشتري بـ {it.price} JD</Button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {catalog.data && items.length === 0 && <p className="mt-3 text-center text-sm text-muted-foreground">ما في أغراض بهالقسم بعد</p>}
+
+      <NicknameDialog
+        open={nickOpen}
+        mandatory={!wallet.nickname}
+        onOpenChange={(o) => (wallet.nickname ? setNickOpen(o) : undefined)}
+        onSaved={(n) => { setCache({ nickname: n }); setNickOpen(false); }}
+      />
+    </section>
+  );
+}
+
+function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
+  open: boolean; mandatory: boolean; onOpenChange: (o: boolean) => void; onSaved: (n: string) => void;
+}) {
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function save() {
+    const n = name.trim();
+    if (n.length < 2 || n.length > 16) { toast.error("الاسم من ٢ إلى ١٦ حرف"); return; }
+    setBusy(true);
+    const { error } = await supabase.rpc("set_nickname", { _n: n });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("تم حفظ الاسم");
+    onSaved(n);
+  }
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent dir="rtl" className={mandatory ? "[&>button]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
+        <DialogHeader>
+          <DialogTitle>سمّي أفتارك</DialogTitle>
+          <DialogDescription>هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل ٤٠ يوم (حد أقصى ١٦ حرف).</DialogDescription>
+        </DialogHeader>
+        <Input value={name} maxLength={16} placeholder="اسمك المستعار" onChange={(e) => setName(e.target.value)} />
+        <Button onClick={save} disabled={busy} className="bg-brand">حفظ</Button>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function AccountCard() {
   const { user, me } = useMe();
   const qc = useQueryClient();
   const [name, setName] = useState("");
@@ -65,31 +343,29 @@ function Profile() {
   }
 
   return (
-    <main className="mx-auto max-w-lg px-4 py-10">
-      <div className="space-y-6 rounded-3xl border bg-card p-6 shadow-soft sm:p-8">
-        <h1 className="text-2xl font-bold">ملفي الشخصي</h1>
-        <div className="flex items-center gap-4">
-          <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} className="size-20" />
-          <Label className="cursor-pointer rounded-lg border bg-silver-sheen px-4 py-2 text-sm">
-            تغيير الصورة
-            <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
-          </Label>
-        </div>
-        <div className="space-y-1.5">
-          <Label>الاسم</Label>
-          <Input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <div className="space-y-1.5">
-          <Label>الفرع</Label>
-          <Select dir="rtl" value={branch} onValueChange={(v) => setBranch(v as Branch)}>
-            <SelectTrigger><SelectValue placeholder="اختر فرعك" /></SelectTrigger>
-            <SelectContent>
-              {BRANCHES.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-        <Button onClick={save} disabled={busy} className="w-full bg-brand">حفظ</Button>
+    <section className="space-y-6 rounded-[20px] border bg-card p-6 shadow-card">
+      <h2 className="text-lg font-bold">إعدادات الحساب</h2>
+      <div className="flex items-center gap-4">
+        <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} className="size-20" />
+        <Label className="cursor-pointer rounded-lg border bg-silver-sheen px-4 py-2 text-sm">
+          تغيير الصورة
+          <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
+        </Label>
       </div>
-    </main>
+      <div className="space-y-1.5">
+        <Label>الاسم</Label>
+        <Input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} />
+      </div>
+      <div className="space-y-1.5">
+        <Label>الفرع</Label>
+        <Select dir="rtl" value={branch} onValueChange={(v) => setBranch(v as Branch)}>
+          <SelectTrigger><SelectValue placeholder="اختر فرعك" /></SelectTrigger>
+          <SelectContent>
+            {BRANCHES.map((b) => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
+      <Button onClick={save} disabled={busy} className="w-full bg-brand">حفظ</Button>
+    </section>
   );
 }
