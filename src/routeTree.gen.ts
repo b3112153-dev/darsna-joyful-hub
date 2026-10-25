@@ -21,10 +21,12 @@ import { Route as AuthenticatedFocusRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedMotivationRouteImport } from './routes/_authenticated/motivation'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedPlanRouteImport } from './routes/_authenticated/plan'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated/progress'
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
 import { Route as AuthenticatedAdminAvatarArtRouteImport } from './routes/_authenticated/admin_.avatar-art'
+import { Route as AuthenticatedAdminCurriculumRouteImport } from './routes/_authenticated/admin_.curriculum'
 import { Route as AuthenticatedLibraryUploadRouteImport } from './routes/_authenticated/library_.upload'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms.index'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
@@ -91,6 +93,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPlanRoute = AuthenticatedPlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -110,6 +117,12 @@ const AuthenticatedAdminAvatarArtRoute =
   AuthenticatedAdminAvatarArtRouteImport.update({
     id: '/admin_/avatar-art',
     path: '/admin/avatar-art',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminCurriculumRoute =
+  AuthenticatedAdminCurriculumRouteImport.update({
+    id: '/admin_/curriculum',
+    path: '/admin/curriculum',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedLibraryUploadRoute =
@@ -160,10 +173,12 @@ export interface FileRoutesByFullPath {
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/plan': typeof AuthenticatedPlanRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
   '/admin/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
+  '/admin/curriculum': typeof AuthenticatedAdminCurriculumRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
@@ -183,10 +198,12 @@ export interface FileRoutesByTo {
   '/library': typeof AuthenticatedLibraryRoute
   '/motivation': typeof AuthenticatedMotivationRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/plan': typeof AuthenticatedPlanRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
   '/admin/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
+  '/admin/curriculum': typeof AuthenticatedAdminCurriculumRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
@@ -208,10 +225,12 @@ export interface FileRoutesById {
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/motivation': typeof AuthenticatedMotivationRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/plan': typeof AuthenticatedPlanRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/support': typeof AuthenticatedSupportRoute
   '/_authenticated/admin_/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
+  '/_authenticated/admin_/curriculum': typeof AuthenticatedAdminCurriculumRoute
   '/_authenticated/library_/upload': typeof AuthenticatedLibraryUploadRoute
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
@@ -233,10 +252,12 @@ export interface FileRouteTypes {
     | '/library'
     | '/motivation'
     | '/onboarding'
+    | '/plan'
     | '/profile'
     | '/progress'
     | '/support'
     | '/admin/avatar-art'
+    | '/admin/curriculum'
     | '/library/upload'
     | '/rooms/$roomId'
     | '/topics/$topicId'
@@ -256,10 +277,12 @@ export interface FileRouteTypes {
     | '/library'
     | '/motivation'
     | '/onboarding'
+    | '/plan'
     | '/profile'
     | '/progress'
     | '/support'
     | '/admin/avatar-art'
+    | '/admin/curriculum'
     | '/library/upload'
     | '/rooms/$roomId'
     | '/topics/$topicId'
@@ -280,10 +303,12 @@ export interface FileRouteTypes {
     | '/_authenticated/library'
     | '/_authenticated/motivation'
     | '/_authenticated/onboarding'
+    | '/_authenticated/plan'
     | '/_authenticated/profile'
     | '/_authenticated/progress'
     | '/_authenticated/support'
     | '/_authenticated/admin_/avatar-art'
+    | '/_authenticated/admin_/curriculum'
     | '/_authenticated/library_/upload'
     | '/_authenticated/rooms/$roomId'
     | '/_authenticated/topics/$topicId'
@@ -387,6 +412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/plan': {
+      id: '/_authenticated/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof AuthenticatedPlanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
       path: '/profile'
@@ -413,6 +445,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/avatar-art'
       fullPath: '/admin/avatar-art'
       preLoaderRoute: typeof AuthenticatedAdminAvatarArtRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin_/curriculum': {
+      id: '/_authenticated/admin_/curriculum'
+      path: '/admin/curriculum'
+      fullPath: '/admin/curriculum'
+      preLoaderRoute: typeof AuthenticatedAdminCurriculumRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/library_/upload': {
@@ -467,10 +506,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
   AuthenticatedMotivationRoute: typeof AuthenticatedMotivationRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedPlanRoute: typeof AuthenticatedPlanRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
   AuthenticatedAdminAvatarArtRoute: typeof AuthenticatedAdminAvatarArtRoute
+  AuthenticatedAdminCurriculumRoute: typeof AuthenticatedAdminCurriculumRoute
   AuthenticatedLibraryUploadRoute: typeof AuthenticatedLibraryUploadRoute
   AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute
   AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
@@ -486,10 +527,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedMotivationRoute: AuthenticatedMotivationRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedPlanRoute: AuthenticatedPlanRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
   AuthenticatedAdminAvatarArtRoute: AuthenticatedAdminAvatarArtRoute,
+  AuthenticatedAdminCurriculumRoute: AuthenticatedAdminCurriculumRoute,
   AuthenticatedLibraryUploadRoute: AuthenticatedLibraryUploadRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRoute,
   AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,

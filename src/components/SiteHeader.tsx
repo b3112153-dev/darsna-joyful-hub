@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  BarChart3, BookOpen, GraduationCap, Headset, LogOut, MessagesSquare, Newspaper, Shield, Sparkles, Timer, User,
+  BarChart3, BookOpen, CalendarCheck, GraduationCap, Headset, LogOut, MessagesSquare, Newspaper, Shield, Sparkles, Timer, User,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
@@ -14,6 +14,7 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export const MAIN_NAV = [
   { to: "/focus", label: "الرئيسية", icon: Timer },
+  { to: "/plan", label: "حلّها", icon: CalendarCheck },
   { to: "/rooms", label: "الدردشات", icon: MessagesSquare },
   { to: "/library", label: "المكتبة", icon: BookOpen },
   { to: "/motivation", label: "ذكرى", icon: Sparkles },
@@ -95,7 +96,7 @@ export function SiteHeader() {
         </div>
       </header>
       {user && (
-        <nav className="fixed inset-x-0 bottom-0 z-40 grid h-[calc(72px+env(safe-area-inset-bottom))] grid-cols-5 border-t bg-card pb-[env(safe-area-inset-bottom)] font-display lg:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-40 grid h-[calc(72px+env(safe-area-inset-bottom))] grid-cols-6 border-t bg-card pb-[env(safe-area-inset-bottom)] font-display lg:hidden">
           {MAIN_NAV.map((n) => (
             <Link
               key={n.to}
