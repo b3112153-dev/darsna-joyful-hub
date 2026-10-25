@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
 import { parseWallet, useWallet, type AvatarState, type Wallet } from "@/hooks/use-wallet";
 import { imageFor, useAvatarCatalog, useAvatarImages, type CatalogItem } from "@/hooks/use-avatar";
+import { itemState } from "@/lib/avatar-shop";
 import { BRANCHES, type Branch } from "@/lib/branches";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -231,10 +232,11 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
       {catalog.isError && <PageState error retry={() => catalog.refetch()} />}
       <div className="mt-3 grid grid-cols-2 gap-2.5">
         {items.map((it) => {
-          const isWorn = worn[it.category] === it.id;
-          const owned = it.price === 0 || wallet.owned.includes(it.id);
-          const levelOk = wallet.level >= it.level_req;
-          const canAfford = wallet.balance >= it.price;
+          const state = itemState(it, wallet);
+          const isWorn = state === "worn";
+          const owned = state === "wear";
+          const levelOk = state !== "locked";
+          const canAfford = state === "buy" || owned;
           const url = imageFor(images.data ?? {}, it.id, it.category, gender);
           const Icon = CATEGORY_ICON[it.category] ?? Sparkles;
           return (
