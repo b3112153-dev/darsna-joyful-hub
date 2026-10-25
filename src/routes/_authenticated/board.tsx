@@ -145,6 +145,13 @@ function Board() {
         </>
       )}
 
+      {board.data && !meRow && (
+        <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-30 mx-auto max-w-lg px-4 pb-2 lg:bottom-4">
+          <div className="rounded-[20px] border bg-card p-3 text-center text-sm font-semibold shadow-soft">
+            {me?.profile?.gender === "female" ? "أنتِ" : "أنت"} لسا خارج اللوحة — ابدأ جلسة دراسة وادخل الترتيب!
+          </div>
+        </div>
+      )}
       {meRow && (
         <div className="fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-30 mx-auto max-w-lg px-4 pb-2 lg:bottom-4">
           <div className="flex items-center gap-3 rounded-[20px] border bg-card p-3 shadow-soft">
