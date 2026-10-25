@@ -25,7 +25,6 @@ export function MessageActionsBar({ actions, children }: { actions: Actions; chi
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
         <div
           onTouchStart={() => {
             longPressed.current = false;
@@ -37,18 +36,18 @@ export function MessageActionsBar({ actions, children }: { actions: Actions; chi
           onClickCapture={(event) => {
             if (longPressed.current) { event.preventDefault(); event.stopPropagation(); longPressed.current = false; }
           }}
-          className="contents"
+          className="relative min-w-0 max-w-full"
         >
           {children}
+          <PopoverTrigger asChild><Button type="button" variant="ghost" size="icon" aria-label={t("خيارات الرسالة")} className="absolute -end-8 top-1 size-7 text-muted-foreground"><MoreHorizontal className="size-4" /></Button></PopoverTrigger>
         </div>
-      </PopoverTrigger>
-      <PopoverContent dir="rtl" align="center" side="top" className="w-auto space-y-1 rounded-[20px] p-2">
+      <PopoverContent align="center" side="top" className="max-w-[calc(100vw-2rem)] w-auto space-y-1 rounded-[20px] p-2">
         <div className="flex gap-1">
           {REACTION_EMOJIS.map((emoji) => (
-            <button key={emoji} type="button" aria-label={`تفاعل ${emoji}`} onClick={pick(() => actions.onReact(emoji))}
-              className="grid size-9 place-items-center rounded-full text-xl transition hover:bg-secondary active:scale-90">
+            <Button key={emoji} variant="ghost" type="button" aria-label={`${t("تفاعل")} ${emoji}`} onClick={pick(() => actions.onReact(emoji))}
+              className="grid size-9 place-items-center rounded-full p-0 text-xl transition hover:bg-secondary active:scale-90">
               {emoji}
-            </button>
+            </Button>
           ))}
         </div>
         <div className="grid grid-cols-2 gap-1 border-t pt-1.5">
