@@ -32,9 +32,9 @@ describe("Chat history", () => {
     expect(rows).toHaveLength(2);
     expect(rows[0]?.content).toBe("edited");
   });
-  it("allows deletion by the owner", () => expect(canDeleteMessage(message("1"), "student", false)).toBe(true));
-  it("allows staff to delete others' messages", () => expect(canDeleteMessage(message("1"), "staff", true)).toBe(true));
-  it("does not allow students to delete others' messages", () => expect(canDeleteMessage(message("1"), "other", false)).toBe(false));
+  it("allows deletion by the owner", () => expect(canDeleteMessage(message("1"), "student", undefined)).toBe(true));
+  it("allows staff to delete others' messages", () => expect(canDeleteMessage(message("1"), "staff", { isAdmin: true })).toBe(true));
+  it("does not allow students to delete others' messages", () => expect(canDeleteMessage(message("1"), "other", undefined)).toBe(false));
   it("allows editing only by the message owner", () => {
     expect(canEditMessage(message("1"), "student")).toBe(true);
     expect(canEditMessage(message("1"), "staff")).toBe(false);
