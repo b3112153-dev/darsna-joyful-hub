@@ -13,17 +13,27 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AvatarPic } from "@/components/AvatarPic";
 import { profileName, type PublicProfile } from "@/lib/identity";
+import { ChatMessage } from "@/components/ChatMessage";
+import { ImagePicker, useImagePicker } from "@/components/ImagePicker";
+import { ReplyQuote } from "@/components/ReplyQuote";
+import { useReactions } from "@/hooks/use-reactions";
+import { useNow } from "@/hooks/use-focus";
+import { canDeleteEntry, canDeleteContent } from "@/lib/message-permissions";
+import type { Message } from "@/lib/chat-messages";
 import { t } from "@/lib/i18n";
 
 
 const Route = getRouteApi("/_authenticated/topics/$topicId");
-type C = { id: string; parent_id: string | null; user_id: string; content: string; from_admin: boolean; created_at: string; profiles: PublicProfile | null };
+type C = { id: string; parent_id: string | null; user_id: string; content: string; from_admin: boolean; created_at: string; image_path: string | null; sender_role: string | null; edited_at: string | null; deleted_at: string | null; profiles: PublicProfile | null };
 
 export function TopicPage() {
   const { topicId } = Route.useParams();
   const { user, me } = useMe();
   const qc = useQueryClient();
   const [text, setText] = useState("");
+  const image = useImagePicker();
+  const now = useNow();
+  const [sending, setSending] = useState(false);
   const [replyTo, setReplyTo] = useState<C | null>(null);
 
   const { data: topic, isPending, isError, refetch } = useQuery({
@@ -33,13 +43,14 @@ export function TopicPage() {
   const { data: studied } = useQuery({
     queryKey: ["topic-read", topicId, user?.id],
     enabled: !!user,
-    queryFn: async () => !!(await supabase.from("topic_reads").select("topic_id").eq("topic_id", topicId).eq("user_id", user!.id).maybeSingle()).data,
+    queryFn: async () => user ? !!(await readData(supabase.from("topic_reads").select("topic_id").eq("topic_id", topicId).eq("user_id", user.id).maybeSingle())) : false,
   });
-  const { data: comments = [] } = useQuery({
+  const { data: comments = [], isPending: commentsPending, isError: commentsError, refetch: refetchComments } = useQuery({
     queryKey: ["comments", topicId],
     queryFn: async () =>
-      ((await supabase.from("topic_comments").select("id,parent_id,user_id,content,from_admin,created_at,profiles(display_name,nickname,avatar,gender)").eq("topic_id", topicId).order("created_at")).data ?? []) as C[],
+      ((await readData(supabase.from("topic_comments").select("*,profiles(display_name,nickname,avatar,gender)").eq("topic_id", topicId).is("deleted_at", null).order("created_at"))) ?? []) as C[],
   });
+  const reactions = useReactions("topic_reactions", comments.map((c) => c.id), user?.id, topicId);
   useEffect(() => {
     const ch = supabase
       .channel(`topic-${topicId}-${crypto.randomUUID()}`)
@@ -62,48 +73,45 @@ export function TopicPage() {
   }
   async function send(e: React.FormEvent) {
     e.preventDefault();
-    if (!user || !text.trim()) return;
-    const { error } = await supabase.from("topic_comments").insert({ topic_id: topicId, user_id: user.id, content: text.trim(), parent_id: replyTo?.id ?? null });
-    if (error) {
-      toast.error(t("تعذر إرسال التعليق"));
-      return;
-    }
-    setText(""); setReplyTo(null);
-    qc.invalidateQueries({ queryKey: ["comments", topicId] });
+    if (!user || (!text.trim() && !image.file) || sending) return;
+    setSending(true); let uploaded: string | null = null;
+    try {
+      uploaded = await image.upload(user.id, "chat-images");
+      await readData(supabase.from("topic_comments").insert({ topic_id: topicId, user_id: user.id, content: text.trim(), image_path: uploaded, parent_id: replyTo?.id ?? null }));
+      setText(""); setReplyTo(null); image.select(null);
+      await qc.invalidateQueries({ queryKey: ["comments", topicId] });
+    } catch (error) { if (uploaded) void supabase.storage.from("chat-images").remove([uploaded]); toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : t("تعذر إرسال التعليق")); }
+    finally { setSending(false); }
   }
   async function del(id: string) {
-    await supabase.from("topic_comments").delete().eq("id", id);
-    qc.invalidateQueries({ queryKey: ["comments", topicId] });
+    const previous = comments.find((c) => c.id === id);
+    qc.setQueryData<C[]>(["comments", topicId], (rows) => rows?.filter((c) => c.id !== id));
+    try { await readData(supabase.from("topic_comments").delete().eq("id", id)); }
+    catch (error) { if (previous) qc.setQueryData<C[]>(["comments", topicId], (rows) => [...(rows ?? []), previous]); toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : t("تعذر الحذف")); }
   }
+  async function edit(id: string, content: string) {
+    if (!user) return false;
+    try { await readData(supabase.from("topic_comments").update({ content: content.trim() }).eq("id", id).eq("user_id", user.id)); await qc.invalidateQueries({ queryKey: ["comments", topicId] }); return true; }
+    catch (error) { toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : t("تعذر تعديل الرسالة؛ حاول مرة ثانية.")); return false; }
+  }
+
   async function toggleReplies(v: boolean) {
     await supabase.from("topics").update({ allow_replies: v }).eq("id", topicId);
     qc.invalidateQueries({ queryKey: ["topic", topicId] });
   }
 
-  const roots = comments.filter((c) => !c.parent_id);
+  const roots = comments.filter((c) => !c.parent_id || !comments.some((parent) => parent.id === c.parent_id));
   const childrenOf = (id: string) => comments.filter((c) => c.parent_id === id);
 
-  function Comment({ c, depth }: { c: C; depth: number }) {
-    const name = c.from_admin ? t("الإدارة") : profileName(c.profiles, !!(me?.isStaff || me?.isSupport || me?.isOwner));
-    return (
-      <div className={depth ? "ms-6 border-s-2 border-silver ps-3" : ""}>
-        <div className="flex gap-2 py-2">
-          <AvatarPic profile={c.profiles} className="size-8" />
-          <div className="flex-1 rounded-2xl bg-bubble px-3 py-2">
-            <p className="text-xs font-semibold text-primary">{name}</p>
-            <p className="whitespace-pre-wrap break-words text-sm">{c.content}</p>
-            <div className="mt-1 flex gap-3 text-xs text-muted-foreground">
-              <span>{new Date(c.created_at).toLocaleString("ar-u-nu-latn", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}</span>
-              {topic?.allow_replies && canComment && depth < 3 && (
-                <button onClick={() => setReplyTo(c)} className="flex items-center gap-1 hover:text-primary"><CornerDownLeft className="size-3" /> {t("رد")}</button>
-              )}
-              {(c.user_id === user?.id || me?.isStaff) && <button onClick={() => del(c.id)} className="hover:text-destructive"><Trash2 className="size-3" /></button>}
-            </div>
-          </div>
-        </div>
-        {childrenOf(c.id).map((r) => <Comment key={r.id} c={r} depth={depth + 1} />)}
-      </div>
-    );
+  function renderComment(c: C, depth: number, visited = new Set<string>()): React.ReactNode {
+    if (visited.has(c.id)) return null;
+    const next = new Set(visited).add(c.id);
+    const message: Message = { ...c, reply_to: c.parent_id, room_id: topicId, deleted_by: null };
+    const quote = c.parent_id ? comments.find((r) => r.id === c.parent_id) ?? { content: t("رسالة محذوفة") } : null;
+    return <div key={c.id} className={depth ? "ms-2 min-w-0 border-s-2 border-silver ps-1 sm:ms-4" : "min-w-0"}>
+      <ChatMessage message={message} own={c.user_id === user?.id} canDelete={canDeleteEntry(c.user_id, c.sender_role, c.from_admin, user?.id, me)} reactions={reactions.reactions} userId={user?.id} now={now} onDelete={del} onEdit={edit} onReact={(id, emoji) => void reactions.toggle(id, emoji)} onReply={() => { if (topic?.allow_replies && canComment) setReplyTo(c); }} replyQuote={quote} />
+      {childrenOf(c.id).map((child) => renderComment(child, Math.min(depth + 1, 3), next))}
+    </div>;
   }
 
   if (isPending) return <PageState loading />;
@@ -116,9 +124,9 @@ export function TopicPage() {
       {topic && (
         <article className="rounded-2xl border bg-card p-6 shadow-card">
           <p className="mb-1 text-xs text-muted-foreground">الإدارة · {topic.subject ?? t("عام")}</p>
-          <h1 className="mb-3 text-2xl font-bold">{topic.title}</h1>
+          <div className="flex items-start justify-between gap-2"><h1 className="mb-3 min-w-0 break-words text-2xl font-bold">{topic.title}</h1>{canDeleteContent(me) && <Button variant="ghost" size="icon" aria-label={t("حذف")} onClick={async () => { const { error } = await supabase.from("topics").delete().eq("id", topicId); if (error) toast.error(error.message); else { void qc.invalidateQueries({ queryKey: ["topics"] }); void refetch(); } }}><Trash2 className="text-destructive" /></Button>}</div>
           <p className="whitespace-pre-wrap leading-relaxed">{topic.body}</p>
-          {me?.isAdmin && (
+          {canDeleteContent(me) && (
             <Label className="mt-4 flex items-center gap-2 text-sm"><Switch checked={topic.allow_replies} onCheckedChange={toggleReplies} /> {t("السماح بالردود")}</Label>
           )}
         </article>
@@ -129,17 +137,13 @@ export function TopicPage() {
       <section className="rounded-2xl border bg-card p-4 shadow-card">
         <h2 className="mb-2 font-semibold">التعليقات ({comments.length})</h2>
         {roots.length === 0 && <p className="py-4 text-sm text-muted-foreground">{t("ما في تعليقات بعد.")}</p>}
-        {roots.map((c) => <Comment key={c.id} c={c} depth={0} />)}
+        <PageState loading={commentsPending} error={commentsError} retry={() => void refetchComments()} />
+         {roots.map((c) => renderComment(c, 0))}
         {canComment && !me?.isBanned && (
-          <form onSubmit={send} className="mt-3 space-y-2">
-            {replyTo && (
-              <p className="flex justify-between rounded-lg bg-secondary px-3 py-1.5 text-xs">
-                رد على: {replyTo.from_admin ? t("الإدارة") : profileName(replyTo.profiles, !!(me?.isStaff || me?.isSupport || me?.isOwner))}
-                <button type="button" onClick={() => setReplyTo(null)}>✕</button>
-              </p>
-            )}
-            <Textarea value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder={t("شاركنا رأيك أو سؤالك…")} />
-            <Button className="bg-brand">{t("إرسال")}</Button>
+          <form onSubmit={send} onPaste={image.paste} className="mt-3 space-y-2">
+            {replyTo && <ReplyQuote quote={replyTo} onCancel={() => setReplyTo(null)} />}
+            <Textarea aria-label={t("شاركنا رأيك أو سؤالك…")} value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder={t("شاركنا رأيك أو سؤالك…")} />
+            <div className="flex items-center gap-2"><ImagePicker file={image.file} onChange={image.select} disabled={sending} /><Button disabled={sending || (!text.trim() && !image.file)} className="bg-brand">{t("إرسال")}</Button></div>
           </form>
         )}
       </section>
