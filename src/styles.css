@@ -175,6 +175,9 @@
 @utility shadow-staff { box-shadow: var(--shadow-staff); }
 @utility rise-in { animation: rise-in 0.45s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes rise-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@utility bg-tint { background-color: #f4d4a6; }
+@utility avatar-breathe { animation: avatar-breathe 3.6s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes avatar-breathe { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.025) rotate(0.6deg); } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
