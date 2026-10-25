@@ -13,7 +13,8 @@ function translate(text: string, lang: Lang) {
     "المستوى": "Level", "مستوى": "Level", "وضع التركيز": "Focus", "تفعيل وضع التركيز": "Focus",
   };
   if (shared[key]) return shared[key];
-  return latinDigits(lang === "en" ? (EN[key] ?? text) : text);
+  const result = latinDigits(lang === "en" ? (EN[key] ?? text) : text);
+  return result.replace(/رومات الدراسة|الرومات|رومات/g, "Rooms").replace(/الروم|روم/g, "Study Room");
 }
 
 /** Non-hook translator for module code (toasts, lib helpers). */

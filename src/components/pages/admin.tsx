@@ -20,6 +20,7 @@ import { AvatarPic } from "@/components/AvatarPic";
 import { PageState } from "@/components/PageState";
 import { LibraryAdmin } from "@/components/LibraryAdmin";
 import { SupportAdmin } from "@/components/SupportAdmin";
+import { useLang } from "@/lib/i18n";
 
 type Can = { owner: boolean; admin: boolean; mod: boolean; support: boolean };
 
