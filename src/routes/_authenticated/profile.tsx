@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { invalidateIdentity } from "@/components/ProfileSync";
 import { AvatarPic } from "@/components/AvatarPic";
 import { AvatarPreview } from "@/components/AvatarPreview";
 import { WalletChip } from "@/components/WalletChip";
@@ -134,7 +135,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
       return false;
     }
     setCache({ avatar: (data as AvatarState) ?? next });
-    await qc.invalidateQueries({ predicate: (query) => !["avatar-images", "avatar-catalog"].includes(String(query.queryKey[0])) });
+    await invalidateIdentity(qc);
     return true;
   }
 
@@ -275,7 +276,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
         open={nickOpen}
         mandatory={!wallet.nickname}
         onOpenChange={(o) => (wallet.nickname ? setNickOpen(o) : undefined)}
-        onSaved={(n) => { setCache({ nickname: n }); setNickOpen(false); void qc.invalidateQueries({ predicate: (query) => !["avatar-images", "avatar-catalog"].includes(String(query.queryKey[0])) }); }}
+        onSaved={(n) => { setCache({ nickname: n }); setNickOpen(false); void invalidateIdentity(qc); }}
       />
     </section>
   );
