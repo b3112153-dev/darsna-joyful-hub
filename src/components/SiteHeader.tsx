@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "./UserAvatar";
 import { ThemeToggle } from "./ThemeToggle";
+import { LangToggle } from "./LangToggle";
+import { useT } from "@/lib/i18n";
 
 export const MAIN_NAV = [
   { to: "/focus", label: "الرئيسية", icon: Timer },
@@ -23,6 +25,8 @@ export const MAIN_NAV = [
 
 export function SiteHeader() {
   const { user, me } = useMe();
+  const t = useT();
+  const canAdmin = !!me && (me.isStaff || me.isSupport);
   const qc = useQueryClient();
   const navigate = useNavigate();
 
@@ -54,12 +58,13 @@ export function SiteHeader() {
                   className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground"
                   activeProps={{ className: "bg-secondary text-primary font-semibold" }}
                 >
-                  <n.icon className="size-4" /> {n.label}
+                  <n.icon className="size-4" /> {t(n.label)}
                 </Link>
               ))}
             </nav>
           )}
           <div className="flex items-center gap-1">
+            <LangToggle />
             <ThemeToggle />
             {user ? (
               <>
@@ -73,24 +78,24 @@ export function SiteHeader() {
                     <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem asChild><Link to="/progress"><BarChart3 /> تقدمي</Link></DropdownMenuItem>
-                    <DropdownMenuItem asChild><Link to="/topics"><Newspaper /> مواضيع ونقاشات</Link></DropdownMenuItem>
-                    <DropdownMenuItem asChild><Link to="/motivation"><Sparkles /> التحفيز</Link></DropdownMenuItem>
-                    <DropdownMenuItem asChild><Link to="/profile"><User /> ملفي الشخصي</Link></DropdownMenuItem>
+                    <DropdownMenuItem asChild><Link to="/progress"><BarChart3 /> {t("تقدمي")}</Link></DropdownMenuItem>
+                    <DropdownMenuItem asChild><Link to="/topics"><Newspaper /> {t("مواضيع ونقاشات")}</Link></DropdownMenuItem>
+                    <DropdownMenuItem asChild><Link to="/motivation"><Sparkles /> {t("التحفيز")}</Link></DropdownMenuItem>
+                    <DropdownMenuItem asChild><Link to="/profile"><User /> {t("ملفي الشخصي")}</Link></DropdownMenuItem>
                     {!me?.isAdmin && (
-                      <DropdownMenuItem asChild><Link to="/support"><Headset /> تواصل مع الإدارة</Link></DropdownMenuItem>
+                      <DropdownMenuItem asChild><Link to="/support"><Headset /> {t("تواصل مع الإدارة")}</Link></DropdownMenuItem>
                     )}
-                    {me?.isAdmin && (
-                      <DropdownMenuItem asChild><Link to="/admin"><Shield /> لوحة التحكم</Link></DropdownMenuItem>
+                    {canAdmin && (
+                      <DropdownMenuItem asChild><Link to="/admin"><Shield /> {t("لوحة التحكم")}</Link></DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={signOut} className="text-destructive"><LogOut /> تسجيل الخروج</DropdownMenuItem>
+                    <DropdownMenuItem onClick={signOut} className="text-destructive"><LogOut /> {t("تسجيل الخروج")}</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
             ) : (
               <Button asChild size="sm" className="bg-brand shadow-soft">
-                <Link to="/auth">تسجيل الدخول</Link>
+                <Link to="/auth">{t("تسجيل الدخول")}</Link>
               </Button>
             )}
           </div>
@@ -105,7 +110,7 @@ export function SiteHeader() {
               className="group flex min-w-0 flex-col items-center justify-center gap-1 text-xs font-semibold text-muted-foreground"
               activeProps={{ className: "text-foreground font-extrabold" }}
             >
-              <span className="grid h-[30px] w-[52px] place-items-center rounded-full group-data-[status=active]:bg-secondary"><n.icon className="size-5" /></span><span>{n.label}</span>
+              <span className="grid h-[30px] w-[52px] place-items-center rounded-full group-data-[status=active]:bg-secondary"><n.icon className="size-5" /></span><span>{t(n.label)}</span>
             </Link>
           ))}
         </nav>
