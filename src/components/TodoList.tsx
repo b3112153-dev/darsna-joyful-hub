@@ -26,7 +26,7 @@ export const TodoList = memo(function TodoList({ userId }: { userId: string }) {
           <Checkbox id={`todo-${task.id}`} className="size-[26px] rounded-[9px] border-2 border-task-border data-[state=checked]:border-foreground data-[state=checked]:bg-mint data-[state=checked]:text-mint-foreground [&_svg]:size-4" checked={task.done} disabled={tasks.pending} onCheckedChange={async (checked) => {
             const done = checked === true;
             if (await tasks.act({ kind: "toggle", id: task.id, done })) {
-              if (done) setCheer({ id: task.id, message: tasks.encouragement() }); else setCheer(null);
+              if (done) setCheer({ id: task.id, message: t(tasks.encouragement()) }); else setCheer(null);
             }
           }} aria-label={`إنجاز ${task.text}`} />
           <label htmlFor={`todo-${task.id}`} className={`min-w-0 break-words text-[15px] leading-7 ${task.done ? "text-task-completed line-through" : "text-foreground"}`}>{task.text}</label>

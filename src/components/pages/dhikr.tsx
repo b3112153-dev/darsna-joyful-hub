@@ -45,7 +45,7 @@ export function Dhikr() {
   const streak = useMemo(() => dhikrStreak(dailyQuery.data ?? [], today), [dailyQuery.data, today]);
   const doneCount = DHIKR_ITEMS.filter((item) => todayItems.includes(item.id)).length;
   const complete = fardComplete(todayItems);
-  const encouragement = DHIKR_ENCOURAGEMENT[ammanDayOfYear() % DHIKR_ENCOURAGEMENT.length];
+  const encouragement = t(DHIKR_ENCOURAGEMENT[ammanDayOfYear() % DHIKR_ENCOURAGEMENT.length]!);
   const stories = storiesQuery.data ?? [];
   const story = stories.length ? stories[storyIndex(stories.length, ammanDayOfYear())] : null;
   const unlocked = storyUnlocked(todayItems, ammanHour());
