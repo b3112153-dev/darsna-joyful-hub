@@ -24,6 +24,7 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated/progress'
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
+import { Route as AuthenticatedAdminAvatarArtRouteImport } from './routes/_authenticated/admin_.avatar-art'
 import { Route as AuthenticatedLibraryUploadRouteImport } from './routes/_authenticated/library_.upload'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms.index'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
@@ -105,6 +106,12 @@ const AuthenticatedSupportRoute = AuthenticatedSupportRouteImport.update({
   path: '/support',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminAvatarArtRoute =
+  AuthenticatedAdminAvatarArtRouteImport.update({
+    id: '/admin_/avatar-art',
+    path: '/admin/avatar-art',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedLibraryUploadRoute =
   AuthenticatedLibraryUploadRouteImport.update({
     id: '/library_/upload',
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
+  '/admin/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
@@ -178,6 +186,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/progress': typeof AuthenticatedProgressRoute
   '/support': typeof AuthenticatedSupportRoute
+  '/admin/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
   '/library/upload': typeof AuthenticatedLibraryUploadRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
@@ -202,6 +211,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/support': typeof AuthenticatedSupportRoute
+  '/_authenticated/admin_/avatar-art': typeof AuthenticatedAdminAvatarArtRoute
   '/_authenticated/library_/upload': typeof AuthenticatedLibraryUploadRoute
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRoute
   '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/support'
+    | '/admin/avatar-art'
     | '/library/upload'
     | '/rooms/$roomId'
     | '/topics/$topicId'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/support'
+    | '/admin/avatar-art'
     | '/library/upload'
     | '/rooms/$roomId'
     | '/topics/$topicId'
@@ -271,6 +283,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/progress'
     | '/_authenticated/support'
+    | '/_authenticated/admin_/avatar-art'
     | '/_authenticated/library_/upload'
     | '/_authenticated/rooms/$roomId'
     | '/_authenticated/topics/$topicId'
@@ -395,6 +408,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSupportRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/avatar-art': {
+      id: '/_authenticated/admin_/avatar-art'
+      path: '/admin/avatar-art'
+      fullPath: '/admin/avatar-art'
+      preLoaderRoute: typeof AuthenticatedAdminAvatarArtRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/library_/upload': {
       id: '/_authenticated/library_/upload'
       path: '/library/upload'
@@ -450,6 +470,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
+  AuthenticatedAdminAvatarArtRoute: typeof AuthenticatedAdminAvatarArtRoute
   AuthenticatedLibraryUploadRoute: typeof AuthenticatedLibraryUploadRoute
   AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRoute
   AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
@@ -468,6 +489,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedSupportRoute: AuthenticatedSupportRoute,
+  AuthenticatedAdminAvatarArtRoute: AuthenticatedAdminAvatarArtRoute,
   AuthenticatedLibraryUploadRoute: AuthenticatedLibraryUploadRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRoute,
   AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,

@@ -44,6 +44,7 @@ export function useMyFocus(userId: string | undefined, autoComplete = false) {
       qc.invalidateQueries({ queryKey: ["focus", userId] }),
       qc.invalidateQueries({ queryKey: ["progress"] }),
       qc.invalidateQueries({ queryKey: ["active"] }),
+      qc.invalidateQueries({ queryKey: ["wallet", userId] }),
     ]);
   };
 
