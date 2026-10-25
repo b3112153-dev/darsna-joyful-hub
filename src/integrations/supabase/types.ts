@@ -125,6 +125,54 @@ export type Database = {
         }
         Relationships: []
       }
+      dhikr_daily: {
+        Row: {
+          day: string
+          items: Json
+          user_id: string
+        }
+        Insert: {
+          day: string
+          items?: Json
+          user_id?: string
+        }
+        Update: {
+          day?: string
+          items?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dhikr_stories: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          sort: number
+          source: string | null
+          title: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          kind: string
+          sort?: number
+          source?: string | null
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          sort?: number
+          source?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       dhikra_posts: {
         Row: {
           created_at: string
@@ -346,6 +394,7 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           deleted_by: string | null
+          edited_at: string | null
           from_admin: boolean
           id: string
           image_path: string | null
@@ -359,6 +408,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           deleted_by?: string | null
+          edited_at?: string | null
           from_admin?: boolean
           id?: string
           image_path?: string | null
@@ -372,6 +422,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           deleted_by?: string | null
+          edited_at?: string | null
           from_admin?: boolean
           id?: string
           image_path?: string | null
@@ -723,31 +774,40 @@ export type Database = {
           audience: string
           branch: Database["public"]["Enums"]["study_branch"] | null
           created_at: string
+          created_by: string | null
           description: string | null
           generation: string
           id: string
           kind: string
+          max_members: number | null
           name: string
+          scene: string | null
         }
         Insert: {
           audience?: string
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
+          created_by?: string | null
           description?: string | null
           generation?: string
           id?: string
           kind?: string
+          max_members?: number | null
           name: string
+          scene?: string | null
         }
         Update: {
           audience?: string
           branch?: Database["public"]["Enums"]["study_branch"] | null
           created_at?: string
+          created_by?: string | null
           description?: string | null
           generation?: string
           id?: string
           kind?: string
+          max_members?: number | null
           name?: string
+          scene?: string | null
         }
         Relationships: []
       }
@@ -877,6 +937,7 @@ export type Database = {
           created_at: string
           deleted_at: string | null
           deleted_by: string | null
+          edited_at: string | null
           id: string
           image_path: string | null
           reply_to: string | null
@@ -888,6 +949,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           deleted_by?: string | null
+          edited_at?: string | null
           id?: string
           image_path?: string | null
           reply_to?: string | null
@@ -899,6 +961,7 @@ export type Database = {
           created_at?: string
           deleted_at?: string | null
           deleted_by?: string | null
+          edited_at?: string | null
           id?: string
           image_path?: string | null
           reply_to?: string | null
@@ -1220,9 +1283,14 @@ export type Database = {
       can_see_quiz: { Args: { _qid: string; _uid: string }; Returns: boolean }
       can_support: { Args: { _user_id: string }; Returns: boolean }
       claim_last_week_prizes: { Args: never; Returns: undefined }
+      close_study_room: { Args: { _id: string }; Returns: undefined }
       complete_onboarding: {
         Args: { _birth: string; _gender: string; _terms_version: string }
         Returns: undefined
+      }
+      create_study_room: {
+        Args: { _name: string; _scene: string }
+        Returns: string
       }
       device_is_banned: {
         Args: { _device_id: string; _fingerprint: string }
