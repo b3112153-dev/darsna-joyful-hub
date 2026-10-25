@@ -40,7 +40,8 @@ export function useReactions(table: Table, messageIds: string[], userId: string 
     const { remove, add } = reactionToggle(rows, messageId, userId, emoji);
     try {
       if (remove.length) {
-        const { error } = await supabase.from(table).delete().eq(column, messageId).eq("user_id", userId).in("emoji", remove);
+        const request = table === "topic_reactions" ? supabase.from("topic_reactions").delete().eq("comment_id", messageId) : supabase.from(table).delete().eq("message_id", messageId);
+        const { error } = await request.eq("user_id", userId).in("emoji", remove);
         if (error) throw error;
       }
       if (add) {
