@@ -1,3 +1,4 @@
+import { DeleteContent } from "@/components/DeleteContent";
 import { PageState, Unavailable } from "@/components/PageState";
 import { readData } from "@/lib/requests";
 import { getRouteApi, Link } from "@tanstack/react-router";
@@ -27,17 +28,17 @@ export function Topics() {
         <h1 className="text-3xl font-bold">{t("مواضيع ونقاشات")}</h1>
         <p className="text-muted-foreground">{t("موضوع جديد من الإدارة بشكل دوري — ادرسه وبعدين شارك برأيك.")}</p>
       </div>
-      {me?.isAdmin && <NewTopic />}
+      {(me?.isAdmin || me?.isOwner) && <NewTopic />}
       <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
       {!isLoading && !isError && topics.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("ما في مواضيع بعد.")}</p>}
       <div className="space-y-3">
         {topics.map((topic) => (
-          <Link key={topic.id} to="/topics/$topicId" params={{ topicId: topic.id }} className="block rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-soft">
+          <div key={topic.id} className="relative"><div className="absolute end-2 top-2"><DeleteContent table="topics" id={topic.id} /></div><Link to="/topics/$topicId" params={{ topicId: topic.id }} className="block rounded-2xl border bg-card p-5 pe-12 shadow-card transition hover:shadow-soft">
             <p className="mb-1 text-xs text-muted-foreground">الإدارة · {topic.subject ?? t("عام")} · {new Date(topic.created_at).toLocaleDateString("ar-u-nu-latn")}</p>
             <h2 className="font-semibold">{topic.title}</h2>
             <p className="line-clamp-2 text-sm text-muted-foreground">{topic.body}</p>
             <p className="mt-2 flex items-center gap-1 text-xs text-primary"><MessageCircle className="size-3.5" /> {(topic.topic_comments as unknown as { count: number }[])[0]?.count ?? 0} تعليق</p>
-          </Link>
+          </Link></div>
         ))}
       </div>
     </main>

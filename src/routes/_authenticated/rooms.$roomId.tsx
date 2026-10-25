@@ -12,7 +12,10 @@ import { PageState, Unavailable } from "@/components/PageState";
 import { useRoomMessages } from "@/hooks/use-room-messages";
 import { useReactions } from "@/hooks/use-reactions";
 import { useNow } from "@/hooks/use-focus";
-import { canDeleteMessage, type Message } from "@/lib/chat-messages";
+import { type Message } from "@/lib/chat-messages";
+import { canDeleteEntry } from "@/lib/message-permissions";
+import { ImagePicker, useImagePicker } from "@/components/ImagePicker";
+import { ReplyQuote } from "@/components/ReplyQuote";
 import { readData, requestSignal } from "@/lib/requests";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FocusTimer } from "@/components/FocusTimer";
@@ -44,6 +47,7 @@ function ChatRoom() {
   const { roomId } = Route.useParams();
   const { user, me } = useMe();
   const [text, setText] = useState("");
+  const image = useImagePicker();
   const endRef = useRef<HTMLDivElement>(null);
   const focus = useMyFocus(user?.id);
   const [sending, setSending] = useState(false);
@@ -66,7 +70,7 @@ function ChatRoom() {
   const messageIds = messages.map((m) => m.id);
   const reactionsApi = useReactions("message_reactions", messageIds, user?.id, roomId);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
-  const previewOf = (id: string | null) => id ? messages.find((m) => m.id === id)?.content ?? t("رسالة محذوفة") : null;
+  const previewOf = (id: string | null) => id ? messages.find((m) => m.id === id) ?? { content: t("رسالة محذوفة") } : null;
 
   useEffect(() => {
     if (tab !== "chat" || loadingOlder.current || lastId === previousLast.current) return;
@@ -95,16 +99,19 @@ function ChatRoom() {
   async function send(e: React.FormEvent) {
     e.preventDefault();
     const content = text.trim();
-    if (!content || !user || sending || locked) return;
+    if ((!content && !image.file) || !user || sending || locked) return;
     setSending(true);
+    let uploaded: string | null = null;
     try {
-      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,nickname,avatar,gender)").single());
+      uploaded = await image.upload(user.id, "chat-images");
+      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, image_path: uploaded, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,nickname,avatar,gender)").single());
       if (!message) throw new Error(t("تعذر الإرسال"));
       chat.append(message);
+      image.select(null);
       setReplyTo(null);
       setText((current) => current.trim() === content ? "" : current);
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "nearest" }));
-    } catch { toast.error(me?.isBanned ? t("حسابك محظور من الإرسال") : "تعذر إرسال الرسالة؛ حاول مرة ثانية."); }
+    } catch (error) { if (uploaded) void supabase.storage.from("chat-images").remove([uploaded]); toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : t("تعذر الإرسال")); }
     finally { setSending(false); }
   }
 
@@ -140,7 +147,7 @@ function ChatRoom() {
         {chat.hasNextPage && <div className="text-center"><Button variant="outline" size="sm" disabled={chat.isFetchingNextPage} onClick={() => void loadOlder()}>{chat.isFetchingNextPage ? t("جاري التحميل…") : "تحميل الأقدم"}</Button></div>}
         <PageState loading={chat.isPending} error={chat.isError} retry={() => void (chat.isFetchNextPageError ? chat.fetchNextPage() : chat.refetch())} />
         {chat.isSuccess && messages.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("لا يوجد رسائل بعد — كن أول من يكتب!")}</p>}
-        {messages.map((m) => <ChatMessage key={m.id} message={m} own={m.user_id === user?.id} canDelete={canDeleteMessage(m, user?.id, !!me?.isStaff)} reactions={reactionsApi.reactions} userId={user?.id} now={now} onDelete={chat.remove} onEdit={chat.edit} onReact={(id, emoji) => void reactionsApi.toggle(id, emoji)} onReply={setReplyTo} replyPreview={previewOf(m.reply_to)} />)}
+        {messages.map((m) => <ChatMessage key={m.id} message={m} own={m.user_id === user?.id} canDelete={canDeleteEntry(m.user_id, m.sender_role, m.from_admin, user?.id, me)} reactions={reactionsApi.reactions} userId={user?.id} now={now} onDelete={chat.remove} onEdit={chat.edit} onReact={(id, emoji) => void reactionsApi.toggle(id, emoji)} onReply={setReplyTo} replyQuote={previewOf(m.reply_to)} />)}
         <div ref={endRef} />
       </div>
       {me?.isBanned ? (
@@ -150,15 +157,13 @@ function ChatRoom() {
           {t("🔒 الدردشة مقفلة — باقي")} <span dir="ltr" className="font-bold tabular-nums">{fmtClock(focus.left * 1000)}</span> {t("على نهاية جلستك")}
         </button>
       ) : (
-        <form onSubmit={send} className="grid grid-cols-[minmax(0,1fr)_48px] gap-2 border-t bg-card px-3 pb-3.5 pt-2.5">
-          {replyTo && (
-            <div className="col-span-2 flex items-center gap-2 rounded-[14px] border-s-4 border-primary bg-secondary px-3 py-2 text-xs">
-              <span className="min-w-0 flex-1 truncate">رد على: {replyTo.content}</span>
-              <button type="button" aria-label={t("إلغاء الرد")} className="shrink-0 font-bold text-muted-foreground" onClick={() => setReplyTo(null)}>✕</button>
-            </div>
-          )}
-          <Input value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder={t("اكتب رسالتك…")} className="h-12 min-w-0 rounded-[16px] border-border bg-background" />
-          <Button size="icon" disabled={sending || !text.trim() || !chat.isSuccess} className="size-12 shrink-0 rounded-[16px] bg-primary" aria-label={t("إرسال")}><Send className="size-5 -scale-x-100" /></Button>
+        <form onSubmit={send} onPaste={image.paste} className="flex flex-col gap-2 border-t bg-card px-3 pb-3.5 pt-2.5">
+          {replyTo && <ReplyQuote quote={replyTo} onCancel={() => setReplyTo(null)} />}
+          <div className="flex min-w-0 gap-2">
+            <ImagePicker file={image.file} onChange={image.select} disabled={sending} />
+            <Input value={text} maxLength={2000} onChange={(e) => setText(e.target.value)} placeholder={t("اكتب رسالتك…")} className="h-12 min-w-0 flex-1 rounded-[16px] border-border bg-background" />
+            <Button size="icon" disabled={sending || (!text.trim() && !image.file) || !chat.isSuccess} className="size-12 shrink-0 rounded-[16px] bg-primary" aria-label={t("إرسال")}><Send className="size-5 -scale-x-100" /></Button>
+          </div>
         </form>
       )}
       </TabsContent>

@@ -1,3 +1,4 @@
+import { canDeleteContent } from "@/lib/message-permissions";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -22,7 +23,7 @@ export function AdminDhikr() {
   const [form, setForm] = useState(empty);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const allowed = !!me && (me.isStaff || me.isSupport || me.isOwner);
+  const allowed = !!me && (me.isAdmin || me.isSupport || me.isOwner);
 
   const query = useQuery({
     queryKey: ["dhikr-stories"],
@@ -103,7 +104,7 @@ export function AdminDhikr() {
               <p className="line-clamp-2 text-xs leading-6 text-muted-foreground">{story.body}</p>
             </div>
             <Button size="icon" variant="ghost" aria-label={t("تعديل")} onClick={() => { setEditingId(story.id); setForm({ kind: story.kind, title: story.title, body: story.body, source: story.source ?? "", sort: story.sort }); }}><Pencil className="size-4" /></Button>
-            <Button size="icon" variant="ghost" aria-label={t("حذف")} className="text-destructive" onClick={() => void remove(story.id)}><Trash2 className="size-4" /></Button>
+            {canDeleteContent(me) && <Button size="icon" variant="ghost" aria-label={t("حذف")} className="text-destructive" onClick={() => void remove(story.id)}><Trash2 className="size-4" /></Button>}
           </div>
         ))}
         {query.isSuccess && query.data?.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">{t("ما في سجلات بعد.")}</p>}

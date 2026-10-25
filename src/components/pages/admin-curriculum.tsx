@@ -1,3 +1,4 @@
+import { canDeleteContent } from "@/lib/message-permissions";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2 } from "lucide-react";
@@ -38,7 +39,7 @@ export function AdminCurriculum() {
 
   if (loading || (user && unitsQ.isLoading)) return <PageState loading />;
   if (isError || unitsQ.isError) return <PageState error retry={() => { void refetch(); void unitsQ.refetch(); }} />;
-  if (!me || !(me.isStaff || me.isSupport || me.isOwner)) return <Unavailable kind={t("الصفحة")} />;
+  if (!me || !(me.isAdmin || me.isSupport || me.isOwner)) return <Unavailable kind={t("الصفحة")} />;
 
   const units = unitsQ.data ?? [];
 
@@ -50,7 +51,7 @@ export function AdminCurriculum() {
       const row = {
         generation: edit.generation, track: edit.track, subject: edit.subject.trim(),
         semester: edit.semester, unit_no: edit.unit_no, title: edit.title.trim(), lessons: edit.lessons,
-        created_by: user!.id,
+        created_by: user?.id ?? null,
       };
       if (edit.id) await readData(supabase.from("curriculum_units").update(row).eq("id", edit.id));
       else await readData(supabase.from("curriculum_units").insert(row));
@@ -84,7 +85,7 @@ export function AdminCurriculum() {
       }
       rows.push({
         generation: pasteGen, track: pasteTrack, subject,
-        semester: Number(sem), unit_no: Number(no), title, lessons: Number(lessons), created_by: user!.id,
+        semester: Number(sem), unit_no: Number(no), title, lessons: Number(lessons), created_by: user?.id ?? null,
       });
     }
     if (!rows.length) { toast.error(t("الصق أسطر الوحدات أولاً")); return; }
@@ -140,9 +141,9 @@ export function AdminCurriculum() {
             <Button size="sm" variant="ghost" className="h-8 shrink-0" onClick={() => setEdit({ id: u.id, generation: u.generation, track: u.track, subject: u.subject, semester: u.semester, unit_no: u.unit_no, title: u.title, lessons: u.lessons })} aria-label={t("تعديل")}>
               <Pencil className="size-4" />
             </Button>
-            <Button size="sm" variant="ghost" className="h-8 shrink-0 text-destructive" disabled={busy} onClick={() => remove(u)} aria-label={t("حذف")}>
+            {canDeleteContent(me) && <Button size="sm" variant="ghost" className="h-8 shrink-0 text-destructive" disabled={busy} onClick={() => remove(u)} aria-label={t("حذف")}>
               <Trash2 className="size-4" />
-            </Button>
+            </Button>}
           </div>
         ))}
       </div>

@@ -1,3 +1,5 @@
+import { useMe } from "@/hooks/use-auth";
+import { canDeleteContent } from "@/lib/message-permissions";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -9,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function LibraryAdmin() {
+  const { me } = useMe();
   const qc = useQueryClient();
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
@@ -18,7 +21,7 @@ export function LibraryAdmin() {
   const { data: files = [] } = useQuery({
     queryKey: ["library"],
     queryFn: async () =>
-      (await supabase.from("library_files").select("*").order("created_at", { ascending: false })).data ?? [],
+      (await supabase.from("library_files").select("*").is("deleted_at", null).order("created_at", { ascending: false })).data ?? [],
   });
 
   async function upload(e: React.FormEvent) {
@@ -48,8 +51,7 @@ export function LibraryAdmin() {
     });
     setBusy(false);
     if (error) {
-      await supabase.storage.from("library").remove([path]);
-      toast.error("تعذر حفظ الملف");
+        toast.error("تعذر حفظ الملف");
       return;
     }
     toast.success("تم رفع الملف");
@@ -61,7 +63,6 @@ export function LibraryAdmin() {
 
   async function del(id: string, path: string) {
     if (!confirm("حذف الملف؟")) return;
-    await supabase.storage.from("library").remove([path]);
     const { error } = await supabase.from("library_files").delete().eq("id", id);
     if (error) toast.error("تعذر الحذف");
     qc.invalidateQueries({ queryKey: ["library"] });
@@ -90,7 +91,7 @@ export function LibraryAdmin() {
               <p className="font-semibold break-words">{f.title}</p>
               <p className="text-xs text-muted-foreground">{f.subject} · {branchLabel(f.branch)} · {f.file_name}</p>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => del(f.id, f.file_path)} aria-label="حذف"><Trash2 className="text-destructive" /></Button>
+            {canDeleteContent(me) && <Button size="icon" variant="ghost" onClick={() => del(f.id, f.file_path)} aria-label="حذف"><Trash2 className="text-destructive" /></Button>}
           </div>
         ))}
       </div>

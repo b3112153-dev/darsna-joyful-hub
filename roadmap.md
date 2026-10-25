@@ -1,5 +1,9 @@
 # Roadmap (current batch)
 
+- [ ] Unify room/support/topic tools, private images and quoted thumbnails.
+- [ ] Moderator stars and scoped deletion across messages and content.
+- [ ] Verify tests, build and signed-in RTL/LTR message flow.
+
 - [x] Simplify student chats to three entries and move Rooms to home; selection/privacy rules tested.
 - [x] Staff chats inbox, grouped rooms, review and scoped tools; real staff session opens inbox and full-screen history.
 - [x] Unified composed avatars and nickname privacy; explicit profile field reads; nickname dialog save remains visible.

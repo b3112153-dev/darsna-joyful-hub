@@ -20,6 +20,9 @@ import { AvatarPic } from "@/components/AvatarPic";
 import { PageState } from "@/components/PageState";
 import { LibraryAdmin } from "@/components/LibraryAdmin";
 import { SupportAdmin } from "@/components/SupportAdmin";
+import { MessageRole } from "@/components/MessageRole";
+import { DeleteContent } from "@/components/DeleteContent";
+import { canDeleteEntry } from "@/lib/message-permissions";
 import { useLang } from "@/lib/i18n";
 
 type Can = { owner: boolean; admin: boolean; mod: boolean; support: boolean };
@@ -29,7 +32,7 @@ export function Admin() {
   const { me } = useMe();
   const can: Can = {
     owner: !!me?.isOwner,
-    admin: !!me?.isAdmin,
+    admin: !!(me?.isAdmin || me?.isOwner),
     mod: !!me && me.isStaff && !me.isAdmin,
     support: !!me?.isSupport,
   };
@@ -276,14 +279,14 @@ function StudentsAdmin({ can }: { can: Can }) {
             <div key={u.id} className="flex flex-wrap items-center gap-3 p-4">
               <AvatarPic profile={u} />
               <div className="flex-1 min-w-40">
-                <p className="font-semibold">{u.nickname || u.display_name}</p>
+                <p className="flex flex-wrap items-center gap-1 font-semibold">{u.nickname || u.display_name}<MessageRole role={isAdmin ? "admin" : isMod ? "moderator" : isSupport ? "support" : null} /></p>
                 <p className="text-xs text-muted-foreground">
                   {u.gender === "female" ? "أنثى" : u.gender === "male" ? "ذكر" : "—"} · {u.generation ?? "—"} · {branchLabel(u.branch)}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {isAdmin ? "أدمن" : isMod ? "مشرف" : isSupport ? "دعم" : "طالب"}
                   {u.banned && <span className="text-destructive"> · محظور</span>}
-                  {muted && <span className="text-amber-700"> · مكتوم حتى {new Date(u.mutedUntil!).toLocaleString("ar-u-nu-latn")}</span>}
+                  {muted && <span className="text-amber-700"> · مكتوم حتى {new Date(u.mutedUntil ?? "").toLocaleString("ar-u-nu-latn")}</span>}
                 </p>
               </div>
               {!isAdmin && (
@@ -382,13 +385,14 @@ function OwnerEmails() {
 }
 
 function MessagesAdmin() {
+  const { user, me } = useMe();
   const qc = useQueryClient();
   const { data = [], isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-messages"],
     queryFn: async () =>
       await readData(supabase
         .from("messages")
-        .select("id,content,created_at,profiles(display_name,nickname,avatar,gender),rooms(name)").is("deleted_at", null)
+        .select("id,user_id,sender_role,from_admin,content,created_at,profiles(display_name,nickname,avatar,gender),rooms(name)").is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(100)) ?? [],
   });
@@ -408,11 +412,11 @@ function MessagesAdmin() {
             <AvatarPic profile={m.profiles} className="size-8" />
             <div className="flex-1 min-w-0">
               <p className="text-xs text-muted-foreground">
-                {m.profiles?.display_name} · {m.rooms?.name} · {new Date(m.created_at).toLocaleString("ar-u-nu-latn")}
+                {m.profiles?.display_name} <MessageRole role={m.sender_role} admin={m.from_admin} /> · {m.rooms?.name} · {new Date(m.created_at).toLocaleString("ar-u-nu-latn")}
               </p>
               <p className="break-words text-sm">{m.content}</p>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => del(m.id)} aria-label="حذف"><Trash2 className="text-destructive" /></Button>
+            {canDeleteEntry(m.user_id, m.sender_role, m.from_admin, user?.id, me) && <Button size="icon" variant="ghost" onClick={() => del(m.id)} aria-label="حذف"><Trash2 className="text-destructive" /></Button>}
           </div>
         ))}
       </div>
@@ -604,7 +608,7 @@ function PendingQuizzes() {
               <p className="text-xs text-muted-foreground">{qz.subject}{qz.unit ? ` · ${qz.unit}` : ""} · {qz.minutes} دقيقة · {new Date(qz.created_at).toLocaleDateString("ar-u-nu-latn")}</p>
             </div>
             <Button size="sm" className="bg-brand" onClick={() => review(qz.id, true)}>اعتماد</Button>
-            <Button size="sm" variant="destructive" onClick={() => review(qz.id, false)}>رفض</Button>
+            <Button size="sm" variant="destructive" onClick={() => review(qz.id, false)}>رفض</Button><DeleteContent table="quizzes" id={qz.id} />
           </div>
         ))}
       </div>

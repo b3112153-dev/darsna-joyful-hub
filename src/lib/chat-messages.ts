@@ -1,3 +1,4 @@
+import { canDeleteEntry, type MessageActor } from "@/lib/message-permissions";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { Database } from "@/integrations/supabase/types";
 import type { PublicProfile } from "@/lib/identity";
@@ -39,8 +40,8 @@ export function orderedMessages(cache: MessageCache | undefined): Message[] {
   return [...unique.values()].sort((a, b) => a.created_at.localeCompare(b.created_at) || a.id.localeCompare(b.id));
 }
 
-export function canDeleteMessage(message: Message, userId: string | undefined, staff: boolean) {
-  return message.user_id === userId || staff;
+export function canDeleteMessage(message: Message, userId: string | undefined, actor: MessageActor) {
+  return canDeleteEntry(message.user_id, message.sender_role, message.from_admin, userId, actor);
 }
 
 export function canEditMessage(message: Message, userId: string | undefined) {

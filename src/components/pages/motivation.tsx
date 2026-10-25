@@ -1,3 +1,4 @@
+import { canDeleteContent } from "@/lib/message-permissions";
 import { PageState, Unavailable } from "@/components/PageState";
 import { readData } from "@/lib/requests";
 import { useState } from "react";
@@ -55,7 +56,6 @@ export function Motivation() {
   }
   async function del(p: Post) {
     if (!confirm(t("حذف المنشور؟"))) return;
-    if (p.image_path) await supabase.storage.from("motivation").remove([p.image_path]);
     await supabase.from("motivation_posts").delete().eq("id", p.id);
     qc.invalidateQueries({ queryKey: ["motivation"] });
   }
@@ -90,7 +90,7 @@ export function Motivation() {
                 <p className="text-sm font-semibold">{name}</p>
                 <p className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleDateString("ar-u-nu-latn", { day: "numeric", month: "long" })}</p>
               </div>
-              {(p.user_id === user?.id || me?.isStaff) && (
+              {(canDeleteContent(me) || (!me?.roles.includes("moderator") && !me?.isSupport && p.user_id === user?.id)) && (
                 <button onClick={() => del(p)} aria-label={t("حذف")} className="text-muted-foreground hover:text-destructive"><Trash2 className="size-4" /></button>
               )}
             </div>

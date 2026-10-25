@@ -48,6 +48,7 @@
   --color-staff: var(--staff);
   --color-staff-foreground: var(--staff-foreground);
   --color-staff-border: var(--staff-border);
+  --color-moderator-star: var(--moderator-star);
   --color-role-badge: var(--role-badge);
   --color-role-badge-foreground: var(--role-badge-foreground);
   --color-support: var(--support);
@@ -61,6 +62,7 @@
 }
 
 :root {
+  --moderator-star: #d4a017;
   --avatar-foreground: #66140e;
   --library-tabs: #F0E0C4;
   --radius: 1.1rem;

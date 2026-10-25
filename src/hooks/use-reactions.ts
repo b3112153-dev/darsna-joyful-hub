@@ -5,11 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { reactionToggle, type ReactionRow } from "@/lib/reactions";
 import { t } from "@/lib/i18n";
 
-type Table = "message_reactions" | "support_reactions";
+type Table = "message_reactions" | "support_reactions" | "topic_reactions";
 
 /** Live reactions for a set of message ids, with toggle (same emoji removes). */
 export function useReactions(table: Table, messageIds: string[], userId: string | undefined, scope: string) {
   const qc = useQueryClient();
+  const column = table === "topic_reactions" ? "comment_id" : "message_id";
   const key = [table, scope];
   const idsKey = messageIds.join(",");
   const query = useQuery({
@@ -17,9 +18,9 @@ export function useReactions(table: Table, messageIds: string[], userId: string 
     enabled: messageIds.length > 0,
     staleTime: 30_000,
     queryFn: async () => {
-      const { data, error } = await supabase.from(table).select("message_id,user_id,emoji").in("message_id", messageIds);
+      const { data, error } = await supabase.from(table).select(`${column},user_id,emoji`).in(column, messageIds);
       if (error) throw error;
-      return (data ?? []) as ReactionRow[];
+      return (data ?? []).map((row) => { const r = row as unknown as Record<string, string>; return { message_id: r[column], user_id: r["user_id"], emoji: r["emoji"] }; }) as ReactionRow[];
     },
   });
 
@@ -39,11 +40,12 @@ export function useReactions(table: Table, messageIds: string[], userId: string 
     const { remove, add } = reactionToggle(rows, messageId, userId, emoji);
     try {
       if (remove.length) {
-        const { error } = await supabase.from(table).delete().eq("message_id", messageId).eq("user_id", userId).in("emoji", remove);
+        const request = table === "topic_reactions" ? supabase.from("topic_reactions").delete().eq("comment_id", messageId) : supabase.from(table).delete().eq("message_id", messageId);
+        const { error } = await request.eq("user_id", userId).in("emoji", remove);
         if (error) throw error;
       }
       if (add) {
-        const { error } = await supabase.from(table).insert({ message_id: messageId, user_id: userId, emoji: add } as never);
+        const { error } = await supabase.from(table).insert({ [column]: messageId, user_id: userId, emoji: add } as never);
         if (error) throw error;
       }
     } catch { toast.error(t("تعذر حفظ التفاعل؛ حاول مرة ثانية.")); }

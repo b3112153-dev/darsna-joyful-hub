@@ -1,3 +1,4 @@
+import { canDeleteContent } from "@/lib/message-permissions";
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -134,7 +135,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
             <div key={r.id} className={`min-w-60 shrink-0 rounded-xl border p-3 ${live ? "border-primary bg-secondary" : "bg-card"}`}>
               <div className="mb-1 flex items-start justify-between gap-2">
                 <p className="text-sm font-semibold break-words">{r.title}</p>
-                {(r.created_by === user?.id || me?.isStaff) && (
+                {(canDeleteContent(me) || (!me?.roles.includes("moderator") && !me?.isSupport && r.created_by === user?.id)) && (
                   <button onClick={() => remove(r.id)} aria-label={t("إلغاء")} className="text-muted-foreground hover:text-destructive"><Trash2 className="size-3.5" /></button>
                 )}
               </div>

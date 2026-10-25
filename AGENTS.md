@@ -24,3 +24,4 @@
 - Personal tasks share a user-scoped Query cache with serialized optimistic mutations and rollback. Why: the home and focus screen show the same tasks without racing concurrent edits.
 - Brand and message-role colors are semantic global CSS tokens, including legacy background utilities. Why: palette changes must update the entire platform without per-page hardcoded colors.
 - Library upload and quiz screens are lazy protected leaf routes un-nested from the library leaf; quiz scoring uses submit_quiz only, never quiz_answers. Why: keep navigation light and correct answers inaccessible before submission.
+- All chat and topic messages share ChatMessage, MessageActions, ReactionBar, ImagePicker and ReplyQuote; deletion visibility uses message-permissions and private images use cached signed URLs. Why: keep message tools and role restrictions consistent without duplicate rendering or public uploads.
