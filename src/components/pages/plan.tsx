@@ -509,7 +509,7 @@ function PlanWizard({ initial, units, generation, busy, onSave, onCancel }: {
                     <Checkbox checked={off} onCheckedChange={(v) => set({ school: { ...a.school, [String(d)]: v ? "off" : { go: 7 * 60 + 30, back: 14 * 60 } } })} aria-label={`إجازة ${DAY_NAMES[d]}`} />
                     إجازة
                   </label>
-                  {!off && sch && sch !== "off" && (
+                  {!off && typeof sch === "object" && (
                     <div className="flex flex-1 items-center gap-1.5" dir="ltr">
                       <Input type="time" className="h-9" value={toTime(sch.go)} onChange={(e) => set({ school: { ...a.school, [String(d)]: { ...sch, go: toMin(e.target.value || "07:30") } } })} aria-label={`ذهاب ${DAY_NAMES[d]}`} />
                       <span className="text-xs">→</span>
