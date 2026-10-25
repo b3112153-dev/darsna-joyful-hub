@@ -1,14 +1,25 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { EN } from "./i18n-en";
+import { latinDigits } from "./identity";
 
 export type Lang = "ar" | "en";
 
 let current: Lang = "ar";
+function translate(text: string, lang: Lang) {
+  const key = latinDigits(text);
+  const shared: Record<string, string> = {
+    "رومات الدراسة": "Rooms", "روم جديد": "New Room", "روم دراسة جديد": "New Room",
+    "روم دراسة": "Study Room", "الروم": "Study Room", "مغادرة الروم": "Leave Room", "إغلاق الروم": "Close Room",
+    "المستوى": "Level", "مستوى": "Level", "وضع التركيز": "Focus", "تفعيل وضع التركيز": "Focus",
+  };
+  if (shared[key]) return shared[key];
+  return latinDigits(lang === "en" ? (EN[key] ?? text) : text);
+}
 
 /** Non-hook translator for module code (toasts, lib helpers). */
 export function t(ar: string | null | undefined): string {
   if (!ar) return "";
-  return current === "en" ? (EN[ar] ?? ar) : ar;
+  return translate(ar, current);
 }
 
 const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
@@ -62,5 +73,5 @@ export function useLang() {
 /** Hook translator: t("نص عربي") → English when the active language is en. */
 export function useT() {
   const { lang } = useLang();
-  return (ar: string | null | undefined) => (ar ? (lang === "en" ? (EN[ar] ?? ar) : ar) : "");
+  return (ar: string | null | undefined) => (ar ? translate(ar, lang) : "");
 }

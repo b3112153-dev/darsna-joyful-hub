@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { UserAvatar } from "@/components/UserAvatar";
+import { AvatarPic } from "@/components/AvatarPic";
 import { AvatarPreview } from "@/components/AvatarPreview";
 import { WalletChip } from "@/components/WalletChip";
 import { PageState } from "@/components/PageState";
@@ -69,10 +69,10 @@ function Profile() {
       </div>
       {wallet.isLoading && <PageState loading />}
       {wallet.isError && <PageState error retry={() => wallet.refetch()} />}
-      {wallet.data && (
+      {wallet.data && user && (
         <>
           <LevelCard wallet={wallet.data} />
-          <AvatarCard wallet={wallet.data} gender={gender} userId={user!.id} />
+          <AvatarCard wallet={wallet.data} gender={gender} userId={user.id} />
           <Button asChild variant="outline" className="w-full">
             <Link to="/board"><Trophy /> {t("لوحة الأسبوع")}</Link>
           </Button>
@@ -89,7 +89,7 @@ function LevelCard({ wallet }: { wallet: Wallet }) {
   return (
     <section className="rounded-[20px] border bg-card p-4 shadow-card">
       <div className="flex items-center justify-between">
-        <p className="font-display text-lg font-extrabold">المستوى {wallet.level}</p>
+        <p className="font-display text-lg font-extrabold">Level {wallet.level}</p>
         <p className="text-sm text-muted-foreground">{wallet.hours} ساعة دراسة</p>
       </div>
       <Progress dir="ltr" value={Math.min(100, (into / 5) * 100)} className="mt-3 h-2.5" />
@@ -104,6 +104,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
   const catalog = useAvatarCatalog();
   const [tab, setTab] = useState("outfit");
   const [nickOpen, setNickOpen] = useState(false);
+  const [wardrobeOpen, setWardrobeOpen] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const key = ["wallet", userId];
 
@@ -133,6 +134,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
       return false;
     }
     setCache({ avatar: (data as AvatarState) ?? next });
+    await qc.invalidateQueries({ predicate: (query) => !["avatar-images", "avatar-catalog"].includes(String(query.queryKey[0])) });
     return true;
   }
 
@@ -182,11 +184,13 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
           className="mx-auto aspect-square w-full max-w-[200px]"
         />
       </div>
-      <div className="mt-3 text-center">
+      <div className="mt-3 flex flex-wrap justify-center gap-2 text-center">
+        <Button variant="secondary" size="sm" onClick={() => { setWardrobeOpen(true); requestAnimationFrame(() => document.getElementById("avatar-wardrobe")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>{t("غيّر الصورة")}</Button>
         <Button variant="outline" size="sm" onClick={() => setNickOpen(true)}>{t("سمّي أفتارك")}</Button>
         <p className="mt-1.5 text-xs text-muted-foreground">{t("تقدر تغيّره مرة كل 40 يوم")}</p>
       </div>
 
+      <div id="avatar-wardrobe" className={wardrobeOpen ? "scroll-mt-20 ring-1 ring-primary rounded-2xl p-2" : "scroll-mt-20"}>
       {gender === "female" && (
         <div className="mt-4 rounded-2xl bg-secondary/50 p-3">
           <p className="mb-2 text-sm font-bold">{t("لون الشعر")}</p>
@@ -246,7 +250,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
                 {url ? <img src={url} alt={it.name_ar} loading="lazy" className="h-full w-full object-contain" /> : <Icon className="size-10 text-primary" />}
               </div>
               <p className="mt-2 truncate text-sm font-bold">{it.name_ar}</p>
-              <p className="text-xs text-muted-foreground">مستوى {it.level_req} · {it.price === 0 ? "مجاني" : `${it.price} JD`}</p>
+              <p className="text-xs text-muted-foreground">Level {it.level_req} · {it.price === 0 ? "مجاني" : `${it.price} JD`}</p>
               {isWorn ? (
                 <Button size="sm" variant="secondary" className="mt-2" disabled={busy === it.id || it.category === "outfit"} onClick={() => unwear(it)}>
                   لابسته{it.category !== "outfit" && t(" — اخلعه")}
@@ -254,7 +258,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
               ) : owned ? (
                 <Button size="sm" className="mt-2 bg-brand" disabled={busy === it.id} onClick={() => wear(it)}>{t("ألبس")}</Button>
               ) : !levelOk ? (
-                <Button size="sm" variant="outline" className="mt-2" disabled>مفتوح بالمستوى {it.level_req}</Button>
+                <Button size="sm" variant="outline" className="mt-2" disabled>Level {it.level_req}</Button>
               ) : !canAfford ? (
                 <Button size="sm" variant="outline" className="mt-2" disabled>{t("رصيدك ما يكفي")}</Button>
               ) : (
@@ -265,12 +269,13 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
         })}
       </div>
       {catalog.data && items.length === 0 && <p className="mt-3 text-center text-sm text-muted-foreground">{t("ما في أغراض بهالقسم بعد")}</p>}
+      </div>
 
       <NicknameDialog
         open={nickOpen}
         mandatory={!wallet.nickname}
         onOpenChange={(o) => (wallet.nickname ? setNickOpen(o) : undefined)}
-        onSaved={(n) => { setCache({ nickname: n }); setNickOpen(false); }}
+        onSaved={(n) => { setCache({ nickname: n }); setNickOpen(false); void qc.invalidateQueries({ predicate: (query) => !["avatar-images", "avatar-catalog"].includes(String(query.queryKey[0])) }); }}
       />
     </section>
   );
@@ -347,7 +352,7 @@ function AccountCard() {
     <section className="space-y-6 rounded-[20px] border bg-card p-6 shadow-card">
       <h2 className="text-lg font-bold">{t("إعدادات الحساب")}</h2>
       <div className="flex items-center gap-4">
-        <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} className="size-20" />
+        <AvatarPic profile={me?.profile} className="size-20" />
         <Label className="cursor-pointer rounded-lg border bg-silver-sheen px-4 py-2 text-sm">
           {t("تغيير الصورة")}
           <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />

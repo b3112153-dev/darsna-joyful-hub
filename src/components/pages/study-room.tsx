@@ -83,7 +83,7 @@ export function StudyRoom() {
           <FocusTimer focus={focus} roomId={roomId} />
         )}
 
-        <Button variant="ghost" className="w-full" onClick={() => navigate({ to: "/study-rooms" })}><DoorOpen className="size-4" /> {t("مغادرة")}</Button>
+        <Button variant="ghost" className="w-full" onClick={() => navigate({ to: "/study-rooms" })}><DoorOpen className="size-4" /> Leave Room</Button>
       </div>
     </main>
   );

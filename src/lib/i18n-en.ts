@@ -4,6 +4,28 @@
  * Missing keys fall back to the Arabic source string.
  */
 export const EN: Record<string, string> = {
+  "شات": "Chat",
+  "هذا مخصص للبنات": "This chat is for girls",
+  "هذا مخصص للشباب": "This chat is for boys",
+  "جولة الدراسة": "Study Round",
+  "ادرس مع طلاب دفعتك": "Study with your generation",
+  "دعم غير مقروء": "Unread support",
+  "رسائل مبلّغ عنها": "Reported messages",
+  "الغرف": "Rooms",
+  "المراجعة": "Review",
+  "أدوات الكتم": "Mute tools",
+  "بحث": "Search",
+  "غير مقروء": "Unread",
+  "صورة": "Image",
+  "ابحث بالاسم أو الاسم المستعار…": "Search by name or nickname…",
+  "ما في محادثات بعد": "No conversations yet",
+  "لا يوجد رسائل": "No messages yet",
+  "تحميل المزيد": "Load more",
+  "تحميل الأقدم": "Load older",
+  "موافقة": "Approve",
+  "تم رفض المشاركة": "Submission rejected",
+  "لا يوجد نتائج": "No results",
+  "غيّر الصورة": "Change picture",
   // Navigation & header
   "الرئيسية": "Home",
   "حلّها": "Plan",
