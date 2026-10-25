@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
-import { fmtJD, parseWallet, useWallet, type AvatarState, type Wallet } from "@/hooks/use-wallet";
+import { parseWallet, useWallet, type AvatarState, type Wallet } from "@/hooks/use-wallet";
 import { imageFor, useAvatarCatalog, useAvatarImages, type CatalogItem } from "@/hooks/use-avatar";
 import { BRANCHES, type Branch } from "@/lib/branches";
 import { Button } from "@/components/ui/button";
@@ -367,6 +367,3 @@ function AccountCard() {
     </section>
   );
 }
-
-// Keep fmtJD referenced for future balance displays.
-void fmtJD;
