@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async ({ context }) => {
-    const { data } = await supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
-    if (!data) throw redirect({ to: "/rooms" });
+    const { data } = await supabase.from("user_roles").select("role").eq("user_id", context.userId);
+    const roles = (data ?? []).map((r) => r.role);
+    if (!roles.some((r) => r === "admin" || r === "moderator" || r === "support")) throw redirect({ to: "/rooms" });
   },
   head: () => ({
     meta: [
