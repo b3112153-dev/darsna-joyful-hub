@@ -26,6 +26,7 @@ export const EN: Record<string, string> = {
   "تم رفض المشاركة": "Submission rejected",
   "لا يوجد نتائج": "No results",
   "غيّر الصورة": "Change picture",
+  "مصاريك": "Wallet",
   // Navigation & header
   "الرئيسية": "Home",
   "حلّها": "Plan",

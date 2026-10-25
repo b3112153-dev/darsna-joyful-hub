@@ -44,10 +44,15 @@ export function StaffChats() {
         {access.review && <TabsTrigger value="review">{t("المراجعة")}</TabsTrigger>}
       </TabsList>
       {access.support && <TabsContent value="support"><SupportInbox /></TabsContent>}
-      <TabsContent value="rooms"><StaffRooms />{access.mute && <details className="mt-5 border-t pt-4"><summary className="flex cursor-pointer items-center gap-2 text-sm font-bold"><VolumeX className="size-4" />{t("أدوات الكتم")}</summary><Suspense fallback={<PageState loading />}><MuteTools /></Suspense></details>}</TabsContent>
+      <TabsContent value="rooms"><StaffRooms />{access.mute && <MuteSection />}</TabsContent>
       {access.review && <TabsContent value="review"><ReviewQueue /></TabsContent>}
     </Tabs>
   </main>;
+}
+
+function MuteSection() {
+  const [open, setOpen] = useState(false);
+  return <details open={open} onToggle={(event) => setOpen(event.currentTarget.open)} className="mt-5 border-t pt-4"><summary className="flex cursor-pointer items-center gap-2 text-sm font-bold"><VolumeX className="size-4" />{t("أدوات الكتم")}</summary>{open && <Suspense fallback={<PageState loading />}><MuteTools /></Suspense>}</details>;
 }
 
 export function SupportInbox() {
@@ -82,7 +87,7 @@ function StaffRooms() {
     const rooms = await readData(supabase.from("rooms").select("id,name,generation,audience").eq("kind", "chat").order("generation").limit(50)) ?? [];
     return await Promise.all(rooms.map(async (room) => {
       let members = supabase.from("profiles").select("id", { count: "exact", head: true }).eq("generation", room.generation);
-      if (room.audience !== "all") members = members.eq("gender", room.audience);
+      if (["female", "male"].includes(room.audience)) members = members.eq("gender", room.audience);
       const [last, count] = await Promise.all([readData(supabase.from("messages").select("content,created_at").eq("room_id", room.id).is("deleted_at", null).order("created_at", { ascending: false }).limit(1)), members]);
       if (count.error) throw count.error;
       return { ...room, last: last?.[0], members: count.count };
@@ -93,18 +98,19 @@ function StaffRooms() {
   return <div className="space-y-4"><PageState loading={query.isPending} error={query.isError} retry={() => void query.refetch()} />{groups.map((generation) => <section key={generation}><h2 className="mb-2 text-sm font-bold text-muted-foreground">{generation === "tawjihi" ? "2009" : latinDigits(generation.replace("gen", ""))}</h2><div className="divide-y border-y">{query.data?.filter((r) => r.generation === generation).map((room) => <Link key={room.id} to="/rooms/$roomId" params={{ roomId: room.id }} className="flex items-center gap-3 py-4"><span className="grid size-10 shrink-0 place-items-center rounded-full bg-secondary"><MessageCircle className="size-5" /></span><span className="min-w-0 flex-1"><span className="block truncate font-bold">{room.name}</span><span className="block truncate text-xs text-muted-foreground">{room.last?.content ?? t("لا يوجد رسائل")}</span></span><span className="shrink-0 text-center text-xs text-muted-foreground"><span className="flex items-center justify-center gap-1"><Users className="size-3" />{room.members ?? "—"}</span>{room.last && <time className="block text-[10px]">{new Date(room.last.created_at).toLocaleTimeString(lang === "en" ? "en-US" : "ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}</time>}</span></Link>)}</div></section>)}</div>;
 }
 
-function usePendingReview(enabled = true) {
-  return useQuery({ queryKey: ["chat-review"], enabled, staleTime: 30_000, queryFn: async () => {
+function usePendingReview(enabled = true, page = 0) {
+  return useQuery({ queryKey: ["chat-review", page], enabled, staleTime: 30_000, queryFn: async () => {
     const [files, quizzes] = await Promise.all([
-      supabase.from("library_files").select("id,title,subject,file_path,file_name", { count: "exact" }).eq("status", "pending").is("deleted_at", null).order("created_at", { ascending: false }).limit(50),
-      supabase.from("quizzes").select("id,title,subject", { count: "exact" }).eq("status", "pending").is("deleted_at", null).order("created_at", { ascending: false }).limit(50),
+      supabase.from("library_files").select("id,title,subject,file_path,file_name", { count: "exact" }).eq("status", "pending").is("deleted_at", null).order("created_at", { ascending: false }).range(page * 50, page * 50 + 49),
+      supabase.from("quizzes").select("id,title,subject", { count: "exact" }).eq("status", "pending").is("deleted_at", null).order("created_at", { ascending: false }).range(page * 50, page * 50 + 49),
     ]);
     if (files.error) throw files.error; if (quizzes.error) throw quizzes.error;
-    return { files: files.data ?? [], quizzes: quizzes.data ?? [], total: (files.count ?? 0) + (quizzes.count ?? 0) };
+    return { files: files.data ?? [], quizzes: quizzes.data ?? [], total: (files.count ?? 0) + (quizzes.count ?? 0), hasNext: Math.max(files.count ?? 0, quizzes.count ?? 0) > (page + 1) * 50 };
   } });
 }
 function ReviewQueue() {
-  const query = usePendingReview(); const { user } = useMe(); const qc = useQueryClient();
+  const [page, setPage] = useState(0);
+  const query = usePendingReview(true, page); const { user } = useMe(); const qc = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null); const [reject, setReject] = useState<{ id: string; table: "library_files" | "quizzes" } | null>(null); const [reason, setReason] = useState("");
   async function review(id: string, table: "library_files" | "quizzes", approve: boolean) {
     if (!user || busy || (!approve && !reason.trim())) return; setBusy(id);

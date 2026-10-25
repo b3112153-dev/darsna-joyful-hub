@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { chatAccess, latinDigits, profileName, studentChatRooms, PROFILE_FIELDS } from "@/lib/identity";
+import { fmtMin } from "@/lib/plan";
+import { inboxUnread } from "@/hooks/use-support-inbox";
 
 describe("student presentation rules", () => {
   it("never exposes a real name to students without a nickname", () => {
@@ -20,6 +22,13 @@ describe("student presentation rules", () => {
   it("moderators cannot open support or review", () => expect(chatAccess({ isStaff: true })).toEqual({ staff: true, support: false, review: false, mute: true }));
   it("support can open support and review but cannot mute", () => expect(chatAccess({ isSupport: true })).toEqual({ staff: true, support: true, review: true, mute: false }));
   it("converts both Arabic digit alphabets to Latin", () => expect(latinDigits("٠١٢٣٤٥٦٧٨٩ ۰۱۲۳۴۵۶۷۸۹")).toBe("0123456789 0123456789"));
+  it("formats study-plan counters with Latin numbers", () => expect(fmtMin(9 * 60 + 5)).toBe("9:05"));
+  it("marks only new student messages unread after a local read", () => {
+    const row = { id: "m", student_id: "s", sender_id: "s", content: "hello", created_at: "2026-10-25T10:00:00Z", profiles: null };
+    expect(inboxUnread(row, {})).toBe(true);
+    expect(inboxUnread(row, { s: row.created_at })).toBe(false);
+    expect(inboxUnread({ ...row, sender_id: "staff" }, {})).toBe(false);
+  });
   it("excludes all private profile fields", () => {
     expect(PROFILE_FIELDS.split(",")).not.toContain("birth_date");
     expect(PROFILE_FIELDS.split(",")).not.toContain("terms_accepted_at");
