@@ -28,6 +28,7 @@ import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms.$roomId'
 import { Route as AuthenticatedTopicsIndexRouteImport } from './routes/_authenticated/topics.index'
 import { Route as AuthenticatedTopicsTopicIdRouteImport } from './routes/_authenticated/topics.$topicId'
+import { Route as AuthenticatedLibraryQuizQuizIdRouteImport } from './routes/_authenticated/library_.quiz.$quizId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -127,6 +128,12 @@ const AuthenticatedTopicsTopicIdRoute =
     path: '/topics/$topicId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedLibraryQuizQuizIdRoute =
+  AuthenticatedLibraryQuizQuizIdRouteImport.update({
+    id: '/library_/quiz/$quizId',
+    path: '/library/quiz/$quizId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/topics/': typeof AuthenticatedTopicsIndexRoute
+  '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -167,6 +175,7 @@ export interface FileRoutesByTo {
   '/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/topics': typeof AuthenticatedTopicsIndexRoute
+  '/library/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -189,6 +198,7 @@ export interface FileRoutesById {
   '/_authenticated/topics/$topicId': typeof AuthenticatedTopicsTopicIdRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/_authenticated/topics/': typeof AuthenticatedTopicsIndexRoute
+  '/_authenticated/library_/quiz/$quizId': typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/topics/$topicId'
     | '/rooms/'
     | '/topics/'
+    | '/library/quiz/$quizId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/topics/$topicId'
     | '/rooms'
     | '/topics'
+    | '/library/quiz/$quizId'
   id:
     | '__root__'
     | '/'
@@ -252,6 +264,7 @@ export interface FileRouteTypes {
     | '/_authenticated/topics/$topicId'
     | '/_authenticated/rooms/'
     | '/_authenticated/topics/'
+    | '/_authenticated/library_/quiz/$quizId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -398,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTopicsTopicIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/library_/quiz/$quizId': {
+      id: '/_authenticated/library_/quiz/$quizId'
+      path: '/library/quiz/$quizId'
+      fullPath: '/library/quiz/$quizId'
+      preLoaderRoute: typeof AuthenticatedLibraryQuizQuizIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -415,6 +435,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTopicsTopicIdRoute: typeof AuthenticatedTopicsTopicIdRoute
   AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
   AuthenticatedTopicsIndexRoute: typeof AuthenticatedTopicsIndexRoute
+  AuthenticatedLibraryQuizQuizIdRoute: typeof AuthenticatedLibraryQuizQuizIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -431,6 +452,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTopicsTopicIdRoute: AuthenticatedTopicsTopicIdRoute,
   AuthenticatedRoomsIndexRoute: AuthenticatedRoomsIndexRoute,
   AuthenticatedTopicsIndexRoute: AuthenticatedTopicsIndexRoute,
+  AuthenticatedLibraryQuizQuizIdRoute: AuthenticatedLibraryQuizQuizIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
