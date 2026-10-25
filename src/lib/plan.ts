@@ -98,7 +98,7 @@ export const dateStr = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 export const parseDate = (s: string) => {
   const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, (m || 1) - 1, d || 1);
+  return new Date(y ?? 2000, (m || 1) - 1, d || 1);
 };
 export const diffDays = (from: Date, to: Date) =>
   Math.round((stripTime(to).getTime() - stripTime(from).getTime()) / 86_400_000);
@@ -200,7 +200,7 @@ export function generatePlan(
 ): PlanItemDraft[] {
   const start = stripTime(today);
   const exams = [...a.schoolExams].sort((x, y) => x.date.localeCompare(y.date));
-  const lastExam = exams.length ? parseDate(exams[exams.length - 1].date) : addDays(start, 13);
+  const lastExam = exams.length ? parseDate(exams[exams.length - 1]!.date) : addDays(start, 13);
   const days = Math.min(MAX_DAYS, Math.max(14, diffDays(start, lastExam) + 1));
   const horizon = addDays(start, days);
 
@@ -249,7 +249,7 @@ export function generatePlan(
     }
 
     // هدف اليوم مع التدرّج الأسبوعي ويوم الراحة
-    let factor = RAMP[Math.min(weekNo, RAMP.length - 1)];
+    let factor = RAMP[Math.min(weekNo, RAMP.length - 1)] ?? 1;
     if (off % 7 === 6) factor *= 0.5;
     let budget = Math.round(a.dailyHours * 60 * factor);
 
@@ -289,7 +289,7 @@ export function generatePlan(
       const candidates = names.filter((n) => weight(n) > 0);
       if (!candidates.length) break;
       candidates.sort((x, y) => weight(y) - weight(x));
-      const pick = candidates.find((n) => n !== lastSubj) ?? candidates[0];
+      const pick = (candidates.find((n) => n !== lastSubj) ?? candidates[0])!;
       const ci = cursor.get(pick) ?? 0;
       const q = queues.get(pick) ?? [];
       if (ci >= q.length) { remaining.set(pick, 0); continue; }
