@@ -31,12 +31,12 @@ export function Topics() {
       <PageState loading={isLoading} error={isError} retry={() => void refetch()} />
       {!isLoading && !isError && topics.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("ما في مواضيع بعد.")}</p>}
       <div className="space-y-3">
-        {topics.map((t) => (
-          <Link key={t.id} to="/topics/$topicId" params={{ topicId: t.id }} className="block rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-soft">
-            <p className="mb-1 text-xs text-muted-foreground">الإدارة · {t.subject ?? t("عام")} · {new Date(t.created_at).toLocaleDateString("ar-JO")}</p>
-            <h2 className="font-semibold">{t.title}</h2>
-            <p className="line-clamp-2 text-sm text-muted-foreground">{t.body}</p>
-            <p className="mt-2 flex items-center gap-1 text-xs text-primary"><MessageCircle className="size-3.5" /> {(t.topic_comments as unknown as { count: number }[])[0]?.count ?? 0} تعليق</p>
+        {topics.map((topic) => (
+          <Link key={topic.id} to="/topics/$topicId" params={{ topicId: topic.id }} className="block rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-soft">
+            <p className="mb-1 text-xs text-muted-foreground">الإدارة · {topic.subject ?? t("عام")} · {new Date(topic.created_at).toLocaleDateString("ar-JO")}</p>
+            <h2 className="font-semibold">{topic.title}</h2>
+            <p className="line-clamp-2 text-sm text-muted-foreground">{topic.body}</p>
+            <p className="mt-2 flex items-center gap-1 text-xs text-primary"><MessageCircle className="size-3.5" /> {(topic.topic_comments as unknown as { count: number }[])[0]?.count ?? 0} تعليق</p>
           </Link>
         ))}
       </div>

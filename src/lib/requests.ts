@@ -1,3 +1,5 @@
+import { t } from "@/lib/i18n";
+
 export const REQUEST_TIMEOUT_MS = 15000;
 
 export async function withTimeout<T>(promise: PromiseLike<T>, ms = REQUEST_TIMEOUT_MS): Promise<T> {
