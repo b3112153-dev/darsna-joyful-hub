@@ -184,7 +184,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
       </div>
       <div className="mt-3 text-center">
         <Button variant="outline" size="sm" onClick={() => setNickOpen(true)}>{t("سمّي أفتارك")}</Button>
-        <p className="mt-1.5 text-xs text-muted-foreground">{t("تقدر تغيّره مرة كل ٤٠ يوم")}</p>
+        <p className="mt-1.5 text-xs text-muted-foreground">{t("تقدر تغيّره مرة كل 40 يوم")}</p>
       </div>
 
       {gender === "female" && (
@@ -283,7 +283,7 @@ function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
   const [busy, setBusy] = useState(false);
   async function save() {
     const n = name.trim();
-    if (n.length < 2 || n.length > 16) { toast.error(t("الاسم من ٢ إلى ١٦ حرف")); return; }
+    if (n.length < 2 || n.length > 16) { toast.error(t("الاسم من 2 إلى 16 حرف")); return; }
     setBusy(true);
     const { error } = await supabase.rpc("set_nickname", { _n: n });
     setBusy(false);
@@ -296,7 +296,7 @@ function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
       <DialogContent dir="rtl" className={mandatory ? "[&>button]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{t("سمّي أفتارك")}</DialogTitle>
-          <DialogDescription>{t("هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل ٤٠ يوم (حد أقصى ١٦ حرف).")}</DialogDescription>
+          <DialogDescription>{t("هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل 40 يوم (حد أقصى 16 حرف).")}</DialogDescription>
         </DialogHeader>
         <Input value={name} maxLength={16} placeholder={t("اسمك المستعار")} onChange={(e) => setName(e.target.value)} />
         <Button onClick={save} disabled={busy} className="bg-brand">{t("حفظ")}</Button>

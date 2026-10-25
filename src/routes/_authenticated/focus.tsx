@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trophy } from "lucide-react";
+import { Trophy, Users } from "lucide-react";
 import { useMe } from "@/hooks/use-auth";
 import { useFocusMode } from "@/components/FocusMode";
 import { FocusTimer } from "@/components/FocusTimer";
@@ -7,7 +7,7 @@ import { TodoList } from "@/components/TodoList";
 import { Button } from "@/components/ui/button";
 import { fmtClock } from "@/components/StudyRounds";
 import { Switch } from "@/components/ui/switch";
-import { UserAvatar } from "@/components/UserAvatar";
+import { AvatarPic } from "@/components/AvatarPic";
 import { WalletChip } from "@/components/WalletChip";
 import { SoundsSheet } from "@/components/SoundsSheet";
 import { Music4 } from "lucide-react";
@@ -31,7 +31,7 @@ function Focus() {
   return <main className="mx-auto max-w-[480px] space-y-3.5 px-5 py-5 font-display">
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
       <div className="flex min-w-0 items-center gap-3">
-        <UserAvatar path={me?.profile?.avatar_url} name={me?.profile?.display_name} className="size-11 shrink-0 rounded-[14px] border-0 bg-staff-foreground [&_span]:rounded-[14px] [&_span]:bg-staff-foreground [&_span]:text-primary-foreground" />
+        <AvatarPic profile={me?.profile} className="size-11" />
         <div className="min-w-0"><p className="text-[13px] text-muted-foreground">{t("أهلاً فيك")}</p><h1 className="truncate text-[18px] font-extrabold">{t("يلا نبدأ دراسة")}</h1></div>
       </div>
       <WalletChip userId={user?.id} />
@@ -40,6 +40,7 @@ function Focus() {
       <span className="grid size-9 place-items-center rounded-xl bg-staff text-staff-foreground"><Trophy className="size-5" /></span>
       <span className="min-w-0 flex-1"><span className="block text-sm font-extrabold">{t("لوحة الأسبوع")}</span><span className="block text-xs text-muted-foreground">{t("ترتيبك بين طلاب دفعتك وجوائز الأسبوع")}</span></span>
     </Link>
+    <Link to="/study-rooms" className="flex items-center gap-3 rounded-[20px] border bg-card p-3 shadow-card"><Users className="size-5 text-primary" /><span className="text-sm font-bold">Rooms</span></Link>
     <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-3">
       <FocusTimer focus={focus} roomId={null} compact />
       <section className="flex min-w-0 flex-col rounded-[26px] bg-peach p-4 text-peach-foreground">

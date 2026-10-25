@@ -1,3 +1,4 @@
+import type { Json } from "@/integrations/supabase/types";
 import { readData } from "@/lib/requests";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { UserAvatar } from "@/components/UserAvatar";
+import { AvatarPic } from "@/components/AvatarPic";
 import { PageState } from "@/components/PageState";
 import { LibraryAdmin } from "@/components/LibraryAdmin";
 import { SupportAdmin } from "@/components/SupportAdmin";
@@ -162,7 +163,7 @@ function RoomsAdmin() {
 const MUTE_OPTIONS = [
   { label: "ساعة", ms: 3600_000 },
   { label: "يوم", ms: 86400_000 },
-  { label: "٧ أيام", ms: 7 * 86400_000 },
+  { label: "7 أيام", ms: 7 * 86400_000 },
 ] as const;
 
 type StudentRow = {
@@ -170,6 +171,7 @@ type StudentRow = {
   display_name: string;
   nickname: string | null;
   avatar_url: string | null;
+  avatar: Json;
   branch: Branch | null;
   gender: string | null;
   generation: string | null;
@@ -188,7 +190,7 @@ function StudentsAdmin({ can }: { can: Can }) {
     queryKey: ["admin-users"],
     queryFn: async () => {
       const [p, r, b, m] = await Promise.all([
-        supabase.from("profiles").select("id,display_name,nickname,avatar_url,branch,gender,generation").order("created_at", { ascending: false }),
+        supabase.from("profiles").select("id,display_name,nickname,avatar,avatar_url,branch,gender,generation").order("created_at", { ascending: false }),
         supabase.from("user_roles").select("user_id,role"),
         supabase.from("user_bans").select("user_id"),
         supabase.from("user_mutes").select("user_id,muted_until"),
@@ -268,7 +270,7 @@ function StudentsAdmin({ can }: { can: Can }) {
           const muted = u.mutedUntil && new Date(u.mutedUntil).getTime() > Date.now();
           return (
             <div key={u.id} className="flex flex-wrap items-center gap-3 p-4">
-              <UserAvatar path={u.avatar_url} name={u.display_name} />
+              <AvatarPic profile={u} />
               <div className="flex-1 min-w-40">
                 <p className="font-semibold">{u.nickname || u.display_name}</p>
                 <p className="text-xs text-muted-foreground">
@@ -277,7 +279,7 @@ function StudentsAdmin({ can }: { can: Can }) {
                 <p className="text-xs text-muted-foreground">
                   {isAdmin ? "أدمن" : isMod ? "مشرف" : isSupport ? "دعم" : "طالب"}
                   {u.banned && <span className="text-destructive"> · محظور</span>}
-                  {muted && <span className="text-amber-700"> · مكتوم حتى {new Date(u.mutedUntil!).toLocaleString("ar-JO")}</span>}
+                  {muted && <span className="text-amber-700"> · مكتوم حتى {new Date(u.mutedUntil!).toLocaleString("ar-u-nu-latn")}</span>}
                 </p>
               </div>
               {!isAdmin && (
@@ -365,7 +367,7 @@ function OwnerEmails() {
             {list.map((r) => (
               <li key={r.id} className="flex flex-wrap justify-between gap-2 py-2" dir="ltr">
                 <span>{r.email}</span>
-                <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ar-JO")}</span>
+                <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ar-u-nu-latn")}</span>
               </li>
             ))}
           </ul>
@@ -401,7 +403,7 @@ function MessagesAdmin() {
           <div key={m.id} className="flex items-start gap-3 p-4">
             <div className="flex-1 min-w-0">
               <p className="text-xs text-muted-foreground">
-                {m.profiles?.display_name} · {m.rooms?.name} · {new Date(m.created_at).toLocaleString("ar-JO")}
+                {m.profiles?.display_name} · {m.rooms?.name} · {new Date(m.created_at).toLocaleString("ar-u-nu-latn")}
               </p>
               <p className="break-words text-sm">{m.content}</p>
             </div>
@@ -510,7 +512,7 @@ function ArchiveAdmin() {
           <div key={`${r.source}-${r.id}`} className="flex items-start gap-3 p-4">
             <div className="flex-1 min-w-0">
               <p className="text-xs text-muted-foreground">
-                {r.sender} · {r.room} · {new Date(r.created_at).toLocaleString("ar-JO")}
+                {r.sender} · {r.room} · {new Date(r.created_at).toLocaleString("ar-u-nu-latn")}
                 {r.deleted_at && (
                   <span className="ms-2 rounded-full bg-destructive/10 px-2 py-0.5 text-destructive">
                     محذوفة{r.deleted_by ? " · بواسطة " : ""}{r.deleted_by ? r.deleted_by.slice(0, 8) : ""}
@@ -593,7 +595,7 @@ function PendingQuizzes() {
           <div key={qz.id} className="flex flex-wrap items-center gap-3 p-4">
             <div className="flex-1 min-w-40">
               <p className="font-semibold">{qz.title}</p>
-              <p className="text-xs text-muted-foreground">{qz.subject}{qz.unit ? ` · ${qz.unit}` : ""} · {qz.minutes} دقيقة · {new Date(qz.created_at).toLocaleDateString("ar-JO")}</p>
+              <p className="text-xs text-muted-foreground">{qz.subject}{qz.unit ? ` · ${qz.unit}` : ""} · {qz.minutes} دقيقة · {new Date(qz.created_at).toLocaleDateString("ar-u-nu-latn")}</p>
             </div>
             <Button size="sm" className="bg-brand" onClick={() => review(qz.id, true)}>اعتماد</Button>
             <Button size="sm" variant="destructive" onClick={() => review(qz.id, false)}>رفض</Button>
@@ -603,3 +605,5 @@ function PendingQuizzes() {
     </div>
   );
 }
+
+export function MuteTools() { return <StudentsAdmin can={{ owner: false, admin: false, mod: true, support: false }} />; }

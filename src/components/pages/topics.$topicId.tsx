@@ -11,12 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { UserAvatar } from "@/components/UserAvatar";
+import { AvatarPic } from "@/components/AvatarPic";
+import { profileName, type PublicProfile } from "@/lib/identity";
 import { t } from "@/lib/i18n";
 
 
 const Route = getRouteApi("/_authenticated/topics/$topicId");
-type C = { id: string; parent_id: string | null; user_id: string; content: string; from_admin: boolean; created_at: string; profiles: { display_name: string; avatar_url: string | null } | null };
+type C = { id: string; parent_id: string | null; user_id: string; content: string; from_admin: boolean; created_at: string; profiles: PublicProfile | null };
 
 export function TopicPage() {
   const { topicId } = Route.useParams();
@@ -37,7 +38,7 @@ export function TopicPage() {
   const { data: comments = [] } = useQuery({
     queryKey: ["comments", topicId],
     queryFn: async () =>
-      ((await supabase.from("topic_comments").select("id,parent_id,user_id,content,from_admin,created_at,profiles(display_name,avatar_url)").eq("topic_id", topicId).order("created_at")).data ?? []) as C[],
+      ((await supabase.from("topic_comments").select("id,parent_id,user_id,content,from_admin,created_at,profiles(display_name,nickname,avatar,gender)").eq("topic_id", topicId).order("created_at")).data ?? []) as C[],
   });
   useEffect(() => {
     const ch = supabase
@@ -83,16 +84,16 @@ export function TopicPage() {
   const childrenOf = (id: string) => comments.filter((c) => c.parent_id === id);
 
   function Comment({ c, depth }: { c: C; depth: number }) {
-    const name = c.from_admin ? t("الإدارة") : c.profiles?.display_name;
+    const name = c.from_admin ? t("الإدارة") : profileName(c.profiles, !!(me?.isStaff || me?.isSupport || me?.isOwner));
     return (
       <div className={depth ? "ms-6 border-s-2 border-silver ps-3" : ""}>
         <div className="flex gap-2 py-2">
-          <UserAvatar path={c.from_admin ? null : c.profiles?.avatar_url} name={name} className="size-8" />
+          <AvatarPic profile={c.profiles} className="size-8" />
           <div className="flex-1 rounded-2xl bg-bubble px-3 py-2">
             <p className="text-xs font-semibold text-primary">{name}</p>
             <p className="whitespace-pre-wrap break-words text-sm">{c.content}</p>
             <div className="mt-1 flex gap-3 text-xs text-muted-foreground">
-              <span>{new Date(c.created_at).toLocaleString("ar-JO", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}</span>
+              <span>{new Date(c.created_at).toLocaleString("ar-u-nu-latn", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}</span>
               {topic?.allow_replies && canComment && depth < 3 && (
                 <button onClick={() => setReplyTo(c)} className="flex items-center gap-1 hover:text-primary"><CornerDownLeft className="size-3" /> {t("رد")}</button>
               )}
@@ -133,7 +134,7 @@ export function TopicPage() {
           <form onSubmit={send} className="mt-3 space-y-2">
             {replyTo && (
               <p className="flex justify-between rounded-lg bg-secondary px-3 py-1.5 text-xs">
-                رد على: {replyTo.from_admin ? t("الإدارة") : replyTo.profiles?.display_name}
+                رد على: {replyTo.from_admin ? t("الإدارة") : profileName(replyTo.profiles, !!(me?.isStaff || me?.isSupport || me?.isOwner))}
                 <button type="button" onClick={() => setReplyTo(null)}>✕</button>
               </p>
             )}

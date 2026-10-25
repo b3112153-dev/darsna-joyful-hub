@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserAvatar } from "./UserAvatar";
+import { AvatarPic } from "./AvatarPic";
+import type { PublicProfile } from "@/lib/identity";
 import { t } from "@/lib/i18n";
 
 export function roundTimes(startsAt: string, minutes: number, now: number) {
@@ -43,7 +44,7 @@ type Round = {
   starts_at: string;
   duration_minutes: number;
   created_by: string;
-  session_participants: { user_id: string; profiles: { display_name: string; avatar_url: string | null } | null }[];
+  session_participants: { user_id: string; profiles: PublicProfile | null }[];
 };
 
 export function StudyRounds({ roomId }: { roomId: string }) {
@@ -59,7 +60,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
       const since = new Date(Date.now() - 4 * 3600000).toISOString();
       const { data } = await supabase
         .from("study_sessions")
-        .select("id,title,starts_at,duration_minutes,created_by,session_participants(user_id,profiles(display_name,avatar_url))")
+        .select("id,title,starts_at,duration_minutes,created_by,session_participants(user_id,profiles(display_name,nickname,avatar,gender))")
         .eq("room_id", roomId)
         .gte("starts_at", since)
         .order("starts_at");
@@ -151,7 +152,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center -space-x-2 space-x-reverse">
                   {r.session_participants.slice(0, 5).map((p) => (
-                    <UserAvatar key={p.user_id} path={p.profiles?.avatar_url} name={p.profiles?.display_name} className="size-6 ring-2 ring-card" />
+                    <AvatarPic key={p.user_id} profile={p.profiles} className="size-6 ring-2 ring-card" />
                   ))}
                   <span className="ps-3 text-xs text-muted-foreground flex items-center gap-1"><Users className="size-3" />{r.session_participants.length}</span>
                 </div>

@@ -8,10 +8,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { UserAvatar } from "@/components/UserAvatar";
+import { AvatarPic } from "@/components/AvatarPic";
+import { profileName, type PublicProfile } from "@/lib/identity";
 import { t } from "@/lib/i18n";
 
-type Post = { id: string; user_id: string; content: string | null; image_path: string | null; from_admin: boolean; created_at: string; profiles: { display_name: string; avatar_url: string | null } | null };
+type Post = { id: string; user_id: string; content: string | null; image_path: string | null; from_admin: boolean; created_at: string; profiles: PublicProfile | null };
 
 function PostImage({ path }: { path: string }) {
   const { data } = useQuery({
@@ -31,7 +32,7 @@ export function Motivation() {
   const { data: posts = [], isPending, isError, refetch } = useQuery({
     queryKey: ["motivation"],
     queryFn: async () =>
-      (await readData(supabase.from("motivation_posts").select("id,user_id,content,image_path,from_admin,created_at,profiles(display_name,avatar_url)").order("created_at", { ascending: false }).limit(60)) ?? []) as Post[],
+      (await readData(supabase.from("motivation_posts").select("id,user_id,content,image_path,from_admin,created_at,profiles(display_name,nickname,avatar,gender)").order("created_at", { ascending: false }).limit(60)) ?? []) as Post[],
   });
 
   async function submit(e: React.FormEvent) {
@@ -80,14 +81,14 @@ export function Motivation() {
       <PageState loading={isPending} error={isError} retry={() => void refetch()} />
       {!isPending && !isError && posts.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("كن أول من ينشر!")}</p>}
       {posts.map((p) => {
-        const name = p.from_admin ? t("الإدارة") : p.profiles?.display_name;
+        const name = p.from_admin ? t("الإدارة") : profileName(p.profiles, !!(me?.isStaff || me?.isSupport || me?.isOwner));
         return (
           <article key={p.id} className="space-y-3 rounded-2xl border bg-card p-4 shadow-card">
             <div className="flex items-center gap-3">
-              <UserAvatar path={p.from_admin ? null : p.profiles?.avatar_url} name={name} className="size-9" />
+              <AvatarPic profile={p.profiles} className="size-9" />
               <div className="flex-1">
                 <p className="text-sm font-semibold">{name}</p>
-                <p className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleDateString("ar-JO", { day: "numeric", month: "long" })}</p>
+                <p className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleDateString("ar-u-nu-latn", { day: "numeric", month: "long" })}</p>
               </div>
               {(p.user_id === user?.id || me?.isStaff) && (
                 <button onClick={() => del(p)} aria-label={t("حذف")} className="text-muted-foreground hover:text-destructive"><Trash2 className="size-4" /></button>

@@ -50,7 +50,7 @@ function ChatRoom() {
   const loadingOlder = useRef(false);
   const previousLast = useRef<string | undefined>(undefined);
   const locked = isChatLocked(focus.session, focus.now);
-  const [tab, setTab] = useState("timer");
+  const [tab, setTab] = useState("chat");
 
   const roomQuery = useQuery({
     queryKey: ["room", roomId, user?.id],
@@ -97,7 +97,7 @@ function ChatRoom() {
     if (!content || !user || sending || locked) return;
     setSending(true);
     try {
-      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,avatar_url)").single());
+      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,nickname,avatar,gender)").single());
       if (!message) throw new Error(t("تعذر الإرسال"));
       chat.append(message);
       setReplyTo(null);
@@ -116,8 +116,8 @@ function ChatRoom() {
       <div className="grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3 rounded-t-[26px] bg-secondary px-4 pb-3.5 pt-5 text-secondary-foreground">
         <Link to="/rooms" aria-label={t("العودة للدردشات")} className="grid size-11 shrink-0 place-items-center rounded-[14px] bg-card text-card-foreground"><ArrowRight className="size-5" /></Link>
         <div className="min-w-0">
-          <h1 className="truncate text-lg font-extrabold">{room?.name ?? "…"}</h1>
-          <p className="text-[13px] leading-6 text-muted-foreground">{room?.description}</p>
+          <h1 className="truncate text-lg font-extrabold">{me?.isStaff || me?.isSupport || me?.isOwner ? room?.name : t(room?.audience === "all" ? "جولة الدراسة" : "شات")}</h1>
+          <p className="text-[13px] leading-6 text-muted-foreground">{me?.isStaff || me?.isSupport || me?.isOwner ? room?.description : t(room?.audience === "all" ? "ادرس مع طلاب دفعتك" : me?.profile?.gender === "female" ? "هذا مخصص للبنات" : "هذا مخصص للشباب")}</p>
         </div>
       </div>
       <p className="bg-secondary px-4 pb-3 text-center text-[13px] font-semibold text-secondary-foreground">{t("نشر الروابط الخارجية ممنوع في الدردشة")}</p>
@@ -151,7 +151,7 @@ function ChatRoom() {
       ) : (
         <form onSubmit={send} className="grid grid-cols-[minmax(0,1fr)_48px] gap-2 border-t bg-card px-3 pb-3.5 pt-2.5">
           {replyTo && (
-            <div className="col-span-2 flex items-center gap-2 rounded-[14px] border-r-4 border-primary bg-secondary px-3 py-2 text-xs">
+            <div className="col-span-2 flex items-center gap-2 rounded-[14px] border-s-4 border-primary bg-secondary px-3 py-2 text-xs">
               <span className="min-w-0 flex-1 truncate">رد على: {replyTo.content}</span>
               <button type="button" aria-label={t("إلغاء الرد")} className="shrink-0 font-bold text-muted-foreground" onClick={() => setReplyTo(null)}>✕</button>
             </div>
