@@ -51,9 +51,9 @@ export function useChatScroll(
   }, [listRef, target, resetKey]);
 
   useEffect(() => {
-    if (!ready || count === 0) return;
+    if (!ready || count === 0) return undefined;
     const el = target();
-    if (!el) return;
+    if (!el) return undefined;
     if (!initialDone.current) {
       initialDone.current = true;
       prevCount.current = count;
