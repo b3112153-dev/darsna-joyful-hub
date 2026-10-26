@@ -16,10 +16,11 @@ export function latinDigits(text: string) {
 }
 type RoomIdentity = { id: string; generation: string; audience: string; kind: string };
 export function studentChatRooms<T extends RoomIdentity>(rooms: T[], generation: string | null | undefined, gender: string | null | undefined) {
-  const sameGeneration = rooms.filter((r) => !!generation && r.generation === generation && r.kind === "chat");
+  const chat = rooms.find((r) => !!generation && !!gender && r.generation === generation && r.kind === "chat" && r.audience === gender);
+  const shared = rooms.filter((r) => r.kind === "chat" && ["all", "mixed", "shared"].includes(r.audience));
   return {
-    chat: sameGeneration.find((r) => !!gender && r.audience === gender),
-    round: sameGeneration.find((r) => ["all", "mixed", "shared"].includes(r.audience)),
+    chat,
+    round: shared.find((r) => r.generation === "tawjihi") ?? shared[0],
   };
 }
 export function chatAccess(me: { isOwner?: boolean; isAdmin?: boolean; isStaff?: boolean; isSupport?: boolean } | undefined) {
