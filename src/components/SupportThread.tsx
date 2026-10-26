@@ -21,6 +21,7 @@ import { PageState } from "@/components/PageState";
 import { readData } from "@/lib/requests";
 import { profileName, type PublicProfile } from "@/lib/identity";
 import { useLang, t } from "@/lib/i18n";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 
 type SupportMessage = {
   id: string;
@@ -83,6 +84,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
     try {
       uploaded = await image.upload(user.id, "support-images");
       await readData(supabase.from("support_messages").insert({ student_id: studentId, sender_id: user.id, content, image_path: uploaded, reply_to: replyTo?.id ?? null } as never));
+      markSent();
       setText(""); setReplyTo(null); image.select(null);
       await qc.invalidateQueries({ queryKey: key });
     } catch (error) { if (uploaded) void supabase.storage.from("support-images").remove([uploaded]); toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : t("تعذر الإرسال")); }
@@ -106,8 +108,8 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
   }
 
   return (
-    <div className={`flex flex-col ${className}`}>
-      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto rounded-2xl border bg-card/70 p-3">
+    <div className={`relative flex flex-col ${className}`}>
+      <div ref={listRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto rounded-2xl border bg-card/70 p-3">
         <PageState loading={history.isPending} error={history.isError} retry={() => void history.refetch()} />
         {history.hasNextPage && <Button variant="outline" size="sm" disabled={history.isFetchingNextPage} onClick={() => void history.fetchNextPage()}>{t("تحميل الأقدم")}</Button>}
         {history.isSuccess && msgs.length === 0 && <p className="py-8 text-center text-sm text-muted-foreground">{t("ابدأ المحادثة…")}</p>}
@@ -117,8 +119,8 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
           const message: Message = { ...m, user_id: m.sender_id, room_id: studentId, sender_role: role, from_admin: role === "admin", deleted_by: null };
           return <ChatMessage key={m.id} message={message} own={own} canDelete={canDeleteEntry(m.sender_id, role, role === "admin", user?.id, me, false)} reactions={reactionsApi.reactions} userId={user?.id} now={now} onDelete={remove} onEdit={edit} onReact={(id, emoji) => void reactionsApi.toggle(id, emoji)} onReply={() => setReplyTo(m)} replyQuote={previewOf(m.reply_to)} imageBucket="support-images" />;
         })}
-        <div ref={endRef} />
       </div>
+      {showNew && <button onClick={jumpToNew} className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground shadow-lg">{t("رسالة جديدة")} ↓</button>}
       <form onSubmit={send} onPaste={image.paste} className="mt-3 flex flex-col gap-2">
         {replyTo && <ReplyQuote quote={replyTo} bucket="support-images" onCancel={() => setReplyTo(null)} />}
         <div className="flex min-w-0 gap-2">
