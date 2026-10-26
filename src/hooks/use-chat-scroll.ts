@@ -83,8 +83,11 @@ export function useChatScroll(
       requestAnimationFrame(() => scrollToBottom(true));
     } else {
       setShowNew(true);
+      return undefined;
     }
-    return undefined;
+    // message content (avatars, images) can grow right after the scroll; correct once it settles
+    const settle = setTimeout(() => { if (nearBottom.current) scrollToBottom(false); }, 450);
+    return () => clearTimeout(settle);
   }, [ready, count, listRef, target, scrollToBottom]);
 
   const markSent = useCallback(() => { sentByMe.current = true; nearBottom.current = true; }, []);
