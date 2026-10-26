@@ -26,6 +26,7 @@ import { useMyFocus } from "@/hooks/use-focus";
 import { isChatLocked } from "@/lib/focus";
 import { fmtClock } from "@/components/StudyRounds";
 import { useLang, t } from "@/lib/i18n";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 
 export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
   head: () => ({
@@ -48,12 +49,10 @@ function ChatRoom() {
   const { user, me } = useMe();
   const [text, setText] = useState("");
   const image = useImagePicker();
-  const endRef = useRef<HTMLDivElement>(null);
   const focus = useMyFocus(user?.id);
   const [sending, setSending] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const loadingOlder = useRef(false);
-  const previousLast = useRef<string | undefined>(undefined);
   const locked = isChatLocked(focus.session, focus.now);
   const [tab, setTab] = useState("chat");
 
@@ -72,14 +71,7 @@ function ChatRoom() {
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const previewOf = (id: string | null) => id ? messages.find((m) => m.id === id) ?? { content: t("رسالة محذوفة") } : null;
 
-  useEffect(() => {
-    if (tab !== "chat" || loadingOlder.current || lastId === previousLast.current) return;
-    previousLast.current = lastId;
-    const list = listRef.current;
-    if (!list || list.scrollHeight - list.scrollTop - list.clientHeight < 180) {
-      endRef.current?.scrollIntoView({ behavior: "auto", block: "nearest" });
-    }
-  }, [lastId, tab]);
+  const { showNew, markSent, jumpToNew } = useChatScroll(listRef, messages.length, tab === "chat" && chat.isSuccess, roomId);
 
   async function loadOlder() {
     if (loadingOlder.current) return;
