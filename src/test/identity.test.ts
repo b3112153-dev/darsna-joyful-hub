@@ -11,15 +11,30 @@ describe("student presentation rules", () => {
     expect(profileName({ display_name: "Private name", nickname: "Moon" })).toBe("Moon");
   });
   it("permits staff to see real names", () => expect(profileName({ display_name: "Private name", nickname: "Moon" }, true)).toBe("Private name"));
-  it("selects only the same generation and gender plus shared room", () => {
+  it("selects only the same generation and gender chat plus the shared tawjihi round", () => {
     const rooms = [
       { id: "mine", kind: "chat", generation: "gen2009", audience: "female" },
       { id: "other-gender", kind: "chat", generation: "gen2009", audience: "male" },
       { id: "other-year", kind: "chat", generation: "gen2010", audience: "female" },
+      { id: "old-round", kind: "chat", generation: "gen2009", audience: "all" },
+      { id: "round", kind: "chat", generation: "tawjihi", audience: "all" },
+    ];
+    expect(studentChatRooms(rooms, "gen2009", "female")).toEqual({ chat: rooms[0], round: rooms[4] });
+    expect(studentChatRooms(rooms, "gen2010", "female")).toEqual({ chat: rooms[2], round: rooms[4] });
+  });
+  it("falls back to any shared room when no tawjihi round exists", () => {
+    const rooms = [
+      { id: "mine", kind: "chat", generation: "gen2009", audience: "female" },
       { id: "round", kind: "chat", generation: "gen2009", audience: "all" },
     ];
-    expect(studentChatRooms(rooms, "gen2009", "female")).toEqual({ chat: rooms[0], round: rooms[3] });
-    expect(studentChatRooms(rooms, null, null)).toEqual({ chat: undefined, round: undefined });
+    expect(studentChatRooms(rooms, "gen2009", "female").round).toEqual(rooms[1]);
+  });
+  it("shows the shared round even without a profile generation, but no gender chat", () => {
+    const rooms = [
+      { id: "mine", kind: "chat", generation: "gen2009", audience: "female" },
+      { id: "round", kind: "chat", generation: "tawjihi", audience: "all" },
+    ];
+    expect(studentChatRooms(rooms, null, null)).toEqual({ chat: undefined, round: rooms[1] });
   });
   it("moderators cannot open support or review", () => expect(chatAccess({ isStaff: true })).toEqual({ staff: true, support: false, review: false, mute: true }));
   it("support can open support and review but cannot mute", () => expect(chatAccess({ isSupport: true })).toEqual({ staff: true, support: true, review: true, mute: false }));

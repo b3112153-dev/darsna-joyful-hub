@@ -21,6 +21,7 @@ import { useNow } from "@/hooks/use-focus";
 import { canDeleteEntry, canDeleteContent } from "@/lib/message-permissions";
 import type { Message } from "@/lib/chat-messages";
 import { t } from "@/lib/i18n";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 
 
 const Route = getRouteApi("/_authenticated/topics/$topicId");
@@ -51,6 +52,7 @@ export function TopicPage() {
       ((await readData(supabase.from("topic_comments").select("*,profiles(display_name,nickname,avatar,gender)").eq("topic_id", topicId).is("deleted_at", null).order("created_at"))) ?? []) as C[],
   });
   const reactions = useReactions("topic_reactions", comments.map((c) => c.id), user?.id, topicId);
+  const { showNew, markSent, jumpToNew } = useChatScroll(null, comments.length, !commentsPending, topicId);
   useEffect(() => {
     const ch = supabase
       .channel(`topic-${topicId}-${crypto.randomUUID()}`)
@@ -78,6 +80,7 @@ export function TopicPage() {
     try {
       uploaded = await image.upload(user.id, "chat-images");
       await readData(supabase.from("topic_comments").insert({ topic_id: topicId, user_id: user.id, content: text.trim(), image_path: uploaded, parent_id: replyTo?.id ?? null }));
+      markSent();
       setText(""); setReplyTo(null); image.select(null);
       await qc.invalidateQueries({ queryKey: ["comments", topicId] });
     } catch (error) { if (uploaded) void supabase.storage.from("chat-images").remove([uploaded]); toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : t("تعذر إرسال التعليق")); }
@@ -147,6 +150,7 @@ export function TopicPage() {
           </form>
         )}
       </section>
+      {showNew && <button onClick={jumpToNew} className="fixed bottom-24 left-1/2 z-10 -translate-x-1/2 rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground shadow-lg">{t("رسالة جديدة")} ↓</button>}
     </main>
   );
 }

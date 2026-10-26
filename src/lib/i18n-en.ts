@@ -9,6 +9,8 @@ export const EN: Record<string, string> = {
   "هذا مخصص للشباب": "This chat is for boys",
   "جولة الدراسة": "Study Round",
   "ادرس مع طلاب دفعتك": "Study with your generation",
+  "ادرس مع كل طلاب التوجيهي": "Study with all Tawjihi students",
+  "رسالة جديدة": "New message",
   "دعم غير مقروء": "Unread support",
   "رسائل مبلّغ عنها": "Reported messages",
   "الغرف": "Rooms",
