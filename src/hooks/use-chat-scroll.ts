@@ -70,12 +70,12 @@ export function useChatScroll(
       const stop = setTimeout(() => el.removeEventListener("load", onLoad, true), 10_000);
       return () => { clearTimeout(stop); el.removeEventListener("load", onLoad, true); };
     }
-    if (count === prevCount.current) return;
+    if (count === prevCount.current) return undefined;
     const grew = count > prevCount.current;
     prevCount.current = count;
-    if (!grew) return;
+    if (!grew) return undefined;
     // loading older pages happens at the top of the list: never scroll, never show the button
-    if (listRef?.current && el.scrollTop < 200) return;
+    if (listRef?.current && el.scrollTop < 200) return undefined;
     if (sentByMe.current) {
       sentByMe.current = false;
       requestAnimationFrame(() => scrollToBottom(true));
@@ -84,6 +84,7 @@ export function useChatScroll(
     } else {
       setShowNew(true);
     }
+    return undefined;
   }, [ready, count, listRef, target, scrollToBottom]);
 
   const markSent = useCallback(() => { sentByMe.current = true; nearBottom.current = true; }, []);
