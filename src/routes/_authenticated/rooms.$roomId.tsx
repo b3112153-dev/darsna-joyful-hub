@@ -99,10 +99,10 @@ function ChatRoom() {
       const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, image_path: uploaded, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,nickname,avatar,gender)").single());
       if (!message) throw new Error(t("تعذر الإرسال"));
       chat.append(message);
+      markSent();
       image.select(null);
       setReplyTo(null);
       setText((current) => current.trim() === content ? "" : current);
-      requestAnimationFrame(() => endRef.current?.scrollIntoView({ block: "nearest" }));
     } catch (error) { if (uploaded) void supabase.storage.from("chat-images").remove([uploaded]); toast.error(error && typeof error === "object" && "message" in error ? String(error.message) : t("تعذر الإرسال")); }
     finally { setSending(false); }
   }
@@ -117,7 +117,7 @@ function ChatRoom() {
         <Link to="/rooms" aria-label={t("العودة للدردشات")} className="grid size-11 shrink-0 place-items-center rounded-[14px] bg-card text-card-foreground"><ArrowRight className="size-5" /></Link>
         <div className="min-w-0">
           <h1 className="truncate text-lg font-extrabold">{me?.isStaff || me?.isSupport || me?.isOwner ? room?.name : t(room?.audience === "all" ? "جولة الدراسة" : "شات")}</h1>
-          <p className="text-[13px] leading-6 text-muted-foreground">{me?.isStaff || me?.isSupport || me?.isOwner ? room?.description : t(room?.audience === "all" ? "ادرس مع طلاب دفعتك" : me?.profile?.gender === "female" ? "هذا مخصص للبنات" : "هذا مخصص للشباب")}</p>
+          <p className="text-[13px] leading-6 text-muted-foreground">{me?.isStaff || me?.isSupport || me?.isOwner ? room?.description : t(room?.audience === "all" ? "ادرس مع كل طلاب التوجيهي" : me?.profile?.gender === "female" ? "هذا مخصص للبنات" : "هذا مخصص للشباب")}</p>
         </div>
       </div>
       <p className="bg-secondary px-4 pb-3 text-center text-[13px] font-semibold text-secondary-foreground">{t("نشر الروابط الخارجية ممنوع في الدردشة")}</p>
@@ -134,14 +134,14 @@ function ChatRoom() {
       </TabsContent>
       <TabsContent value="notes" className="overflow-y-auto">{user && <RoomNotes roomId={roomId} userId={user.id} />}</TabsContent>
       <TabsContent value="rounds" className="overflow-y-auto rounded-2xl border bg-card p-4"><StudyRounds roomId={roomId} /></TabsContent>
-      <TabsContent value="chat" className="flex min-h-0 flex-1 flex-col">
+      <TabsContent value="chat" className="relative flex min-h-0 flex-1 flex-col">
       <div ref={listRef} className="flex-1 space-y-4 overflow-y-auto bg-background p-3 sm:p-4">
         {chat.hasNextPage && <div className="text-center"><Button variant="outline" size="sm" disabled={chat.isFetchingNextPage} onClick={() => void loadOlder()}>{chat.isFetchingNextPage ? t("جاري التحميل…") : "تحميل الأقدم"}</Button></div>}
         <PageState loading={chat.isPending} error={chat.isError} retry={() => void (chat.isFetchNextPageError ? chat.fetchNextPage() : chat.refetch())} />
         {chat.isSuccess && messages.length === 0 && <p className="py-10 text-center text-muted-foreground">{t("لا يوجد رسائل بعد — كن أول من يكتب!")}</p>}
         {messages.map((m) => <ChatMessage key={m.id} message={m} own={m.user_id === user?.id} canDelete={canDeleteEntry(m.user_id, m.sender_role, m.from_admin, user?.id, me)} reactions={reactionsApi.reactions} userId={user?.id} now={now} onDelete={chat.remove} onEdit={chat.edit} onReact={(id, emoji) => void reactionsApi.toggle(id, emoji)} onReply={setReplyTo} replyQuote={previewOf(m.reply_to)} />)}
-        <div ref={endRef} />
       </div>
+      {showNew && <button onClick={jumpToNew} className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground shadow-lg">{t("رسالة جديدة")} ↓</button>}
       {me?.isBanned ? (
         <p className="mt-3 rounded-2xl bg-destructive/10 p-3 text-center text-sm text-destructive">{t("تم حظر حسابك من الإرسال.")}</p>
       ) : locked ? (
