@@ -39,7 +39,7 @@ function Rooms() {
   const selected = studentChatRooms(query.data ?? [], me?.profile?.generation, me?.profile?.gender);
   const entries = [
     { title: t("شات"), detail: t(me?.profile?.gender === "female" ? "هذا مخصص للبنات" : "هذا مخصص للشباب"), room: selected.chat, icon: MessagesSquare, tone: "bg-secondary text-secondary-foreground" },
-    { title: t("جولة الدراسة"), detail: t("ادرس مع طلاب دفعتك"), room: selected.round, icon: Timer, tone: "bg-staff text-staff-foreground" },
+    { title: t("جولة الدراسة"), detail: t("ادرس مع كل طلاب التوجيهي"), room: selected.round, icon: Timer, tone: "bg-staff text-staff-foreground" },
   ];
   return <main className="mx-auto max-w-2xl px-5 py-6 font-display"><h1 className="mb-5 text-[28px] font-extrabold">{t("الدردشات")}</h1><PageState loading={query.isPending} error={query.isError} retry={() => void query.refetch()} /><div className="grid gap-3">
     {entries.map((entry) => {
