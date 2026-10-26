@@ -43,7 +43,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
   const image = useImagePicker();
   const [sending, setSending] = useState(false);
   const [replyTo, setReplyTo] = useState<SupportMessage | null>(null);
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const now = useNow();
   const key = ["support", studentId];
 
@@ -73,7 +73,7 @@ export function SupportThread({ studentId, className = "" }: { studentId: string
     };
   }, [studentId, qc]);
 
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), [msgs.length]);
+  const { showNew, markSent, jumpToNew } = useChatScroll(listRef, msgs.length, history.isSuccess, studentId);
 
   async function send(e: React.FormEvent) {
     e.preventDefault();

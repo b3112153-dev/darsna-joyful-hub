@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -64,7 +64,6 @@ function ChatRoom() {
   const room = roomQuery.data;
   const chat = useRoomMessages(roomId, user?.id, roomQuery.isSuccess && !!room);
   const { messages } = chat;
-  const lastId = messages.at(-1)?.id;
   const now = useNow();
   const messageIds = messages.map((m) => m.id);
   const reactionsApi = useReactions("message_reactions", messageIds, user?.id, roomId);
