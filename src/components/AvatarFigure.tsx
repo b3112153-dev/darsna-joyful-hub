@@ -136,11 +136,12 @@ export const AvatarFigure = memo(function AvatarFigure({
       )}
       <ellipse cx="50" cy="146" rx="9" ry="5" fill={l.shoes} />
       <ellipse cx="70" cy="146" rx="9" ry="5" fill={l.shoes} />
-      {/* torso */}
-      <path d="M40 70 Q60 62 80 70 L78 112 Q60 118 42 112 Z" fill={l.traditional ?? l.outfit.top} />
+      {/* neck + torso */}
+      <rect x="54" y="54" width="12" height="12" rx="4" fill={l.skin} />
+      <path d="M40 66 Q60 56 80 66 L78 112 Q60 118 42 112 Z" fill={l.traditional ?? l.outfit.top} />
       {/* arms */}
-      <rect x="32" y="72" width="9" height="30" rx="4.5" fill={l.clothes ?? l.traditional ?? l.outfit.top} />
-      <rect x="79" y="72" width="9" height="30" rx="4.5" fill={l.clothes ?? l.traditional ?? l.outfit.top} />
+      <rect x="32" y="68" width="9" height="32" rx="4.5" fill={l.clothes ?? l.traditional ?? l.outfit.top} />
+      <rect x="79" y="68" width="9" height="32" rx="4.5" fill={l.clothes ?? l.traditional ?? l.outfit.top} />
       {/* clothes jacket overlay */}
       {l.clothes && !l.traditional && (
         <g fill={l.clothes}>
