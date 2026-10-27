@@ -10,6 +10,8 @@ import { useMe } from "@/hooks/use-auth";
 import { parseWallet, useWallet, type AvatarState, type Wallet } from "@/hooks/use-wallet";
 import { imageFor, useAvatarCatalog, useAvatarImages, type CatalogItem } from "@/hooks/use-avatar";
 import { itemState } from "@/lib/avatar-shop";
+import { itemColor } from "@/lib/avatar-figure";
+import { AvatarFigure } from "@/components/AvatarFigure";
 import { BRANCHES, type Branch } from "@/lib/branches";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
