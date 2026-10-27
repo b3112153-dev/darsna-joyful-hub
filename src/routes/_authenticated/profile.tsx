@@ -109,6 +109,7 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
   const [nickOpen, setNickOpen] = useState(false);
   const [wardrobeOpen, setWardrobeOpen] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  const [tryOn, setTryOn] = useState<CatalogItem | null>(null);
   const key = ["wallet", userId];
 
   // Mandatory nickname on first visit.
