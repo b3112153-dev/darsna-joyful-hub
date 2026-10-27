@@ -145,8 +145,8 @@ export const AvatarFigure = memo(function AvatarFigure({
       {/* clothes jacket overlay */}
       {l.clothes && !l.traditional && (
         <g fill={l.clothes}>
-          <path d="M40 70 Q50 65 56 64 L54 112 Q46 113 42 112 Z" />
-          <path d="M80 70 Q70 65 64 64 L66 112 Q74 113 78 112 Z" />
+          <path d="M40 66 Q50 60 56 58 L54 112 Q46 113 42 112 Z" />
+          <path d="M80 66 Q70 60 64 58 L66 112 Q74 113 78 112 Z" />
         </g>
       )}
       {l.pendant && (
