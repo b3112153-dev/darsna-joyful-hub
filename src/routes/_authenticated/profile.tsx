@@ -177,16 +177,22 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
   }
 
   const worn = wallet.avatar;
+  const shown: AvatarState = tryOn ? { ...worn, [tryOn.category]: tryOn.id } : worn;
   return (
     <section className="rounded-[20px] border bg-card p-4 shadow-card">
-      <div className="mx-auto max-w-[240px] rounded-[20px] bg-secondary/60 p-4">
-        <AvatarPreview
-          avatar={worn}
-          images={images.data ?? {}}
-          gender={gender}
-          nickname={wallet.nickname ?? undefined}
-          className="mx-auto aspect-square w-full max-w-[200px]"
-        />
+      <div className="relative mx-auto max-w-[240px] rounded-[20px] bg-secondary/60 p-4">
+        {wallet.nickname && (
+          <span className="absolute -top-3 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border bg-card px-3 py-0.5 text-xs font-bold shadow-card">
+            {wallet.nickname}
+          </span>
+        )}
+        <AvatarFigure avatar={shown} gender={gender} className="mx-auto w-full max-w-[200px]" />
+        {tryOn && (
+          <div className="absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-2 rounded-full border bg-card/95 px-3 py-1 shadow-card">
+            <span className="text-xs font-bold text-primary">{t("معاينة")} — {tryOn.name_ar}</span>
+            <button type="button" onClick={() => setTryOn(null)} className="text-xs font-bold text-muted-foreground underline">{t("إلغاء")}</button>
+          </div>
+        )}
       </div>
       <div className="mt-3 flex flex-wrap justify-center gap-2 text-center">
         <Button variant="secondary" size="sm" onClick={() => { setWardrobeOpen(true); requestAnimationFrame(() => document.getElementById("avatar-wardrobe")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>{t("غيّر الصورة")}</Button>
@@ -249,10 +255,21 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
           const url = imageFor(images.data ?? {}, it.id, it.category, gender);
           const Icon = CATEGORY_ICON[it.category] ?? Sparkles;
           return (
-            <div key={it.id} className="flex flex-col rounded-2xl border bg-card p-2.5">
-              <div className="grid aspect-square place-items-center overflow-hidden rounded-xl bg-tint">
-                {url ? <img src={url} alt={it.name_ar} loading="lazy" className="h-full w-full object-contain" /> : <Icon className="size-10 text-primary" />}
-              </div>
+            <div key={it.id} className={cn("flex flex-col rounded-2xl border bg-card p-2.5", tryOn?.id === it.id && "ring-2 ring-primary")}>
+              <button
+                type="button"
+                onClick={() => setTryOn(tryOn?.id === it.id ? null : it)}
+                aria-label={t("معاينة") + " " + it.name_ar}
+                className="grid aspect-square place-items-center overflow-hidden rounded-xl bg-tint"
+              >
+                {url ? (
+                  <img src={url} alt={it.name_ar} loading="lazy" className="h-full w-full object-contain" />
+                ) : (
+                  <span className="grid size-16 place-items-center rounded-full" style={{ backgroundColor: itemColor(it.id, it.category, gender) }}>
+                    <Icon className="size-8 text-white drop-shadow" />
+                  </span>
+                )}
+              </button>
               <p className="mt-2 truncate text-sm font-bold">{it.name_ar}</p>
               <p className="text-xs text-muted-foreground">Level {it.level_req} · {it.price === 0 ? "مجاني" : `${it.price} JD`}</p>
               {isWorn ? (
