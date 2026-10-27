@@ -21,7 +21,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { invalidateIdentity } from "@/components/ProfileSync";
 import { AvatarPic } from "@/components/AvatarPic";
-import { AvatarPreview } from "@/components/AvatarPreview";
 import { WalletChip } from "@/components/WalletChip";
 import { PageState } from "@/components/PageState";
 import { cn } from "@/lib/utils";
