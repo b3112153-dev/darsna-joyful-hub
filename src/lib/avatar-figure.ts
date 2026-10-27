@@ -64,28 +64,28 @@ function num(id: string | undefined): number {
 
 /** Resolve every drawable layer from the worn avatar items. Defaults: basic outfit, gender hairstyle. */
 export function avatarLayers(avatar: AvatarState | null | undefined, gender?: string | null): FigureLayers {
-  const a = avatar ?? {};
+  const a: Record<string, string> = avatar ?? {};
   const female = gender === "female";
-  const outfit = OUTFITS[a.outfit ?? ""] ?? OUTFITS.it00;
-  const clothesN = num(a.clothes);
-  const petN = num(a.pet);
-  const effectN = num(a.effect);
+  const outfit = OUTFITS[a["outfit"] ?? ""] ?? OUTFITS["it00"]!;
+  const clothesN = num(a["clothes"]);
+  const petN = num(a["pet"]);
+  const effectN = num(a["effect"]);
   return {
     skin: SKIN,
     hair: {
-      style: HAIR_STYLES[a.hair ?? ""] ?? (female ? "long" : "short"),
-      color: (female && a.hairColor) || BROWN,
+      style: HAIR_STYLES[a["hair"] ?? ""] ?? (female ? "long" : "short"),
+      color: (female && a["hairColor"]) || BROWN,
     },
     outfit: { top: outfit.top, bottom: outfit.bottom, crown: !!outfit.crown },
-    clothes: clothesN >= 9 && clothesN <= 17 ? CLOTHES_COLORS[clothesN - 9] : null,
-    traditional: TRADITIONAL[a.traditional ?? ""] ?? null,
-    shoes: SHOES[a.shoes ?? ""] ?? "#5b4636",
-    cap: a.accessory === "it24" ? "#8c0610" : null,
-    glasses: GLASSES[a.glasses ?? ""] ?? (GLASSES[a.accessory ?? ""] ?? null),
-    watch: WATCHES[a.watch ?? ""] ?? null,
-    pendant: a.accessory === "it27" ? "#d4a017" : null,
-    pet: petN >= 37 && petN <= 46 ? { color: PET_COLORS[petN - 37], kind: PET_KINDS[(petN - 37) % PET_KINDS.length] } : null,
-    effect: effectN >= 47 && effectN <= 51 ? { color: EFFECT_COLORS[effectN - 47], kind: EFFECT_KINDS[(effectN - 47) % EFFECT_KINDS.length] } : null,
+    clothes: clothesN >= 9 && clothesN <= 17 ? CLOTHES_COLORS[clothesN - 9]! : null,
+    traditional: TRADITIONAL[a["traditional"] ?? ""] ?? null,
+    shoes: SHOES[a["shoes"] ?? ""] ?? "#5b4636",
+    cap: a["accessory"] === "it24" ? "#8c0610" : null,
+    glasses: GLASSES[a["glasses"] ?? ""] ?? (GLASSES[a["accessory"] ?? ""] ?? null),
+    watch: WATCHES[a["watch"] ?? ""] ?? null,
+    pendant: a["accessory"] === "it27" ? "#d4a017" : null,
+    pet: petN >= 37 && petN <= 46 ? { color: PET_COLORS[petN - 37]!, kind: PET_KINDS[(petN - 37) % PET_KINDS.length]! } : null,
+    effect: effectN >= 47 && effectN <= 51 ? { color: EFFECT_COLORS[effectN - 47]!, kind: EFFECT_KINDS[(effectN - 47) % EFFECT_KINDS.length]! } : null,
   };
 }
 
