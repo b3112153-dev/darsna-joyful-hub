@@ -14,7 +14,7 @@ describe("avatarLayers", () => {
     const tops = new Set<string>();
     for (let n = 0; n <= 8; n++) {
       const l = avatarLayers({ outfit: `it${String(n).padStart(2, "0")}` });
-      tops.add(l.top);
+      tops.add(l.outfit.top);
       expect(l.outfit.crown).toBe(n === 8);
     }
     expect(tops.size).toBe(9);
