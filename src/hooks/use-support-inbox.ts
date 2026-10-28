@@ -11,7 +11,7 @@ export function useSupportInbox(userId: string | undefined, enabled = true) {
     queryKey: ["support-threads", userId], enabled: enabled && !!userId, staleTime: 30_000,
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => (await readData(supabase.from("support_messages")
-      .select("id,student_id,sender_id,content,created_at,profiles!support_messages_student_id_fkey(display_name,nickname,avatar,gender)")
+      .select("id,student_id,sender_id,content,created_at,profiles!support_messages_student_id_fkey(display_name,nickname,avatar,avatar_url,gender)")
       .is("deleted_at", null).order("created_at", { ascending: false }).order("id", { ascending: false }).range(pageParam, pageParam + 49))) ?? [],
     getNextPageParam: (last, pages) => last.length === 50 ? pages.length * 50 : undefined,
   });

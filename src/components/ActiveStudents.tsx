@@ -15,7 +15,7 @@ export function ActiveStudents({ roomId }: { roomId: string }) {
     queryFn: async () => {
       const { data } = await supabase
         .from("focus_sessions")
-        .select("user_id,subject,status,ends_at,profiles(display_name,nickname,avatar,gender)")
+        .select("user_id,subject,status,ends_at,profiles(display_name,nickname,avatar,avatar_url,gender)")
         .eq("room_id", roomId)
         .in("status", ["running", "paused"]);
       const now = Date.now();

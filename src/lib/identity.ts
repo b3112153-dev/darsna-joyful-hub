@@ -1,7 +1,7 @@
 import type { AvatarState } from "@/hooks/use-wallet";
 import type { Json } from "@/integrations/supabase/types";
 
-export type PublicProfile = { id?: string; nickname?: string | null; avatar?: Json | AvatarState; gender?: string | null; display_name?: string | null };
+export type PublicProfile = { id?: string; nickname?: string | null; avatar?: Json | AvatarState; gender?: string | null; display_name?: string | null; avatar_url?: string | null };
 export function profileAvatar(profile: PublicProfile | null | undefined): AvatarState {
   const raw = profile?.avatar;
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};

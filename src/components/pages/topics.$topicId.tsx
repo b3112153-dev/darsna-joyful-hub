@@ -49,7 +49,7 @@ export function TopicPage() {
   const { data: comments = [], isPending: commentsPending, isError: commentsError, refetch: refetchComments } = useQuery({
     queryKey: ["comments", topicId],
     queryFn: async () =>
-      ((await readData(supabase.from("topic_comments").select("*,profiles(display_name,nickname,avatar,gender)").eq("topic_id", topicId).is("deleted_at", null).order("created_at"))) ?? []) as C[],
+      ((await readData(supabase.from("topic_comments").select("*,profiles(display_name,nickname,avatar,avatar_url,gender)").eq("topic_id", topicId).is("deleted_at", null).order("created_at"))) ?? []) as C[],
   });
   const reactions = useReactions("topic_reactions", comments.map((c) => c.id), user?.id, topicId);
   const { showNew, markSent, jumpToNew } = useChatScroll(null, comments.length, !commentsPending, topicId);

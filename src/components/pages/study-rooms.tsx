@@ -40,7 +40,7 @@ export function useRoomPresence(roomIds: string[]) {
     queryFn: async () => {
       const { data } = await supabase
         .from("focus_sessions")
-        .select("user_id,status,subject,room_id,profiles(nickname,avatar,gender)")
+        .select("user_id,status,subject,room_id,profiles(nickname,avatar,avatar_url,gender)")
         .in("room_id", roomIds)
         .in("status", ["running", "paused"]);
       const now = Date.now();

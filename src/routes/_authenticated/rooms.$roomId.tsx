@@ -95,7 +95,7 @@ function ChatRoom() {
     let uploaded: string | null = null;
     try {
       uploaded = await image.upload(user.id, "chat-images");
-      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, image_path: uploaded, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,nickname,avatar,gender)").single());
+      const message = await readData(supabase.from("messages").insert({ room_id: roomId, user_id: user.id, content, image_path: uploaded, reply_to: replyTo?.id ?? null }).select("*,profiles(display_name,nickname,avatar,avatar_url,gender)").single());
       if (!message) throw new Error(t("تعذر الإرسال"));
       chat.append(message);
       markSent();

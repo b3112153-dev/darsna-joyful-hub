@@ -196,7 +196,6 @@ function AvatarCard({ wallet, gender, userId }: { wallet: Wallet; gender: string
       <div className="mt-3 flex flex-wrap justify-center gap-2 text-center">
         <Button variant="secondary" size="sm" onClick={() => { setWardrobeOpen(true); requestAnimationFrame(() => document.getElementById("avatar-wardrobe")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>{t("غيّر الصورة")}</Button>
         <Button variant="outline" size="sm" onClick={() => setNickOpen(true)}>{t("سمّي أفتارك")}</Button>
-        <p className="mt-1.5 text-xs text-muted-foreground">{t("تقدر تغيّره مرة كل 40 يوم")}</p>
       </div>
 
       <div id="avatar-wardrobe" className={wardrobeOpen ? "scroll-mt-20 ring-1 ring-primary rounded-2xl p-2" : "scroll-mt-20"}>
@@ -322,7 +321,7 @@ function NicknameDialog({ open, mandatory, onOpenChange, onSaved }: {
       <DialogContent dir={lang === "ar" ? "rtl" : "ltr"} className={mandatory ? "[&>button:last-child]:hidden" : undefined} onInteractOutside={(e) => mandatory && e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{t("سمّي أفتارك")}</DialogTitle>
-          <DialogDescription>{t("هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره مرة كل 40 يوم (حد أقصى 16 حرف).")}</DialogDescription>
+          <DialogDescription>{t("هاد الاسم بيظهر فوق الأفتار وبالمسابقات. تقدر تغيّره وقت ما بدك (حد أقصى 16 حرف).")}</DialogDescription>
         </DialogHeader>
         <Input value={name} maxLength={16} placeholder={t("اسمك المستعار")} onChange={(e) => setName(e.target.value)} />
         <Button onClick={save} disabled={busy} className="bg-brand">{t("حفظ")}</Button>
@@ -368,18 +367,33 @@ function AccountCard() {
     await supabase.from("profiles").update({ avatar_url: path }).eq("id", user.id);
     toast.success(t("تم تحديث الصورة"));
     qc.invalidateQueries({ queryKey: ["me"] });
+    void invalidateIdentity(qc);
+  }
+
+  async function useAvatarFigure() {
+    if (!user) return;
+    const { error } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", user.id);
+    if (error) { toast.error(t("تعذر الحفظ")); return; }
+    toast.success(t("رجعنا الأفتار"));
+    qc.invalidateQueries({ queryKey: ["me"] });
+    void invalidateIdentity(qc);
   }
 
   return (
     <section className="space-y-6 rounded-[20px] border bg-card p-6 shadow-card">
       <h2 className="text-lg font-bold">{t("إعدادات الحساب")}</h2>
-      <div className="flex items-center gap-4">
-        <AvatarPic profile={me?.profile} className="size-20" />
-        <Label className="cursor-pointer rounded-lg border bg-silver-sheen px-4 py-2 text-sm">
-          {t("تغيير الصورة")}
-          <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
-        </Label>
-      </div>
+        <div className="flex items-center gap-4">
+          <AvatarPic profile={me?.profile} className="size-20" />
+          <div className="flex flex-col gap-2">
+            <Label className="cursor-pointer rounded-lg border bg-silver-sheen px-4 py-2 text-sm">
+              {t("تغيير الصورة")}
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
+            </Label>
+            {me?.profile?.avatar_url && (
+              <Button variant="outline" size="sm" onClick={useAvatarFigure}>{t("استخدم الأفتار")}</Button>
+            )}
+          </div>
+        </div>
       <div className="space-y-1.5">
         <Label>{t("الاسم")}</Label>
         <Input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} />
