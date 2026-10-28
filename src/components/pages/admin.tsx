@@ -392,7 +392,7 @@ function MessagesAdmin() {
     queryFn: async () =>
       await readData(supabase
         .from("messages")
-        .select("id,user_id,sender_role,from_admin,content,created_at,profiles(display_name,nickname,avatar,gender),rooms(name)").is("deleted_at", null)
+        .select("id,user_id,sender_role,from_admin,content,created_at,profiles(display_name,nickname,avatar,avatar_url,gender),rooms(name)").is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(100)) ?? [],
   });

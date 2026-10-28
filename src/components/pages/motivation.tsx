@@ -33,7 +33,7 @@ export function Motivation() {
   const { data: posts = [], isPending, isError, refetch } = useQuery({
     queryKey: ["motivation"],
     queryFn: async () =>
-      (await readData(supabase.from("motivation_posts").select("id,user_id,content,image_path,from_admin,created_at,profiles(display_name,nickname,avatar,gender)").order("created_at", { ascending: false }).limit(60)) ?? []) as Post[],
+      (await readData(supabase.from("motivation_posts").select("id,user_id,content,image_path,from_admin,created_at,profiles(display_name,nickname,avatar,avatar_url,gender)").order("created_at", { ascending: false }).limit(60)) ?? []) as Post[],
   });
 
   async function submit(e: React.FormEvent) {

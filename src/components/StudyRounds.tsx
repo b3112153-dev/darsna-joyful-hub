@@ -61,7 +61,7 @@ export function StudyRounds({ roomId }: { roomId: string }) {
       const since = new Date(Date.now() - 4 * 3600000).toISOString();
       const { data } = await supabase
         .from("study_sessions")
-        .select("id,title,starts_at,duration_minutes,created_by,session_participants(user_id,profiles(display_name,nickname,avatar,gender))")
+        .select("id,title,starts_at,duration_minutes,created_by,session_participants(user_id,profiles(display_name,nickname,avatar,avatar_url,gender))")
         .eq("room_id", roomId)
         .gte("starts_at", since)
         .order("starts_at");
