@@ -6,7 +6,7 @@ const DESC = "Terms of Use and Privacy Policy for Darsna Jo, the study community
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { property: "og:url", content: "https://drsna-joful.com/terms" },
+      { property: "og:url", content: "https://darsna-joyful-hub.lovable.app/terms" },
       { title: TITLE },
       { name: "description", content: DESC },
       { property: "og:title", content: TITLE },
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/terms")({
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
     ],
-    links: [{ rel: "canonical", href: "https://drsna-joful.com/terms" }],
+    links: [{ rel: "canonical", href: "https://darsna-joyful-hub.lovable.app/terms" }],
   }),
   component: Terms,
 });

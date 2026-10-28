@@ -14,7 +14,7 @@ import { t } from "@/lib/i18n";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { property: "og:url", content: "https://drsna-joful.com/auth" },
+      { property: "og:url", content: "https://darsna-joyful-hub.lovable.app/auth" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { title: "تسجيل الدخول | Darsna Jo" },
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "تسجيل الدخول | Darsna Jo" },
       { property: "og:description", content: "سجّل دخولك أو أنشئ حساباً جديداً في Darsna Jo." },
     ],
-    links: [{ rel: "canonical", href: "https://drsna-joful.com/auth" }],
+    links: [{ rel: "canonical", href: "https://darsna-joyful-hub.lovable.app/auth" }],
   }),
   component: AuthPage,
 });
