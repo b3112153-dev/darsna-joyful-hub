@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { UserAvatar } from "@/components/UserAvatar";
 import { avatarLayers } from "@/lib/avatar-figure";
 import { profileAvatar, type PublicProfile } from "@/lib/identity";
 import { cn } from "@/lib/utils";
@@ -7,6 +8,16 @@ import { cn } from "@/lib/utils";
 export const AvatarPic = memo(function AvatarPic({ profile, className, animate = false }: {
   profile?: PublicProfile | null | undefined; className?: string; images?: Record<string, string>; animate?: boolean;
 }) {
+  const url = profile?.avatar_url;
+  if (url) {
+    return (
+      <UserAvatar
+        path={url}
+        name={profile?.nickname ?? profile?.display_name}
+        className={cn("size-10 shrink-0", className)}
+      />
+    );
+  }
   const l = avatarLayers(profileAvatar(profile), profile?.gender);
   return (
     <span className={cn("relative inline-grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-[#f4d4a6] text-avatar-foreground", className)}>
