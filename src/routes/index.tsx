@@ -12,14 +12,14 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://drsna-joful.com/" },
+      { property: "og:url", content: "https://darsna-joyful-hub.lovable.app/" },
       { name: "twitter:card", content: "summary" },
       { title: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني 2009 و2010" },
       { name: "description", content: "درسنا جو: منصة دراسة للتوجيهي الأردني (2009 و2010) فيها غرف دراسة ومؤقت تركيز وجدول حلّها ومكتبة ملفات واختبارات." },
       { property: "og:title", content: "درسنا جو: منصة دراسة جماعية لطلاب التوجيهي الأردني 2009 و2010" },
       { property: "og:description", content: "درسنا جو: منصة دراسة للتوجيهي الأردني (2009 و2010) فيها غرف دراسة ومؤقت تركيز وجدول حلّها ومكتبة ملفات واختبارات." },
     ],
-    links: [{ rel: "canonical", href: "https://drsna-joful.com/" }],
+    links: [{ rel: "canonical", href: "https://darsna-joyful-hub.lovable.app/" }],
   }),
   component: Index,
 });

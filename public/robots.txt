@@ -49,4 +49,4 @@ Disallow: /profile
 Disallow: /banned
 Disallow: /reset-password
 
-Sitemap: https://drsna-joful.com/sitemap.xml
+Sitemap: https://darsna-joyful-hub.lovable.app/sitemap.xml
