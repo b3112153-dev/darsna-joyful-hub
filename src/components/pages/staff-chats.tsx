@@ -83,10 +83,12 @@ export function SupportInbox() {
 
 function StaffRooms() {
   const { lang } = useLang();
-  const { user } = useMe(); const qc = useQueryClient();
+  const { user, me } = useMe(); const qc = useQueryClient();
+  const isAdmin = !!(me?.isOwner || me?.isAdmin);
+  const [busy, setBusy] = useState<string | null>(null);
   const query = useQuery({ queryKey: ["staff-chat-rooms", user?.id], staleTime: 30_000, queryFn: async () => {
-    const rooms = await readData(supabase.from("rooms").select("id,name,generation,audience").eq("kind", "chat").order("generation").limit(50)) ?? [];
-    return await Promise.all(rooms.map(async (room) => {
+    const rooms = await readData(supabase.from("rooms").select("id,name,generation,audience,suspended").eq("kind", "chat").order("generation").limit(50)) ?? [];
+    return await Promise.all(rooms.map(async (room: { id: string; name: string; generation: string; audience: string; suspended?: boolean }) => {
       let members = supabase.from("profiles").select("id", { count: "exact", head: true }).eq("generation", room.generation);
       if (["female", "male"].includes(room.audience)) members = members.eq("gender", room.audience);
       const [last, count] = await Promise.all([readData(supabase.from("messages").select("content,created_at").eq("room_id", room.id).is("deleted_at", null).order("created_at", { ascending: false }).limit(1)), members]);
@@ -95,8 +97,16 @@ function StaffRooms() {
     }));
   } });
   useEffect(() => { const channel = supabase.channel(`staff-rooms-${crypto.randomUUID()}`).on("postgres_changes", { event: "*", schema: "public", table: "messages" }, () => { void qc.invalidateQueries({ queryKey: ["staff-chat-rooms"] }); }).subscribe(); return () => { void supabase.removeChannel(channel); }; }, [qc]);
-  const groups = [...new Set(query.data?.map((r) => r.generation) ?? [])];
-  return <div className="space-y-4"><PageState loading={query.isPending} error={query.isError} retry={() => void query.refetch()} />{groups.map((generation) => <section key={generation}><h2 className="mb-2 text-sm font-bold text-muted-foreground">{generation === "tawjihi" ? "2009" : latinDigits(generation.replace("gen", ""))}</h2><div className="divide-y border-y">{query.data?.filter((r) => r.generation === generation).map((room) => <Link key={room.id} to="/rooms/$roomId" params={{ roomId: room.id }} className="flex items-center gap-3 py-4"><span className="grid size-10 shrink-0 place-items-center rounded-full bg-secondary"><MessageCircle className="size-5" /></span><span className="min-w-0 flex-1"><span className="block truncate font-bold">{room.name}</span><span className="block truncate text-xs text-muted-foreground">{room.last?.content ?? t("لا يوجد رسائل")}</span></span><span className="shrink-0 text-center text-xs text-muted-foreground"><span className="flex items-center justify-center gap-1"><Users className="size-3" />{room.members ?? "—"}</span>{room.last && <time className="block text-[10px]">{new Date(room.last.created_at).toLocaleTimeString(lang === "en" ? "en-US" : "ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}</time>}</span></Link>)}</div></section>)}</div>;
+  async function toggleSuspend(room: { id: string; suspended?: boolean }) {
+    setBusy(room.id);
+    const { error } = await supabase.from("rooms").update({ suspended: !room.suspended }).eq("id", room.id);
+    setBusy(null);
+    if (error) { toast.error(t("تعذر تحديث الغرفة")); return; }
+    toast.success(t(room.suspended ? "تم إلغاء تعليق الغرفة" : "تم تعليق الغرفة"));
+    void qc.invalidateQueries({ queryKey: ["staff-chat-rooms"] });
+  }
+  const groups = [...new Set(query.data?.map((r: { generation: string }) => r.generation) ?? [])];
+  return <div className="space-y-4"><PageState loading={query.isPending} error={query.isError} retry={() => void query.refetch()} />{groups.map((generation) => <section key={generation}><h2 className="mb-2 text-sm font-bold text-muted-foreground">{generation === "tawjihi" ? "2009" : latinDigits(generation.replace("gen", ""))}</h2><div className="divide-y border-y">{query.data?.filter((r) => r.generation === generation).map((room) => <div key={room.id} className={`flex items-center gap-3 py-4 ${room.suspended ? "opacity-60" : ""}`}><Link to="/rooms/$roomId" params={{ roomId: room.id }} className="flex min-w-0 flex-1 items-center gap-3"><span className="grid size-10 shrink-0 place-items-center rounded-full bg-secondary"><MessageCircle className="size-5" /></span><span className="min-w-0 flex-1"><span className="block truncate font-bold">{room.name}</span><span className="block truncate text-xs text-muted-foreground">{room.last?.content ?? t("لا يوجد رسائل")}</span></span><span className="shrink-0 text-center text-xs text-muted-foreground"><span className="flex items-center justify-center gap-1"><Users className="size-3" />{room.members ?? "—"}</span>{room.last && <time className="block text-[10px]">{new Date(room.last.created_at).toLocaleTimeString(lang === "en" ? "en-US" : "ar-u-nu-latn", { hour: "2-digit", minute: "2-digit" })}</time>}</span></Link>{room.suspended && <span className="shrink-0 rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">{t("معلّقة")}</span>}{isAdmin && <Button size="sm" variant={room.suspended ? "outline" : "secondary"} className="shrink-0" disabled={busy === room.id} aria-label={t("تعليق")} onClick={() => void toggleSuspend(room)}>{room.suspended ? t("إلغاء التعليق") : t("تعليق")}</Button>}</div>)}</div></section>)}</div>;
 }
 
 function usePendingReview(enabled = true, page = 0) {

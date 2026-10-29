@@ -137,6 +137,12 @@ function RoomsAdmin() {
     if (error) { toast.error("تعذر الحذف"); return; }
     qc.invalidateQueries({ queryKey: ["rooms"] });
   }
+  async function suspend(room: { id: string; suspended?: boolean }) {
+    const { error } = await supabase.from("rooms").update({ suspended: !room.suspended }).eq("id", room.id);
+    if (error) { toast.error("تعذر تحديث الغرفة"); return; }
+    toast.success(room.suspended ? "تم إلغاء تعليق الغرفة" : "تم تعليق الغرفة");
+    qc.invalidateQueries({ queryKey: ["rooms"] });
+  }
   return (
     <div className="space-y-6">
       <form onSubmit={add} className="grid gap-3 rounded-2xl border bg-card p-4 shadow-card sm:grid-cols-[1fr_1fr_180px_auto]">
@@ -152,12 +158,13 @@ function RoomsAdmin() {
         <Button className="bg-brand">إضافة</Button>
       </form>
       <div className="divide-y rounded-2xl border bg-card shadow-card">
-        {rooms.map((r) => (
-          <div key={r.id} className="flex items-center justify-between gap-3 p-4">
+        {rooms.map((r: { id: string; name: string; branch: string | null; description: string | null; suspended?: boolean }) => (
+          <div key={r.id} className={`flex items-center justify-between gap-3 p-4 ${r.suspended ? "opacity-60" : ""}`}>
             <div className="min-w-0">
-              <p className="font-semibold">{r.name}</p>
+              <p className="font-semibold">{r.name}{r.suspended && <span className="ms-2 rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">معلّقة</span>}</p>
               <p className="text-xs text-muted-foreground">{branchLabel(r.branch)} · {r.description}</p>
             </div>
+            <Button size="sm" variant={r.suspended ? "outline" : "secondary"} className="shrink-0" onClick={() => void suspend(r)}>{r.suspended ? "إلغاء التعليق" : "تعليق"}</Button>
             <Button size="icon" variant="ghost" onClick={() => del(r.id)} aria-label="حذف"><Trash2 className="text-destructive" /></Button>
           </div>
         ))}

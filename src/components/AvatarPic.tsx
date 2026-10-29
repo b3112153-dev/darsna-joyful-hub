@@ -20,7 +20,7 @@ export const AvatarPic = memo(function AvatarPic({ profile, className, animate =
   }
   const l = avatarLayers(profileAvatar(profile), profile?.gender);
   return (
-    <span className={cn("relative inline-grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-[#f4d4a6] text-avatar-foreground", className)}>
+    <span className={cn("relative inline-grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-secondary text-avatar-foreground", className)}>
       <svg viewBox="24 6 72 72" className={cn("absolute inset-0 h-full w-full", animate && "avatar-breathe")} role="img" aria-label="الأفتار">
         {/* shoulders */}
         <path d="M38 78 Q60 62 82 78 L82 84 L38 84 Z" fill={l.traditional ?? l.clothes ?? l.outfit.top} />

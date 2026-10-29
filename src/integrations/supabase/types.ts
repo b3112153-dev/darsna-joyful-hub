@@ -803,6 +803,7 @@ export type Database = {
           max_members: number | null
           name: string
           scene: string | null
+          suspended: boolean
         }
         Insert: {
           audience?: string
@@ -816,6 +817,7 @@ export type Database = {
           max_members?: number | null
           name: string
           scene?: string | null
+          suspended?: boolean
         }
         Update: {
           audience?: string
@@ -829,6 +831,7 @@ export type Database = {
           max_members?: number | null
           name?: string
           scene?: string | null
+          suspended?: boolean
         }
         Relationships: []
       }
