@@ -137,6 +137,12 @@ function RoomsAdmin() {
     if (error) { toast.error("تعذر الحذف"); return; }
     qc.invalidateQueries({ queryKey: ["rooms"] });
   }
+  async function suspend(room: { id: string; suspended?: boolean }) {
+    const { error } = await supabase.from("rooms").update({ suspended: !room.suspended }).eq("id", room.id);
+    if (error) { toast.error("تعذر تحديث الغرفة"); return; }
+    toast.success(room.suspended ? "تم إلغاء تعليق الغرفة" : "تم تعليق الغرفة");
+    qc.invalidateQueries({ queryKey: ["rooms"] });
+  }
   return (
     <div className="space-y-6">
       <form onSubmit={add} className="grid gap-3 rounded-2xl border bg-card p-4 shadow-card sm:grid-cols-[1fr_1fr_180px_auto]">
