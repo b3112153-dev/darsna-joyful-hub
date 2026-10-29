@@ -90,7 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Darsna Jo | منصة طلاب التوجيهي الأردني" },
       { name: "description", content: "درسنا جو: منصة دراسة للتوجيهي الأردني (2009 و2010) فيها غرف دراسة ومؤقت تركيز وجدول حلّها ومكتبة ملفات واختبارات." },
       { property: "og:type", content: "website" },
-      { name: "theme-color", content: "#FBF0DD" },
+      { name: "theme-color", content: "#6d4aff" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
